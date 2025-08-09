@@ -1,0 +1,364 @@
+# Enhanced FloreSer.life Platform Vibe Code Prompt
+
+## Your Role & Mission
+You are a full-stack developer building **FloreSer.life** - a wellness marketplace connecting clients with practitioners (called "Pollinators"). Build a professional platform using nature-based categorization with clean, grounded design that lets the metaphors speak for themselves.
+
+## Platform Overview
+Create a marketplace where clients discover wellness practitioners, book sessions, and track progress. The platform uses four pollinator archetypes (Bee, Hummingbird, Butterfly, Beetle) for categorization while maintaining professional functionality.
+
+## Visual Design System
+
+### **Color Palette**
+```css
+:root {
+  --primary-forest: #2F4F4F;      /* Headers, CTAs, primary actions */
+  --background-cream: #F5F5DC;    /* Main backgrounds, content areas */
+  --accent-gold: #D4AF37;         /* Highlights, active states, links */
+  --subtle-rose: #C49C9C;         /* Dividers, gentle accents */
+  --secondary-gray: #A9A9A9;      /* Legal text, disclaimers */
+  --white: #FFFFFF;               /* Cards, modals, clean sections */
+}
+```
+
+### **Typography Stack**
+```css
+/* Headings - Elegant serif for wisdom and character */
+.heading-font {
+  font-family: 'Lora', 'Cormorant Garamond', serif;
+  font-weight: 400;
+}
+
+/* Body text - Clean sans-serif for readability */
+.body-font {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+}
+```
+
+### **Pollinator Icons & Branding**
+Use the provided SVG icons throughout the platform:
+- **hummingbird-rose-stinger-gold.svg** and **hummingbird-rose-stinger-green.svg**: Primary logo representing the integrated brand - the pollinator that carries the essence of all archetypes (rose petals for beauty/transformation, bee stinger for grounding/protection, hummingbird for precision/insight)
+- **hummingbird-rose-stinger-red.svg**: Featured content or special highlights
+- **hummingbird-simple-gold.svg**: Simplified icon for smaller spaces and hummingbird archetype
+- **bee-heart-gold.svg**: Bee archetype representation
+- **beetle-wings-gold.svg**: Beetle archetype representation  
+- **butterfly-gold.svg**: Butterfly archetype representation
+
+## Core User Stories
+
+### **Client Journey**
+1. **Discovery**: Find practitioners by archetype, experience level, and specialization
+2. **Understanding**: Learn about each archetype through clear descriptions
+3. **Booking**: Schedule and pay for sessions through integrated calendar
+4. **Growth**: Track session history and personal development
+
+### **Practitioner Journey**
+1. **Onboarding**: Create professional profile with archetype selection
+2. **Management**: Handle calendar, pricing, and client communications
+3. **Growth**: Build practice through client relationships and platform tools
+
+## Technical Requirements
+
+### **Authentication & Profiles**
+- Dual-role system (clients/practitioners)
+- Profile creation with archetype categorization
+- Secure authentication with email verification
+- Role-based dashboard access
+
+### **Marketplace Features**
+- **Search & Filter**: By archetype, location, price, availability, experience level
+- **Practitioner Profiles**: Professional bios, specializations, pricing, reviews
+- **Booking Engine**: Calendar integration with real-time availability
+- **Payment Processing**: Stripe integration with automatic commission splits
+
+### **Session Management**
+- Video conferencing integration (Zoom/Google Meet)
+- Session notes and follow-up tracking
+- Automated reminders and confirmations
+- Cancellation and rescheduling workflows
+
+## Data Architecture
+
+### **User Models**
+```javascript
+// Client Profile
+{
+  id, email, name, avatar,
+  preferences: {
+    preferred_archetypes: ['bee', 'hummingbird'], 
+    budget_range: [50, 150],
+    location_type: 'virtual' | 'in-person' | 'both'
+  },
+  session_history: [],
+  favorite_practitioners: [],
+  growth_tracking: {
+    goals: [],
+    progress_notes: [],
+    milestones: []
+  }
+}
+
+// Practitioner Profile
+{
+  id, email, name, avatar, bio,
+  archetype: 'bee' | 'hummingbird' | 'butterfly' | 'beetle',
+  experience_level: 'rising' | 'evolving' | 'wise',
+  specializations: ['breathwork', 'reiki', 'life coaching'],
+  pricing: {
+    session_rates: [{ duration: 60, price: 120 }],
+    packages: []
+  },
+  availability_calendar: {},
+  verification_status: 'pending' | 'verified',
+  platform_metrics: {
+    total_sessions: 0,
+    average_rating: 0,
+    client_retention_rate: 0
+  }
+}
+```
+
+### **Session & Payment Models**
+```javascript
+// Session
+{
+  id, client_id, practitioner_id,
+  session_type: 'discovery' | 'regular' | 'intensive',
+  duration: 60, // minutes
+  scheduled_datetime: '2025-08-15T14:00:00Z',
+  timezone: 'America/New_York',
+  status: 'scheduled' | 'completed' | 'cancelled' | 'no-show',
+  meeting_details: { platform: 'zoom', link: '', room_id: '' },
+  payment: {
+    total_amount: 120,
+    platform_fee: 12,
+    practitioner_payout: 108,
+    payment_status: 'completed'
+  },
+  notes: {
+    client_preparation: '',
+    practitioner_observations: '',
+    follow_up_recommendations: ''
+  }
+}
+
+// Growth Tracking
+{
+  client_id, session_id,
+  reflection_prompts: [],
+  progress_markers: [],
+  next_session_focus: '',
+  practitioner_recommendations: []
+}
+```
+
+## Archetype System Details
+
+### **The Four Archetypes**
+```javascript
+const archetypes = {
+  bee: {
+    name: 'Bee',
+    description: 'Grounding and foundational support',
+    specialties: ['nervous system regulation', 'daily practices', 'somatic work'],
+    color: '#D4AF37', // gold
+    icon: 'bee-heart-gold.svg'
+  },
+  hummingbird: {
+    name: 'Hummingbird', 
+    description: 'Precise insight and spiritual guidance',
+    specialties: ['intuitive readings', 'energy work', 'spiritual coaching'],
+    color: '#2F4F4F', // forest green
+    icon: 'hummingbird-simple-gold.svg'
+  },
+  butterfly: {
+    name: 'Butterfly',
+    description: 'Life transitions and transformation',
+    specialties: ['life coaching', 'identity work', 'major life changes'],
+    color: '#C49C9C', // dusty rose
+    icon: 'butterfly-gold.svg'
+  },
+  beetle: {
+    name: 'Beetle',
+    description: 'Deep integration and shadow work',
+    specialties: ['trauma healing', 'shadow integration', 'ancestral work'],
+    color: '#8B4513', // earth brown
+    icon: 'beetle-wings-gold.svg'
+  }
+}
+```
+
+### **Experience Levels**
+```javascript
+const experienceLevels = {
+  rising: {
+    name: 'Rising Pollinator',
+    description: '0-2 years experience, fresh energy and passion',
+    color: '#FFF5B7', // soft dawn yellow
+    requirements: 'Basic certification, mentorship support'
+  },
+  evolving: {
+    name: 'Evolving Pollinator', 
+    description: '3-7 years experience, established practice',
+    color: '#FF8B6A', // warm coral
+    requirements: 'Proven track record, client testimonials'
+  },
+  wise: {
+    name: 'Wise Pollinator',
+    description: '8+ years experience, deep embodied wisdom',
+    color: '#4B3F72', // deep indigo
+    requirements: 'Extensive experience, mentorship of other practitioners'
+  }
+}
+```
+
+## Page Structure & Components
+
+### **Landing Page**
+- Hero section with **hummingbird-rose-stinger-gold.svg** or **hummingbird-rose-stinger-green.svg** representing the unified FloreSer brand
+- Archetype introduction with visual cards using respective archetype icons
+- Path selection (client vs practitioner onboarding)
+- Featured practitioners carousel
+- Community testimonials
+
+### **Practitioner Directory ("The Hives")**
+- Filter sidebar (archetype, experience, location, price)
+- Practitioner cards with photo, archetype badge using appropriate icon, specializations
+- Search functionality with real-time results
+- Sorting options (rating, price, availability)
+
+### **Individual Practitioner Profiles**
+- Professional headshot and archetype identification with corresponding icon
+- Bio and approach description
+- Specializations and session types offered
+- Pricing and availability calendar
+- Client reviews and testimonials
+- Direct booking interface
+
+### **Client Dashboard ("My Garden")**
+- Upcoming sessions timeline
+- Session history with progress tracking
+- Saved practitioners and favorites
+- Personal growth journal
+- Messaging with practitioners
+
+### **Practitioner Dashboard ("My Hive")**
+- Calendar management and availability
+- Client session overview
+- Earnings and payout tracking
+- Profile and pricing management
+- Client communication tools
+
+## MVP Development Plan
+
+### **Phase 1: Foundation (Weeks 1-2)**
+- User authentication and role management
+- Basic profile creation for both user types
+- Practitioner directory with search/filtering
+- Simple inquiry and contact system
+- Payment integration setup
+
+### **Phase 2: Booking System (Weeks 3-4)**
+- Calendar integration with availability management
+- Complete booking flow with time selection
+- Automatic payment processing with commission splits
+- Email confirmations and reminders
+- Basic messaging between users
+
+### **Phase 3: Platform Features (Weeks 5-6)**
+- Complete dashboard interfaces
+- Session management (notes, rescheduling, cancellation)
+- Review and rating system
+- Growth tracking features
+- Mobile responsiveness and polish
+
+## Technical Implementation
+
+### **Tech Stack**
+- **Frontend**: React with Tailwind CSS for styling
+- **Backend**: Node.js/Express API architecture
+- **Database**: PostgreSQL with proper indexing
+- **Payments**: Stripe Connect for marketplace payments
+- **Real-time**: Socket.io for messaging
+- **Calendar**: Integration with Google Calendar
+- **Video**: Zoom SDK or Google Meet integration
+- **Storage**: AWS S3 for images and documents
+
+### **Key Integrations**
+- **Stripe Connect**: For handling marketplace payments and payouts
+- **Calendar APIs**: Google Calendar or Calendly for availability
+- **Email Service**: SendGrid or Mailgun for transactional emails
+- **Video Conferencing**: Zoom or Google Meet for sessions
+- **Analytics**: Google Analytics and custom event tracking
+
+## UI/UX Guidelines
+
+### **Design Principles**
+- Clean, minimal interface that doesn't compete with content
+- Organic shapes and gentle transitions
+- Professional tone with nature-inspired elements
+- Mobile-first responsive design
+- Accessibility compliance (WCAG 2.1)
+
+### **Brand Integration**
+- Use **hummingbird-rose-stinger-gold.svg** or **hummingbird-rose-stinger-green.svg** as the primary brand symbol throughout the platform
+- This logo represents the synthesis of all pollinator qualities: transformation (rose petals), grounding (bee stinger), and precision (hummingbird)
+- Use **hummingbird-rose-stinger-red.svg** for special highlights or featured content
+- Individual archetype icons (**bee-heart-gold.svg**, **hummingbird-simple-gold.svg**, **butterfly-gold.svg**, **beetle-wings-gold.svg**) should be used within their specific contexts
+
+### **Interactive Elements**
+- Gentle hover effects and micro-animations
+- Progress indicators for multi-step processes
+- Loading states that maintain the calm aesthetic
+- Form validation that guides rather than scolds
+- Smooth page transitions
+
+### **Content Strategy**
+- Clear, jargon-free explanations of services
+- Professional practitioner bios with personality
+- Educational content about each archetype
+- Transparent pricing and policies
+- Trust signals (certifications, reviews, guarantees)
+
+## Success Metrics & Analytics
+
+### **Key Performance Indicators**
+- User registration and profile completion rates
+- Practitioner application and approval rates
+- Booking conversion rates (browse to book)
+- Session completion rates
+- Revenue per user (both sides)
+- Platform retention and repeat usage
+
+### **Technical Metrics**
+- Page load times and performance scores
+- Mobile responsiveness and usability
+- Search and filter functionality effectiveness
+- Payment processing success rates
+- System uptime and reliability
+
+## Getting Started Implementation
+
+1. **Setup project structure** with clean, modular architecture
+2. **Implement authentication** with role-based access control
+3. **Build practitioner profiles** with archetype categorization
+4. **Create directory interface** with search and filtering
+5. **Develop booking system** with calendar integration
+6. **Add payment processing** with commission management
+7. **Build dashboard interfaces** for both user types
+8. **Test thoroughly** across devices and user flows
+9. **Deploy with monitoring** and analytics tracking
+
+## Important Implementation Notes
+
+- Use **hummingbird-rose-stinger-gold.svg** or **hummingbird-rose-stinger-green.svg** as the primary brand symbol
+- Use individual archetype icons (**bee-heart-gold.svg**, **hummingbird-simple-gold.svg**, **butterfly-gold.svg**, **beetle-wings-gold.svg**) for their specific categories and contexts
+- Maintain the professional tone while honoring the nature metaphors
+- Ensure all financial transactions are secure and compliant
+- Build mobile-responsive from the start
+- Include comprehensive error handling and user feedback
+- Plan for scalability in database design and API architecture
+- Implement proper SEO for practitioner discoverability
+
+Build a marketplace that serves both clients seeking authentic support and practitioners building meaningful practices. The platform should feel professional and trustworthy while maintaining the organic, nature-inspired brand identity that integrates all pollinator elements into a unified whole.
