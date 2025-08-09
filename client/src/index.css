@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* FloreSer Brand Colors */
+  --primary-forest: hsl(180, 25%, 31%);      /* #2F4F4F - Headers, CTAs, primary actions */
+  --background-cream: hsl(60, 56%, 91%);     /* #F5F5DC - Main backgrounds, content areas */
+  --accent-gold: hsl(45, 70%, 52%);          /* #D4AF37 - Highlights, active states, links */
+  --subtle-rose: hsl(0, 20%, 69%);           /* #C49C9C - Dividers, gentle accents */
+  --secondary-gray: hsl(0, 0%, 66%);         /* #A9A9A9 - Legal text, disclaimers */
+  --light-green: hsl(120, 39%, 70%);         /* #8FBC8F - Supporting accent */
+  --sage: hsl(82, 15%, 62%);                 /* #9CAF88 - Borders, subtle elements */
+
+  /* Shadcn UI Variables */
+  --background: hsl(60, 56%, 91%);           /* cream */
+  --foreground: hsl(180, 25%, 31%);          /* forest */
+  --card: hsl(0, 0%, 100%);                  /* white */
+  --card-foreground: hsl(180, 25%, 31%);     /* forest */
+  --popover: hsl(0, 0%, 100%);               /* white */
+  --popover-foreground: hsl(180, 25%, 31%);  /* forest */
+  --primary: hsl(45, 70%, 52%);              /* gold */
+  --primary-foreground: hsl(0, 0%, 100%);    /* white */
+  --secondary: hsl(180, 25%, 31%);           /* forest */
+  --secondary-foreground: hsl(0, 0%, 100%);  /* white */
+  --muted: hsl(60, 56%, 85%);                /* lighter cream */
+  --muted-foreground: hsl(180, 25%, 31%);    /* forest */
+  --accent: hsl(45, 70%, 85%);               /* light gold */
+  --accent-foreground: hsl(180, 25%, 31%);   /* forest */
+  --destructive: hsl(0, 84%, 60%);           /* red */
+  --destructive-foreground: hsl(0, 0%, 100%); /* white */
+  --border: hsl(82, 15%, 75%);               /* light sage */
+  --input: hsl(60, 56%, 95%);                /* very light cream */
+  --ring: hsl(45, 70%, 52%);                 /* gold */
+
+  /* Typography */
+  --font-heading: 'Lora', serif;
+  --font-body: 'Poppins', sans-serif;
+  --font-sans: 'Poppins', sans-serif;
+  --font-serif: 'Lora', serif;
+  --font-mono: Menlo, monospace;
+  
+  --radius: 1rem;
+}
+
+.dark {
+  --background: hsl(180, 25%, 15%);          /* dark forest */
+  --foreground: hsl(60, 56%, 91%);           /* cream */
+  --card: hsl(180, 25%, 20%);               /* dark forest card */
+  --card-foreground: hsl(60, 56%, 91%);     /* cream */
+  --popover: hsl(180, 25%, 15%);            /* dark forest */
+  --popover-foreground: hsl(60, 56%, 91%);  /* cream */
+  --primary: hsl(45, 70%, 52%);             /* gold */
+  --primary-foreground: hsl(0, 0%, 100%);   /* white */
+  --secondary: hsl(60, 56%, 91%);           /* cream */
+  --secondary-foreground: hsl(180, 25%, 31%); /* forest */
+  --muted: hsl(180, 25%, 25%);              /* dark muted */
+  --muted-foreground: hsl(60, 56%, 75%);    /* light cream */
+  --accent: hsl(45, 70%, 40%);              /* darker gold */
+  --accent-foreground: hsl(0, 0%, 100%);    /* white */
+  --destructive: hsl(0, 84%, 60%);          /* red */
+  --destructive-foreground: hsl(0, 0%, 100%); /* white */
+  --border: hsl(180, 25%, 30%);             /* dark border */
+  --input: hsl(180, 25%, 25%);              /* dark input */
+  --ring: hsl(45, 70%, 52%);                /* gold */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+}
+
+/* Custom animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.floating-animation {
+  animation: float 6s ease-in-out infinite;
+}
+
+.archetype-card:hover {
+  transform: translateY(-4px);
+  transition: all 0.3s ease;
+}
+
+.practitioner-card:hover {
+  transform: scale(1.02);
+  transition: all 0.3s ease;
+}
+
+.gradient-overlay {
+  background: linear-gradient(135deg, rgba(47, 79, 79, 0.1) 0%, rgba(212, 175, 55, 0.1) 100%);
+}
