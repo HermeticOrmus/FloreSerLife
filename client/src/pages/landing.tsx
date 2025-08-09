@@ -9,6 +9,7 @@ import StatsSection from "@/components/stats-section";
 import CTASection from "@/components/cta-section";
 import { Button } from "@/components/ui/button";
 import { Star, Shield, Lock } from "lucide-react";
+import { characters } from "@/assets";
 
 export default function Landing() {
   useEffect(() => {
@@ -69,9 +70,9 @@ export default function Landing() {
             <div className="relative">
               <div className="floating-animation">
                 <img 
-                  src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" 
-                  alt="Woman meditating in peaceful natural setting" 
-                  className="rounded-3xl shadow-2xl w-full h-auto"
+                  src={characters.angelica} 
+                  alt="ANGELICA the Colibri - Your wellness guide" 
+                  className="w-full h-auto max-w-md mx-auto object-contain"
                 />
               </div>
             </div>
