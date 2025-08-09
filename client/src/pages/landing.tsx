@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import ArchetypeShowcase from "@/components/archetype-showcase";
+import CharacterShowcase from "@/components/character-showcase";
 import HowItWorks from "@/components/how-it-works";
 import FeaturedPractitioners from "@/components/featured-practitioners";
 import StatsSection from "@/components/stats-section";
@@ -79,6 +80,7 @@ export default function Landing() {
       </section>
 
       <ArchetypeShowcase />
+      <CharacterShowcase />
       <HowItWorks />
       <FeaturedPractitioners />
       <StatsSection />

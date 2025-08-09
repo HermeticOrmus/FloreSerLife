@@ -8,11 +8,13 @@ Preferred communication style: Simple, everyday language.
 
 # Recent Changes
 
-## Brand Asset Organization (Aug 9, 2025)
+## Brand Asset Organization & Character Integration (Aug 9, 2025)
 - Reorganized all brand assets from attached_assets into clean directory structure
 - Created centralized asset management system in `client/src/assets/index.ts`
 - Updated all logo references to use organized assets instead of placeholder icons
 - Implemented real archetype icons (bee, butterfly, beetle, hummingbird) throughout the application
+- Added character illustrations: MAIA the Bee and ANGELICA the Colibri as brand ambassadors
+- Created dedicated character showcase section on landing page featuring both characters
 - Fixed TypeScript errors in authentication system for proper user type handling
 - Created comprehensive brand asset documentation in `BRAND_ASSETS.md`
 

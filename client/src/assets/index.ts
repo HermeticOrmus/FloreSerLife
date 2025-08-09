@@ -14,6 +14,10 @@ import butterflyIcon from './images/icons/butterfly.png';
 import beetleIcon from './images/icons/beetle.png';
 import hummingbirdIcon from './images/icons/hummingbird.png';
 
+// Character Illustrations
+import maiaTheBee from './images/characters/maia-the-bee.png';
+import angelicaTheColibri from './images/characters/angelica-the-colibri.png';
+
 // Logo exports organized by usage context
 export const logos = {
   // Main brand logos
@@ -38,6 +42,12 @@ export const archetypeIcons = {
   butterfly: butterflyIcon,
   beetle: beetleIcon,
   hummingbird: hummingbirdIcon,
+} as const;
+
+// Character illustration exports
+export const characters = {
+  maia: maiaTheBee,
+  angelica: angelicaTheColibri,
 } as const;
 
 // Convenient re-exports for specific use cases

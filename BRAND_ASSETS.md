@@ -78,9 +78,26 @@ All assets were organized from the uploaded brand files:
 - Cleaned and renamed for consistent usage
 - Latest versions selected (timestamp: 1754775346xxx)
 
+## Character Illustrations
+
+### Brand Ambassadors
+- **MAIA the Bee** (`maia-the-bee.png`) - Golden, fluffy bee with glowing spiral energy center representing community and structured healing
+- **ANGELICA the Colibri** (`angelica-the-colibri.png`) - Elegant teal and gold hummingbird representing swift adaptation and energy work
+
+### Usage in Code
+Character illustrations are imported through the centralized asset system:
+```typescript
+import { characters } from "@/assets";
+
+// Character usage
+<img src={characters.maia} alt="MAIA the Bee" />
+<img src={characters.angelica} alt="ANGELICA the Colibri" />
+```
+
 ## Design Notes
 
 - All icons maintain consistent visual style with golden color scheme
 - Logos feature the hummingbird as the central brand symbol
 - Archetype icons each have unique symbolism while maintaining brand cohesion
+- Character illustrations add personality and warmth to the brand experience
 - Transparent backgrounds allow flexible placement on different color schemes
