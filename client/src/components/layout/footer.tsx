@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
+import { logos } from "@/assets";
 
 export default function Footer() {
   return (
@@ -8,9 +9,11 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-gold rounded-full flex items-center justify-center">
-                <span className="text-white font-bold">F</span>
-              </div>
+              <img 
+                src={logos.main.coloredIcon} 
+                alt="FloreSer Logo" 
+                className="w-8 h-8"
+              />
               <span className="font-heading text-lg font-bold">FloreSer</span>
             </div>
             <p className="text-white/70 text-sm leading-relaxed">
