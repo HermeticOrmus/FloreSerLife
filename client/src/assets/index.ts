@@ -15,8 +15,8 @@ import beetleIcon from './images/icons/beetle.png';
 import hummingbirdIcon from './images/icons/hummingbird.png';
 
 // Character Illustrations
-import maiaTheBee from './images/characters/maia-the-bee.png';
-import angelicaTheColibri from './images/characters/angelica-the-colibri.png';
+import maiaTheBee from './images/characters/maia.png';
+import angelicaTheColibri from './images/characters/angelica.png';
 
 // Logo exports organized by usage context
 export const logos = {
