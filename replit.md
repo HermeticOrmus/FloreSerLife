@@ -5,6 +5,8 @@ FloreSer is a wellness marketplace platform that connects clients with wellness 
 # User Preferences
 
 Preferred communication style: Simple, everyday language.
+Character asset preference: Background-free versions of ANGELICA and MAIA characters for cleaner website integration.
+Branding preference: ANGELICA character as hero image instead of generic imagery, golden logo for favicon.
 
 # Recent Changes
 
@@ -17,6 +19,12 @@ Preferred communication style: Simple, everyday language.
 - Created dedicated character showcase section on landing page featuring both characters
 - Fixed TypeScript errors in authentication system for proper user type handling
 - Created comprehensive brand asset documentation in `BRAND_ASSETS.md`
+
+## Character Asset Updates & Hero Section (Aug 10, 2025)
+- Replaced hero section mountain image with ANGELICA the Colibri character for branded welcome experience
+- Updated character assets with preferred background-free versions for cleaner integration
+- Set golden FloreSer logo as website favicon for professional browser tab branding
+- Enhanced landing page with character-driven storytelling approach
 
 # System Architecture
 
