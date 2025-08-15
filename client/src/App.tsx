@@ -8,9 +8,28 @@ import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
 import Home from "@/pages/home";
 import Practitioners from "@/pages/practitioners";
+import ClientDashboard from "@/pages/client-dashboard";
+import PractitionerDashboard from "@/pages/practitioner-dashboard";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
+
+  const getUserDashboard = () => {
+    if (!user || !user.roles) return Home;
+    
+    // Check if user has practitioner role
+    if (user.roles.includes('practitioner')) {
+      return PractitionerDashboard;
+    }
+    
+    // Check if user has client role
+    if (user.roles.includes('client')) {
+      return ClientDashboard;
+    }
+    
+    // Default to regular home page
+    return Home;
+  };
 
   return (
     <Switch>
@@ -21,7 +40,9 @@ function Router() {
         </>
       ) : (
         <>
-          <Route path="/" component={Home} />
+          <Route path="/" component={getUserDashboard()} />
+          <Route path="/dashboard/client" component={ClientDashboard} />
+          <Route path="/dashboard/practitioner" component={PractitionerDashboard} />
           <Route path="/practitioners" component={Practitioners} />
         </>
       )}

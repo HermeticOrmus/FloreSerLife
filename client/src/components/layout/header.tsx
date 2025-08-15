@@ -144,6 +144,20 @@ export default function Header() {
                       Dashboard
                     </Link>
                   </DropdownMenuItem>
+                  {user?.roles?.includes('practitioner') && (
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard/practitioner" className="cursor-pointer">
+                        Practitioner Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  {user?.roles?.includes('client') && (
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard/client" className="cursor-pointer">
+                        Client Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem asChild>
                     <Link href="/practitioners" className="cursor-pointer">
                       Find Practitioners
