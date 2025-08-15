@@ -20,9 +20,15 @@ import { eq, and, desc, sql } from "drizzle-orm";
 
 // Interface for storage operations
 export interface IStorage {
-  // User operations (required for Replit Auth)
+  // User operations
   getUser(id: string): Promise<User | undefined>;
+  getUserById(id: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  getUserByGoogleId(googleId: string): Promise<User | undefined>;
+  createUser(user: Partial<User>): Promise<User>;
   upsertUser(user: UpsertUser): Promise<User>;
+  linkGoogleAccount(userId: string, googleId: string): Promise<void>;
+  getUserWithProfiles(userId: string): Promise<any>;
   
   // User role operations
   createUserRole(userId: string, role: "client" | "practitioner"): Promise<UserRole>;
@@ -48,10 +54,66 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  // User operations (required for Replit Auth)
+  // User operations
   async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
+  }
+
+  async getUserById(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
+  async getUserByGoogleId(googleId: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.googleId, googleId));
+    return user;
+  }
+
+  async createUser(userData: Partial<User>): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(userData as any)
+      .returning();
+    return user;
+  }
+
+  async linkGoogleAccount(userId: string, googleId: string): Promise<void> {
+    await db
+      .update(users)
+      .set({ googleId })
+      .where(eq(users.id, userId));
+  }
+
+  async getUserWithProfiles(userId: string): Promise<any> {
+    const user = await this.getUserById(userId);
+    if (!user) return null;
+
+    const roles = await this.getUserRoles(userId);
+    const roleNames = roles.map(r => r.role);
+
+    let practitionerProfile = null;
+    let clientProfile = null;
+
+    if (roleNames.includes('practitioner')) {
+      practitionerProfile = await this.getPractitionerByUserId(userId);
+    }
+
+    if (roleNames.includes('client')) {
+      clientProfile = await this.getClientByUserId(userId);
+    }
+
+    return {
+      ...user,
+      roles: roleNames,
+      practitionerProfile,
+      clientProfile,
+    };
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {
@@ -59,7 +121,7 @@ export class DatabaseStorage implements IStorage {
       .insert(users)
       .values(userData)
       .onConflictDoUpdate({
-        target: users.id,
+        target: users.email,
         set: {
           ...userData,
           updatedAt: new Date(),

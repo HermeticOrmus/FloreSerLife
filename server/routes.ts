@@ -1,49 +1,14 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth, requireAuth } from "./auth";
 import { archetypeDefinitions, experienceLevelDefinitions } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
 
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-      
-      // Get user roles
-      const roles = await storage.getUserRoles(userId);
-      
-      // Get additional profile data based on roles
-      let practitionerProfile = null;
-      let clientProfile = null;
-      
-      for (const role of roles) {
-        if (role.role === 'practitioner') {
-          practitionerProfile = await storage.getPractitionerByUserId(userId);
-        }
-        if (role.role === 'client') {
-          clientProfile = await storage.getClientByUserId(userId);
-        }
-      }
-
-      res.json({
-        ...user,
-        roles: roles.map(r => r.role),
-        practitionerProfile,
-        clientProfile
-      });
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
-  });
+  // This route is now handled in auth.ts
 
   // Public API routes
   app.get('/api/practitioners', async (req, res) => {
@@ -75,10 +40,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Dashboard routes (protected)
-  app.get('/api/dashboard/client/:userId', isAuthenticated, async (req, res) => {
+  app.get('/api/dashboard/client/:userId', requireAuth, async (req: any, res) => {
     try {
       const { userId } = req.params;
-      const authenticatedUserId = req.user.claims.sub;
+      const authenticatedUserId = req.user.id;
       
       // Ensure user can only access their own dashboard
       if (userId !== authenticatedUserId) {
@@ -97,10 +62,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/dashboard/practitioner/:userId', isAuthenticated, async (req, res) => {
+  app.get('/api/dashboard/practitioner/:userId', requireAuth, async (req: any, res) => {
     try {
       const { userId } = req.params;
-      const authenticatedUserId = req.user.claims.sub;
+      const authenticatedUserId = req.user.id;
       
       // Ensure user can only access their own dashboard
       if (userId !== authenticatedUserId) {
@@ -119,10 +84,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/sessions/:userId/:role', isAuthenticated, async (req, res) => {
+  app.get('/api/sessions/:userId/:role', requireAuth, async (req: any, res) => {
     try {
       const { userId, role } = req.params;
-      const authenticatedUserId = req.user.claims.sub;
+      const authenticatedUserId = req.user.id;
       
       // Ensure user can only access their own sessions
       if (userId !== authenticatedUserId) {
@@ -142,9 +107,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Protected routes
-  app.post('/api/practitioners', isAuthenticated, async (req: any, res) => {
+  app.post('/api/practitioners', requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       
       // Check if user already has a practitioner profile
       const existingPractitioner = await storage.getPractitionerByUserId(userId);
@@ -173,9 +138,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/clients', isAuthenticated, async (req: any, res) => {
+  app.post('/api/clients', requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       
       // Check if user already has a client profile
       const existingClient = await storage.getClientByUserId(userId);

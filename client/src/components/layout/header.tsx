@@ -44,22 +44,22 @@ export default function Header() {
           <Button 
             variant="ghost" 
             className="w-full justify-start"
-            onClick={() => window.location.href = '/api/login'}
+            onClick={() => window.location.href = '/auth/signin'}
           >
             Sign In
           </Button>
           <Button 
             className="w-full bg-gold text-white hover:bg-gold/90"
-            onClick={() => window.location.href = '/api/login'}
+            onClick={() => window.location.href = '/auth/signup'}
           >
-            Join as Practitioner
+            Join FloreSer
           </Button>
         </>
       ) : (
         <Button 
           variant="ghost" 
           className="w-full justify-start text-destructive"
-          onClick={() => window.location.href = '/api/logout'}
+          onClick={() => fetch('/api/auth/logout', { method: 'POST' }).then(() => window.location.href = '/')}
         >
           <LogOut className="w-4 h-4 mr-2" />
           Sign Out
@@ -107,15 +107,15 @@ export default function Header() {
                 <Button 
                   variant="ghost" 
                   className="text-forest hover:text-gold"
-                  onClick={() => window.location.href = '/api/login'}
+                  onClick={() => window.location.href = '/auth/signin'}
                 >
                   Sign In
                 </Button>
                 <Button 
                   className="bg-gold text-white px-6 py-2 rounded-full hover:bg-gold/90"
-                  onClick={() => window.location.href = '/api/login'}
+                  onClick={() => window.location.href = '/auth/signup'}
                 >
-                  Join as Practitioner
+                  Join FloreSer
                 </Button>
               </>
             ) : (
@@ -166,7 +166,7 @@ export default function Header() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 
                     className="text-destructive cursor-pointer"
-                    onClick={() => window.location.href = '/api/logout'}
+                    onClick={() => fetch('/api/auth/logout', { method: 'POST' }).then(() => window.location.href = '/')}
                   >
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
