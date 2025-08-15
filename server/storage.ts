@@ -39,6 +39,12 @@ export interface IStorage {
   createClient(client: InsertClient): Promise<Client>;
   getClient(id: string): Promise<Client | undefined>;
   getClientByUserId(userId: string): Promise<Client | undefined>;
+  
+  // Dashboard data operations
+  getClientDashboardData(userId: string): Promise<any>;
+  getPractitionerDashboardData(userId: string): Promise<any>;
+  getUserSessions(userId: string, role: "client" | "practitioner"): Promise<Session[]>;
+  getUserStats(userId: string, role: "client" | "practitioner"): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -146,6 +152,133 @@ export class DatabaseStorage implements IStorage {
       .from(clients)
       .where(eq(clients.userId, userId));
     return client;
+  }
+
+  // Dashboard data operations
+  async getClientDashboardData(userId: string): Promise<any> {
+    const client = await this.getClientByUserId(userId);
+    if (!client) return null;
+
+    // Get upcoming sessions
+    const upcomingSessions = await db
+      .select({
+        id: sessions_table.id,
+        practitionerName: sql<string>`${practitioners.userId}`,
+        scheduledDatetime: sessions_table.scheduledDatetime,
+        duration: sessions_table.duration,
+        status: sessions_table.status,
+        isVirtual: sessions_table.isVirtual,
+        meetingLink: sessions_table.meetingLink,
+        notes: sessions_table.notes,
+      })
+      .from(sessions_table)
+      .innerJoin(practitioners, eq(sessions_table.practitionerId, practitioners.id))
+      .where(and(
+        eq(sessions_table.clientId, client.id),
+        sql`${sessions_table.scheduledDatetime} >= NOW()`
+      ))
+      .orderBy(sessions_table.scheduledDatetime)
+      .limit(5);
+
+    // Get session stats
+    const [sessionStats] = await db
+      .select({
+        totalSessions: sql<number>`COUNT(*)`,
+        completedSessions: sql<number>`COUNT(CASE WHEN ${sessions_table.status} = 'completed' THEN 1 END)`,
+      })
+      .from(sessions_table)
+      .where(eq(sessions_table.clientId, client.id));
+
+    return {
+      upcomingSessions,
+      stats: {
+        totalSessions: sessionStats.totalSessions || 0,
+        completedSessions: sessionStats.completedSessions || 0,
+        upcomingSessions: upcomingSessions.length,
+      }
+    };
+  }
+
+  async getPractitionerDashboardData(userId: string): Promise<any> {
+    const practitioner = await this.getPractitionerByUserId(userId);
+    if (!practitioner) return null;
+
+    // Get upcoming sessions
+    const upcomingSessions = await db
+      .select({
+        id: sessions_table.id,
+        clientName: sql<string>`${clients.userId}`,
+        scheduledDatetime: sessions_table.scheduledDatetime,
+        duration: sessions_table.duration,
+        status: sessions_table.status,
+        isVirtual: sessions_table.isVirtual,
+        meetingLink: sessions_table.meetingLink,
+        notes: sessions_table.notes,
+      })
+      .from(sessions_table)
+      .innerJoin(clients, eq(sessions_table.clientId, clients.id))
+      .where(and(
+        eq(sessions_table.practitionerId, practitioner.id),
+        sql`${sessions_table.scheduledDatetime} >= NOW()`
+      ))
+      .orderBy(sessions_table.scheduledDatetime)
+      .limit(5);
+
+    // Get earnings and session stats
+    const [sessionStats] = await db
+      .select({
+        totalSessions: sql<number>`COUNT(*)`,
+        completedSessions: sql<number>`COUNT(CASE WHEN ${sessions_table.status} = 'completed' THEN 1 END)`,
+        totalEarnings: sql<number>`SUM(CASE WHEN ${sessions_table.status} = 'completed' THEN ${sessions_table.totalAmount} ELSE 0 END)`,
+      })
+      .from(sessions_table)
+      .where(eq(sessions_table.practitionerId, practitioner.id));
+
+    // Get client count
+    const [clientCount] = await db
+      .select({
+        uniqueClients: sql<number>`COUNT(DISTINCT ${sessions_table.clientId})`,
+      })
+      .from(sessions_table)
+      .where(eq(sessions_table.practitionerId, practitioner.id));
+
+    return {
+      upcomingSessions,
+      stats: {
+        totalSessions: sessionStats.totalSessions || 0,
+        completedSessions: sessionStats.completedSessions || 0,
+        upcomingSessions: upcomingSessions.length,
+        totalEarnings: sessionStats.totalEarnings || 0,
+        uniqueClients: clientCount.uniqueClients || 0,
+        averageRating: practitioner.averageRating || 0,
+      }
+    };
+  }
+
+  async getUserSessions(userId: string, role: "client" | "practitioner"): Promise<Session[]> {
+    if (role === "client") {
+      const client = await this.getClientByUserId(userId);
+      if (!client) return [];
+      
+      return await db.select().from(sessions_table)
+        .where(eq(sessions_table.clientId, client.id))
+        .orderBy(desc(sessions_table.scheduledDatetime));
+    } else {
+      const practitioner = await this.getPractitionerByUserId(userId);
+      if (!practitioner) return [];
+      
+      return await db.select().from(sessions_table)
+        .where(eq(sessions_table.practitionerId, practitioner.id))
+        .orderBy(desc(sessions_table.scheduledDatetime));
+    }
+  }
+
+  async getUserStats(userId: string, role: "client" | "practitioner"): Promise<any> {
+    if (role === "client") {
+      return this.getClientDashboardData(userId);
+    } else {
+      return this.getPractitionerDashboardData(userId);
+    }
   }
 }
 

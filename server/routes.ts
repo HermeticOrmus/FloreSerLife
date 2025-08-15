@@ -74,6 +74,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(experienceLevelDefinitions);
   });
 
+  // Dashboard routes (protected)
+  app.get('/api/dashboard/client/:userId', isAuthenticated, async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const authenticatedUserId = req.user.claims.sub;
+      
+      // Ensure user can only access their own dashboard
+      if (userId !== authenticatedUserId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      const dashboardData = await storage.getClientDashboardData(userId);
+      if (!dashboardData) {
+        return res.status(404).json({ message: "Client dashboard not found" });
+      }
+      
+      res.json(dashboardData);
+    } catch (error) {
+      console.error("Error fetching client dashboard:", error);
+      res.status(500).json({ message: "Failed to fetch dashboard data" });
+    }
+  });
+
+  app.get('/api/dashboard/practitioner/:userId', isAuthenticated, async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const authenticatedUserId = req.user.claims.sub;
+      
+      // Ensure user can only access their own dashboard
+      if (userId !== authenticatedUserId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      const dashboardData = await storage.getPractitionerDashboardData(userId);
+      if (!dashboardData) {
+        return res.status(404).json({ message: "Practitioner dashboard not found" });
+      }
+      
+      res.json(dashboardData);
+    } catch (error) {
+      console.error("Error fetching practitioner dashboard:", error);
+      res.status(500).json({ message: "Failed to fetch dashboard data" });
+    }
+  });
+
+  app.get('/api/sessions/:userId/:role', isAuthenticated, async (req, res) => {
+    try {
+      const { userId, role } = req.params;
+      const authenticatedUserId = req.user.claims.sub;
+      
+      // Ensure user can only access their own sessions
+      if (userId !== authenticatedUserId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      if (role !== 'client' && role !== 'practitioner') {
+        return res.status(400).json({ message: "Invalid role specified" });
+      }
+      
+      const sessions = await storage.getUserSessions(userId, role as "client" | "practitioner");
+      res.json(sessions);
+    } catch (error) {
+      console.error("Error fetching user sessions:", error);
+      res.status(500).json({ message: "Failed to fetch sessions" });
+    }
+  });
+
   // Protected routes
   app.post('/api/practitioners', isAuthenticated, async (req: any, res) => {
     try {
