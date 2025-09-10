@@ -10,6 +10,7 @@ import Home from "@/pages/home";
 import Practitioners from "@/pages/practitioners";
 import ClientDashboard from "@/pages/client-dashboard";
 import PractitionerDashboard from "@/pages/practitioner-dashboard";
+import AdminSurveyPage from "@/pages/admin-survey";
 import SignIn from "@/pages/SignIn";
 import SignUp from "@/pages/SignUp";
 import Survey from "@/pages/survey";
@@ -19,6 +20,11 @@ function Router() {
 
   const getUserDashboard = () => {
     if (!user || !user.roles) return Home;
+    
+    // Check if user has admin role first
+    if (user.roles.includes('admin')) {
+      return AdminSurveyPage;
+    }
     
     // Check if user has practitioner role
     if (user.roles.includes('practitioner')) {
@@ -53,6 +59,12 @@ function Router() {
           <Route path="/" component={getUserDashboard()} />
           <Route path="/dashboard/client" component={ClientDashboard} />
           <Route path="/dashboard/practitioner" component={PractitionerDashboard} />
+          
+          {/* Admin routes - only accessible to admin users */}
+          {user?.roles?.includes('admin') && (
+            <Route path="/admin/survey" component={AdminSurveyPage} />
+          )}
+          
           <Route path="/practitioners" component={Practitioners} />
         </>
       )}

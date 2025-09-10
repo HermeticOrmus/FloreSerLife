@@ -30,12 +30,12 @@ export default function Header() {
   const MobileNav = () => (
     <div className="flex flex-col space-y-4 p-4">
       <Link href="/">
-        <Button variant="ghost" className="w-full justify-start">
+        <Button variant="ghost" className="w-full justify-start" data-testid="button-mobile-home">
           Home
         </Button>
       </Link>
       <Link href="/practitioners">
-        <Button variant="ghost" className="w-full justify-start">
+        <Button variant="ghost" className="w-full justify-start" data-testid="button-mobile-practitioners">
           Find Practitioners
         </Button>
       </Link>
@@ -45,12 +45,14 @@ export default function Header() {
             variant="ghost" 
             className="w-full justify-start"
             onClick={() => window.location.href = '/auth/signin'}
+            data-testid="button-mobile-sign-in"
           >
             Sign In
           </Button>
           <Button 
             className="w-full bg-gold text-white hover:bg-gold/90"
             onClick={() => window.location.href = '/auth/signup'}
+            data-testid="button-mobile-join-floreser"
           >
             Join FloreSer
           </Button>
@@ -60,6 +62,7 @@ export default function Header() {
           variant="ghost" 
           className="w-full justify-start text-destructive"
           onClick={() => fetch('/api/auth/logout', { method: 'POST' }).then(() => window.location.href = '/')}
+          data-testid="button-mobile-sign-out"
         >
           <LogOut className="w-4 h-4 mr-2" />
           Sign Out
@@ -95,6 +98,7 @@ export default function Header() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-sage/30 rounded-full focus:ring-2 focus:ring-gold/50 focus:border-gold"
+                data-testid="input-search-desktop"
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sage h-4 w-4" />
             </form>
@@ -108,12 +112,14 @@ export default function Header() {
                   variant="ghost" 
                   className="text-forest hover:text-gold"
                   onClick={() => window.location.href = '/auth/signin'}
+                  data-testid="button-sign-in-desktop"
                 >
                   Sign In
                 </Button>
                 <Button 
                   className="bg-gold text-white px-6 py-2 rounded-full hover:bg-gold/90"
                   onClick={() => window.location.href = '/auth/signup'}
+                  data-testid="button-join-floreser-desktop"
                 >
                   Join FloreSer
                 </Button>
@@ -121,7 +127,7 @@ export default function Header() {
             ) : (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center space-x-2">
+                  <Button variant="ghost" className="flex items-center space-x-2" data-testid="button-user-menu">
                     <div className="w-8 h-8 bg-gold rounded-full flex items-center justify-center">
                       {user?.profileImageUrl ? (
                         <img 
@@ -140,26 +146,33 @@ export default function Header() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuItem asChild>
-                    <Link href="/" className="cursor-pointer">
+                    <Link href="/" className="cursor-pointer" data-testid="link-dashboard">
                       Dashboard
                     </Link>
                   </DropdownMenuItem>
                   {user?.roles?.includes('practitioner') && (
                     <DropdownMenuItem asChild>
-                      <Link href="/dashboard/practitioner" className="cursor-pointer">
+                      <Link href="/dashboard/practitioner" className="cursor-pointer" data-testid="link-practitioner-dashboard">
                         Practitioner Dashboard
                       </Link>
                     </DropdownMenuItem>
                   )}
                   {user?.roles?.includes('client') && (
                     <DropdownMenuItem asChild>
-                      <Link href="/dashboard/client" className="cursor-pointer">
+                      <Link href="/dashboard/client" className="cursor-pointer" data-testid="link-client-dashboard">
                         Client Dashboard
                       </Link>
                     </DropdownMenuItem>
                   )}
+                  {user?.roles?.includes('admin') && (
+                    <DropdownMenuItem asChild>
+                      <Link href="/admin/survey" className="cursor-pointer" data-testid="link-admin-panel">
+                        Admin Panel
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem asChild>
-                    <Link href="/practitioners" className="cursor-pointer">
+                    <Link href="/practitioners" className="cursor-pointer" data-testid="link-find-practitioners">
                       Find Practitioners
                     </Link>
                   </DropdownMenuItem>
@@ -167,6 +180,7 @@ export default function Header() {
                   <DropdownMenuItem 
                     className="text-destructive cursor-pointer"
                     onClick={() => fetch('/api/auth/logout', { method: 'POST' }).then(() => window.location.href = '/')}
+                    data-testid="button-sign-out"
                   >
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
@@ -180,7 +194,7 @@ export default function Header() {
           <div className="md:hidden">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" data-testid="button-mobile-menu">
                   <Menu className="h-5 w-5 text-forest" />
                 </Button>
               </SheetTrigger>
@@ -202,6 +216,7 @@ export default function Header() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-sage/30 rounded-full"
+              data-testid="input-search-mobile"
             />
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sage h-4 w-4" />
           </form>
