@@ -34,8 +34,9 @@ export interface IStorage {
   getUserWithProfiles(userId: string): Promise<any>;
   
   // User role operations
-  createUserRole(userId: string, role: "client" | "practitioner"): Promise<UserRole>;
+  createUserRole(userId: string, role: "client" | "practitioner" | "admin"): Promise<UserRole>;
   getUserRoles(userId: string): Promise<UserRole[]>;
+  isUserAdmin(userId: string): Promise<boolean>;
   
   // Practitioner operations
   createPractitioner(practitioner: InsertPractitioner): Promise<Practitioner>;
@@ -141,7 +142,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // User role operations
-  async createUserRole(userId: string, role: "client" | "practitioner"): Promise<UserRole> {
+  async createUserRole(userId: string, role: "client" | "practitioner" | "admin"): Promise<UserRole> {
     const [userRole] = await db
       .insert(userRoles)
       .values({ userId, role })
@@ -151,6 +152,11 @@ export class DatabaseStorage implements IStorage {
 
   async getUserRoles(userId: string): Promise<UserRole[]> {
     return await db.select().from(userRoles).where(eq(userRoles.userId, userId));
+  }
+
+  async isUserAdmin(userId: string): Promise<boolean> {
+    const roles = await this.getUserRoles(userId);
+    return roles.some(role => role.role === 'admin');
   }
 
   // Practitioner operations

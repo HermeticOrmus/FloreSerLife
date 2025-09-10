@@ -45,7 +45,7 @@ export const users = pgTable("users", {
 // Enums for archetype system
 export const archetypeEnum = pgEnum("archetype", ["bee", "hummingbird", "butterfly", "beetle"]);
 export const experienceLevelEnum = pgEnum("experience_level", ["rising", "evolving", "wise"]);
-export const userRoleEnum = pgEnum("user_role", ["client", "practitioner"]);
+export const userRoleEnum = pgEnum("user_role", ["client", "practitioner", "admin"]);
 export const sessionStatusEnum = pgEnum("session_status", ["scheduled", "completed", "cancelled", "no-show"]);
 export const surveyIdentityEnum = pgEnum("survey_identity", ["facilitator", "client", "both", "neither", "exploring"]);
 export const surveyFrequencyEnum = pgEnum("survey_frequency", ["weekly", "2-3_monthly", "monthly", "occasionally", "rarely"]);

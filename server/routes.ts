@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, requireAuth } from "./auth";
+import { setupAuth, requireAuth, requireAdmin } from "./auth";
 import { archetypeDefinitions, experienceLevelDefinitions, insertSurveyResponseSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -70,10 +70,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/survey/responses', requireAuth, async (req: any, res) => {
+  app.get('/api/survey/responses', requireAdmin, async (req: any, res) => {
     try {
-      // This endpoint is for admin access to survey data
-      // In a production app, you might want additional role-based access control here
+      // This endpoint is restricted to admin users only
       const allResponses = await storage.getAllSurveyResponses();
       
       res.json({

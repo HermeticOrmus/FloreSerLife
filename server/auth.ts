@@ -128,12 +128,12 @@ export async function setupAuth(app: Express) {
         }
 
         if (!user) {
-          return done(new Error('Failed to create user'), null);
+          return done(new Error('Failed to create user'), false);
         }
 
         return done(null, user);
       } catch (error) {
-        return done(error, null);
+        return done(error, false);
       }
     }
     ));
@@ -246,7 +246,7 @@ export async function setupAuth(app: Express) {
     }
 
     try {
-      const user = await storage.getUserWithProfiles(req.user.id);
+      const user = await storage.getUserWithProfiles((req.user as any).id);
       res.json(user);
     } catch (error) {
       console.error('Error fetching user:', error);
@@ -260,4 +260,21 @@ export const requireAuth: RequestHandler = (req, res, next) => {
     return res.status(401).json({ message: "Authentication required" });
   }
   next();
+};
+
+export const requireAdmin: RequestHandler = async (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({ message: "Authentication required" });
+  }
+
+  try {
+    const isAdmin = await storage.isUserAdmin((req.user as any).id);
+    if (!isAdmin) {
+      return res.status(403).json({ message: "Admin privileges required" });
+    }
+    next();
+  } catch (error) {
+    console.error("Error checking admin privileges:", error);
+    return res.status(500).json({ message: "Failed to verify admin privileges" });
+  }
 };
