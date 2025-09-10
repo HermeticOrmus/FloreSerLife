@@ -5,6 +5,7 @@ import {
   userRoles,
   sessions_table,
   reviews,
+  surveyResponses,
   type User,
   type UpsertUser,
   type Practitioner,
@@ -12,8 +13,10 @@ import {
   type UserRole,
   type Session,
   type Review,
+  type SurveyResponse,
   type InsertPractitioner,
   type InsertClient,
+  type InsertSurveyResponse,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, sql } from "drizzle-orm";
@@ -51,6 +54,12 @@ export interface IStorage {
   getPractitionerDashboardData(userId: string): Promise<any>;
   getUserSessions(userId: string, role: "client" | "practitioner"): Promise<Session[]>;
   getUserStats(userId: string, role: "client" | "practitioner"): Promise<any>;
+  
+  // Survey operations
+  createSurveyResponse(surveyData: InsertSurveyResponse): Promise<SurveyResponse>;
+  getSurveyResponseById(id: string): Promise<SurveyResponse | undefined>;
+  getAllSurveyResponses(): Promise<SurveyResponse[]>;
+  getSurveyResponsesByUserId(userId: string): Promise<SurveyResponse[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -341,6 +350,38 @@ export class DatabaseStorage implements IStorage {
     } else {
       return this.getPractitionerDashboardData(userId);
     }
+  }
+
+  // Survey operations
+  async createSurveyResponse(surveyData: InsertSurveyResponse): Promise<SurveyResponse> {
+    const [surveyResponse] = await db
+      .insert(surveyResponses)
+      .values(surveyData)
+      .returning();
+    return surveyResponse;
+  }
+
+  async getSurveyResponseById(id: string): Promise<SurveyResponse | undefined> {
+    const [surveyResponse] = await db
+      .select()
+      .from(surveyResponses)
+      .where(eq(surveyResponses.id, id));
+    return surveyResponse;
+  }
+
+  async getAllSurveyResponses(): Promise<SurveyResponse[]> {
+    return await db
+      .select()
+      .from(surveyResponses)
+      .orderBy(desc(surveyResponses.createdAt));
+  }
+
+  async getSurveyResponsesByUserId(userId: string): Promise<SurveyResponse[]> {
+    return await db
+      .select()
+      .from(surveyResponses)
+      .where(eq(surveyResponses.userId, userId))
+      .orderBy(desc(surveyResponses.createdAt));
   }
 }
 
