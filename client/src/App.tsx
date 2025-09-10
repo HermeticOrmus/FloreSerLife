@@ -12,6 +12,7 @@ import ClientDashboard from "@/pages/client-dashboard";
 import PractitionerDashboard from "@/pages/practitioner-dashboard";
 import SignIn from "@/pages/SignIn";
 import SignUp from "@/pages/SignUp";
+import Survey from "@/pages/survey";
 
 function Router() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -38,6 +39,9 @@ function Router() {
       {/* Auth routes - always accessible */}
       <Route path="/auth/signin" component={SignIn} />
       <Route path="/auth/signup" component={SignUp} />
+      
+      {/* Survey route - always accessible */}
+      <Route path="/survey" component={Survey} />
       
       {isLoading || !isAuthenticated ? (
         <>
