@@ -47,6 +47,9 @@ export const archetypeEnum = pgEnum("archetype", ["bee", "hummingbird", "butterf
 export const experienceLevelEnum = pgEnum("experience_level", ["rising", "evolving", "wise"]);
 export const userRoleEnum = pgEnum("user_role", ["client", "practitioner"]);
 export const sessionStatusEnum = pgEnum("session_status", ["scheduled", "completed", "cancelled", "no-show"]);
+export const surveyIdentityEnum = pgEnum("survey_identity", ["facilitator", "client", "both", "neither", "exploring"]);
+export const surveyFrequencyEnum = pgEnum("survey_frequency", ["weekly", "2-3_monthly", "monthly", "occasionally", "rarely"]);
+export const surveyInterestEnum = pgEnum("survey_interest", ["very_interested", "maybe", "not_for_me"]);
 
 // User roles table
 export const userRoles = pgTable("user_roles", {
@@ -116,11 +119,50 @@ export const reviews = pgTable("reviews", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Survey responses table
+export const surveyResponses = pgTable("survey_responses", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id), // null for anonymous responses
+  
+  // Demographics
+  identityType: surveyIdentityEnum("identity_type").notNull(),
+  ageRange: varchar("age_range"),
+  countryOfResidence: varchar("country_of_residence"),
+  currency: varchar("currency"),
+  
+  // Facilitator questions
+  facilitatorSessionPrice: varchar("facilitator_session_price"),
+  openToFreeSession: varchar("open_to_free_session"), // yes/no/maybe
+  contributionInterests: text("contribution_interests").array(), // creating content, mentoring, hosting groups
+  reciprocityPreferences: text("reciprocity_preferences").array(), // visibility, reduced fees, payment, etc.
+  reciprocityOther: text("reciprocity_other"),
+  
+  // Client questions
+  clientComfortablePrice: varchar("client_comfortable_price"),
+  clientMaxPrice: varchar("client_max_price"),
+  clientTrialPrice: varchar("client_trial_price"),
+  sessionFrequency: surveyFrequencyEnum("session_frequency"),
+  bookingEncouragements: text("booking_encouragements").array(), // discounted packs, monthly guidance, etc.
+  trustFactors: text("trust_factors").array(), // clear profiles, transparent pricing, etc.
+  trustFactorsOther: text("trust_factors_other"),
+  
+  // Community Garden
+  gardenInterestLevel: surveyInterestEnum("garden_interest_level"),
+  gardenContentIdeas: text("garden_content_ideas"),
+  gardenMonthlyPrice: varchar("garden_monthly_price"),
+  
+  // Final thoughts
+  finalThoughts: text("final_thoughts"),
+  
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   userRoles: many(userRoles),
   practitionerProfile: many(practitioners),
   clientProfile: many(clients),
+  surveyResponses: many(surveyResponses),
 }));
 
 export const userRolesRelations = relations(userRoles, ({ one }) => ({
@@ -175,6 +217,13 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
   }),
 }));
 
+export const surveyResponsesRelations = relations(surveyResponses, ({ one }) => ({
+  user: one(users, {
+    fields: [surveyResponses.userId],
+    references: [users.id],
+  }),
+}));
+
 // Zod schemas
 export const upsertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -207,6 +256,11 @@ export const insertReviewSchema = createInsertSchema(reviews).omit({
   createdAt: true,
 });
 
+export const insertSurveyResponseSchema = createInsertSchema(surveyResponses).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type UpsertUser = z.infer<typeof upsertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -220,6 +274,8 @@ export type InsertPractitioner = z.infer<typeof insertPractitionerSchema>;
 export type InsertClient = z.infer<typeof insertClientSchema>;
 export type InsertSession = z.infer<typeof insertSessionSchema>;
 export type InsertReview = z.infer<typeof insertReviewSchema>;
+export type InsertSurveyResponse = z.infer<typeof insertSurveyResponseSchema>;
+export type SurveyResponse = typeof surveyResponses.$inferSelect;
 
 // Archetype definitions
 export const archetypeDefinitions = {

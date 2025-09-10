@@ -1,0 +1,131 @@
+DEMOGRAPHICS
+
+I identify as...
+
+Facilitator
+Client/seeker
+Both
+Neither/Just exploring
+
+
+Age range
+
+[Dropdown showing 25-34 in example]
+
+
+Country of residence
+
+[Text field showing "Panama" in example]
+
+
+Currency you usually use online
+
+[Text field showing "USD" in example]
+
+
+
+FOR FACILITATORS
+
+What price range would you feel good charging for a 1:1 online session (1 hour approx.)?
+
+[Text field showing "$50" in example]
+
+
+If you are a Rising Facilitator, would you be open to offering a free or discounted session?
+
+Yes
+No
+Maybe
+
+
+Would you be interested in contributing more to the platform by... (Select all that apply)
+
+Creating content (e.g., meditations, rituals, tools)
+Mentoring Rising Facilitators
+Hosting group offerings
+Not at this time
+
+
+If yes, what would feel like a fair form of reciprocity? (Select all that apply)
+
+Visibility on the platform (featured placement)
+Reduced commission fees
+Financial payment for each contribution
+Free access to The Garden or other features
+Invitations to special community events
+Other: [text field]
+
+
+
+FOR CLIENTS
+
+What's a comfortable price range for a 1:1 online session (1 hour approx.) with a facilitator?
+
+[Text field]
+
+
+What's the highest amount you would feel okay paying for a very experienced facilitator?
+
+[Text field]
+
+
+What would be an attractive price that would encourage you to try a session for the first time?
+
+[Text field]
+
+
+How often would you realistically book 1:1 sessions if the platform felt right for you?
+
+Weekly
+2–3 times a month
+Once a month
+Occasionally
+Rarely
+
+
+What would encourage you to book more sessions? (Select all that apply)
+
+Discounted session packs
+Monthly guidance or suggestions
+Gifting/referral rewards
+A free or low-cost first session
+Feeling a connection to the facilitator's story/profile
+
+
+What would help you trust a new platform? (Select all that apply)
+
+Clear facilitator profiles
+Transparent pricing
+Community reviews or testimonials
+Knowing the platform's values or founder story
+Certifications or vetting process
+Free trial or introductory offers
+Other: [text field]
+
+
+
+THE COMMUNITY GARDEN
+
+We will include a space called "The Community Garden" – a curated area with content like meditations, talks, rituals, tools, and group offerings. How do you feel about that kind of feature?
+
+Very interested
+Maybe, depending on the content
+Not really for me
+
+
+What kind of content would you love to see in The Community Garden?
+
+[Text field]
+
+
+What would feel like a fair monthly price for access to The Community Garden?
+
+[Text field]
+
+
+
+FINAL THOUGHTS
+
+Is there anything else you'd like to share—about pricing, the platform idea, or what would make you trust or use a space like this?
+
+[Text field]

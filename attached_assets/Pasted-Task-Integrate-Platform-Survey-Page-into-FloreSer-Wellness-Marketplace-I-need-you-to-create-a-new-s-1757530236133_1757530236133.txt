@@ -1,0 +1,63 @@
+Task: Integrate Platform Survey Page into FloreSer Wellness Marketplace
+I need you to create a new survey page for my FloreSer wellness marketplace platform to gather user feedback on pricing and features. This should integrate seamlessly with our existing codebase and styling.
+Tech Stack Context:
+
+Frontend: React 18 + TypeScript, Vite, Tailwind CSS, shadcn/ui components
+Backend: Express.js + TypeScript, PostgreSQL (Neon), Drizzle ORM
+Auth: Replit Auth with JWT tokens
+Architecture: Full-stack monorepo (client/server/shared folders)
+
+Requirements:
+
+Database Schema: Create a new table survey_responses with fields for:
+
+User identification (if logged in) or anonymous tracking
+All form responses (demographics, pricing feedback, feature preferences)
+Submission timestamp
+Response categorization (facilitator/client/both/exploring)
+
+
+Frontend Implementation:
+
+Create /survey route in the React app
+Use existing shadcn/ui components (forms, buttons, inputs, checkboxes, radio groups)
+Match FloreSer's design system and color scheme
+Implement conditional logic to show relevant sections based on user type
+Add form validation using Zod schemas
+Mobile-responsive design
+
+
+Backend API:
+
+Create POST /api/survey endpoint
+Validate input with Zod schemas
+Store responses in PostgreSQL via Drizzle ORM
+Return success/error responses
+
+
+Admin Panel Integration:
+
+Add survey results view to existing admin interface
+Display aggregated data and individual responses
+Export functionality for analysis
+
+
+
+Form Questions to Include:
+[Full list of 18 questions from the original form - demographics, facilitator pricing, client preferences, Community Garden feedback, etc.]
+Key Features:
+
+Progress indicator
+Conditional question display based on user type selection
+Form persistence (save draft responses)
+Thank you page with next steps
+Analytics tracking for completion rates
+
+Design Guidelines:
+
+Follow FloreSer's nature-inspired aesthetic
+Use existing color palette and typography
+Ensure accessibility standards
+Smooth transitions between sections
+
+Please implement this as a complete feature branch with proper TypeScript types, error handling, and integration with the existing authentication system.
