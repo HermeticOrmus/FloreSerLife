@@ -43,7 +43,7 @@ export default function Landing() {
                   variant="outline" 
                   size="lg"
                   className="border-2 border-forest text-forest hover:bg-forest hover:text-white rounded-full px-8 py-4 font-medium"
-                  onClick={() => window.location.href = '/api/login'}
+                  onClick={() => window.location.href = '/auth/signup'}
                 >
                   Become a Practitioner
                 </Button>

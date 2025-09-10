@@ -39,6 +39,11 @@ export default function Header() {
           Find Practitioners
         </Button>
       </Link>
+      <Link href="/survey">
+        <Button variant="ghost" className="w-full justify-start" data-testid="button-mobile-survey">
+          Platform Survey
+        </Button>
+      </Link>
       {!isAuthenticated ? (
         <>
           <Button 
@@ -106,6 +111,15 @@ export default function Header() {
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
+            <Link href="/survey">
+              <Button 
+                variant="ghost" 
+                className="text-forest hover:text-gold"
+                data-testid="button-survey-desktop"
+              >
+                Platform Survey
+              </Button>
+            </Link>
             {!isAuthenticated ? (
               <>
                 <Button 

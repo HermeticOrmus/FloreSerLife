@@ -50,7 +50,7 @@ const IDENTITY_TYPE_COLORS = {
 interface AdminSurveyPageProps {}
 
 export default function AdminSurveyPage({}: AdminSurveyPageProps) {
-  const { user } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
   const [filterIdentityType, setFilterIdentityType] = useState<string>("all");
@@ -61,10 +61,57 @@ export default function AdminSurveyPage({}: AdminSurveyPageProps) {
     document.title = "Survey Results - Admin Panel - FloreSer";
   }, []);
 
+  // Check if user has admin access
+  const isAdmin = user?.roles?.includes('admin');
+  
+  // Redirect non-admin users
+  useEffect(() => {
+    if (!isLoading && isAuthenticated && !isAdmin) {
+      toast({
+        title: "Access Denied",
+        description: "You need admin privileges to access this page.",
+        variant: "destructive"
+      });
+      window.location.href = '/';
+    }
+  }, [isLoading, isAuthenticated, isAdmin, toast]);
+
+  // Show loading state while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-cream flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg text-forest">Loading...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show access denied if not authenticated or not admin
+  if (!isAuthenticated || !isAdmin) {
+    return (
+      <div className="min-h-screen bg-cream flex items-center justify-center">
+        <Card className="max-w-md mx-auto">
+          <CardContent className="p-6 text-center">
+            <h1 className="text-xl font-bold text-forest mb-4">Access Denied</h1>
+            <p className="text-forest/70 mb-4">
+              You need admin privileges to access this page.
+            </p>
+            <Link href="/">
+              <Button className="bg-gold text-white hover:bg-gold/90">
+                Go Home
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   // Fetch survey responses
   const { 
     data: surveysData, 
-    isLoading, 
+    isLoading: isQueryLoading, 
     error,
     refetch 
   } = useQuery<{ data: SurveyResponse[], total: number }>({
