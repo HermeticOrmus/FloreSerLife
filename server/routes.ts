@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, requireAuth } from "./auth";
-import { archetypeDefinitions, experienceLevelDefinitions } from "@shared/schema";
+import { archetypeDefinitions, experienceLevelDefinitions, insertSurveyResponseSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
@@ -37,6 +37,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/experience-levels', async (req, res) => {
     res.json(experienceLevelDefinitions);
+  });
+
+  // Survey endpoints
+  app.post('/api/survey', async (req: any, res) => {
+    try {
+      // Extract userId if user is authenticated, otherwise allow anonymous submission
+      const userId = req.user?.id || null;
+      
+      // Validate the survey response data
+      const validationResult = insertSurveyResponseSchema.safeParse({
+        ...req.body,
+        userId
+      });
+
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid survey data", 
+          errors: validationResult.error.issues 
+        });
+      }
+
+      const surveyResponse = await storage.createSurveyResponse(validationResult.data);
+      
+      res.status(201).json({
+        message: "Survey response submitted successfully",
+        data: surveyResponse
+      });
+    } catch (error) {
+      console.error("Error submitting survey response:", error);
+      res.status(500).json({ message: "Failed to submit survey response" });
+    }
+  });
+
+  app.get('/api/survey/responses', requireAuth, async (req: any, res) => {
+    try {
+      // This endpoint is for admin access to survey data
+      // In a production app, you might want additional role-based access control here
+      const allResponses = await storage.getAllSurveyResponses();
+      
+      res.json({
+        message: "Survey responses retrieved successfully",
+        data: allResponses,
+        total: allResponses.length
+      });
+    } catch (error) {
+      console.error("Error fetching survey responses:", error);
+      res.status(500).json({ message: "Failed to fetch survey responses" });
+    }
   });
 
   // Dashboard routes (protected)
