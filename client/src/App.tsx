@@ -14,6 +14,8 @@ import AdminSurveyPage from "@/pages/admin-survey";
 import SignIn from "@/pages/SignIn";
 import SignUp from "@/pages/SignUp";
 import Survey from "@/pages/survey";
+import SimpleAdminLogin from "@/pages/simple-admin-login";
+import SimpleAdminPanel from "@/pages/simple-admin-panel";
 
 function Router() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -48,6 +50,10 @@ function Router() {
       
       {/* Survey route - always accessible */}
       <Route path="/survey" component={Survey} />
+      
+      {/* Simple admin routes - always accessible */}
+      <Route path="/simple-admin/login" component={SimpleAdminLogin} />
+      <Route path="/simple-admin/panel" component={SimpleAdminPanel} />
       
       {isLoading || !isAuthenticated ? (
         <>
