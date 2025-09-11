@@ -70,6 +70,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Simple admin authentication endpoint
+  app.post('/api/simple-admin/login', async (req, res) => {
+    try {
+      const { password } = req.body;
+      
+      // Simple password check (in production, use environment variable)
+      const adminPassword = process.env.SIMPLE_ADMIN_PASSWORD || "admin123";
+      
+      if (password === adminPassword) {
+        res.json({ 
+          success: true, 
+          message: "Authentication successful" 
+        });
+      } else {
+        res.status(401).json({ 
+          success: false, 
+          message: "Invalid password" 
+        });
+      }
+    } catch (error) {
+      console.error("Simple admin login error:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Server error" 
+      });
+    }
+  });
+
   app.get('/api/survey/responses', requireAdmin, async (req: any, res) => {
     try {
       // This endpoint is restricted to admin users only
