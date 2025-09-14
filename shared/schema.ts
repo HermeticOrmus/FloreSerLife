@@ -277,15 +277,14 @@ export type InsertReview = z.infer<typeof insertReviewSchema>;
 export type InsertSurveyResponse = z.infer<typeof insertSurveyResponseSchema>;
 export type SurveyResponse = typeof surveyResponses.$inferSelect;
 
-// Pollinator Archetype System - Revolutionary Wellness Practitioner Categorization
-// Developed through 4+ years of cross-cultural healing practice analysis and 
-// validated through consultation with 200+ wellness practitioners globally
+// Pollinator Archetype System - Innovative Wellness Practitioner Categorization
+// An alpha concept for practitioner classification inspired by nature's pollinator patterns
 export const archetypeDefinitions = {
   bee: {
     name: 'Bee',
     scientificName: 'Apis Therapeuticus',
     description: 'Systematic community builders who excel in creating structured healing environments and sustainable wellness practices',
-    fullDescription: 'The Bee archetype represents practitioners who demonstrate exceptional capacity for creating systematic, community-oriented healing approaches. Through extensive field research, we identified that practitioners exhibiting Bee characteristics consistently achieve the highest client retention rates and long-term wellness outcomes through their methodical, inclusive approaches.',
+    fullDescription: 'The Bee archetype represents practitioners who excel in creating systematic, community-oriented healing approaches with structured, collaborative methodologies.',
     methodology: 'Evidence-based somatic practices with emphasis on nervous system regulation and sustainable habit formation',
     approach: 'Collaborative, structured, and community-focused with emphasis on measurable outcomes',
     specialties: [
@@ -299,13 +298,13 @@ export const archetypeDefinitions = {
     color: '#D4AF37',
     traits: ['Systematic Integration', 'Community Catalyst', 'Sustainable Architecture', 'Collaborative Healing'],
     clientBenefits: ['Long-term sustainable changes', 'Community support systems', 'Evidence-based progress tracking', 'Structured healing journey'],
-    researchInsights: 'Bee practitioners show 87% higher client completion rates and demonstrate superior outcomes in chronic condition management'
+    researchInsights: 'Bee practitioners tend to excel in systematic approaches and community-building in wellness settings'
   },
   hummingbird: {
     name: 'Hummingbird',
     scientificName: 'Trochilus Intuitus',
     description: 'Precision healers who deliver rapid, targeted interventions through heightened intuitive abilities and energetic sensitivity',
-    fullDescription: 'The Hummingbird archetype emerges from practitioners who demonstrate remarkable ability to quickly identify energetic imbalances and deliver precise, efficient healing interventions. Our research shows these practitioners possess heightened sensitivity to subtle energy patterns and excel in crisis intervention scenarios.',
+    fullDescription: 'The Hummingbird archetype represents practitioners who focus on precise, targeted healing interventions with intuitive and energetic approaches.',
     methodology: 'Intuitive assessment protocols combined with rapid-response energetic healing modalities',
     approach: 'Fast-acting, highly personalized, and energetically-attuned interventions',
     specialties: [
@@ -319,13 +318,13 @@ export const archetypeDefinitions = {
     color: '#2F4F4F',
     traits: ['Intuitive Precision', 'Rapid Response', 'Energetic Sensitivity', 'Spiritual Gateway'],
     clientBenefits: ['Quick breakthrough moments', 'Precise problem identification', 'Spiritual insight and clarity', 'Emergency emotional support'],
-    researchInsights: 'Hummingbird practitioners achieve breakthrough moments 3x faster than average and excel in acute stress resolution'
+    researchInsights: 'Hummingbird practitioners tend to specialize in rapid, intuitive healing approaches and energetic work'
   },
   butterfly: {
     name: 'Butterfly',
     scientificName: 'Papilio Transformus',
     description: 'Transformation specialists who guide profound life transitions and identity evolution through holistic metamorphosis approaches',
-    fullDescription: 'The Butterfly archetype represents practitioners who specialize in facilitating major life transitions and identity transformations. Our longitudinal studies reveal these practitioners possess unique abilities to hold space for deep personal metamorphosis and guide clients through complex life restructuring processes.',
+    fullDescription: 'The Butterfly archetype represents practitioners who specialize in facilitating major life transitions and identity transformations through holistic approaches.',
     methodology: 'Holistic transformation frameworks incorporating multiple healing modalities for complete life restructuring',
     approach: 'Process-oriented, holistic, and transformation-focused with emphasis on identity evolution',
     specialties: [
@@ -339,13 +338,13 @@ export const archetypeDefinitions = {
     color: '#C49C9C',
     traits: ['Metamorphosis Mastery', 'Identity Architecture', 'Creative Integration', 'Beauty Revelation'],
     clientBenefits: ['Complete life restructuring', 'Identity clarity and purpose', 'Creative self-expression', 'Relationship transformation'],
-    researchInsights: 'Butterfly practitioners facilitate successful major life transitions at 4x the industry average success rate'
+    researchInsights: 'Butterfly practitioners tend to focus on transformation, creative expression, and life transition support'
   },
   beetle: {
     name: 'Beetle',
     scientificName: 'Scarabaeus Integrator',
     description: 'Deep healing specialists who excel in profound shadow integration, ancestral healing, and foundational restructuring work',
-    fullDescription: 'The Beetle archetype encompasses practitioners who demonstrate exceptional capacity for facilitating deep, foundational healing work. Our research identifies these practitioners as uniquely skilled in working with complex trauma, multi-generational patterns, and fundamental psyche restructuring.',
+    fullDescription: 'The Beetle archetype encompasses practitioners who focus on deep, foundational healing work including trauma, shadow work, and ancestral healing.',
     methodology: 'Depth psychology approaches combined with ancestral healing and shadow integration techniques',
     approach: 'Deep, thorough, and foundation-rebuilding with emphasis on root cause resolution',
     specialties: [
@@ -359,7 +358,7 @@ export const archetypeDefinitions = {
     color: '#8B4513',
     traits: ['Shadow Integration', 'Foundational Restructuring', 'Ancestral Wisdom', 'Depth Mastery'],
     clientBenefits: ['Root cause healing', 'Generational pattern breaking', 'Deep personal foundation', 'Lasting transformation'],
-    researchInsights: 'Beetle practitioners achieve 92% success rates in complex trauma resolution and demonstrate superior outcomes in deep healing work'
+    researchInsights: 'Beetle practitioners tend to specialize in deep healing modalities, shadow work, and complex trauma approaches'
   }
 } as const;
 

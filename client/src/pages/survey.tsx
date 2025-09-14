@@ -265,9 +265,9 @@ export default function Survey() {
                 <Crown className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-semibold text-forest mb-2">Your Consultation Value: $500+</h3>
+                <h3 className="font-semibold text-forest mb-2">Your Consultation is Invaluable</h3>
                 <p className="text-forest/80 text-sm">
-                  Professional product consultation typically costs $100-200/hour. This 15-20 minute consultation provides us with insights equivalent to multiple paid consulting sessions.
+                  Your insights as a founding member are essential to creating an innovative wellness platform. This consultation helps us build something truly meaningful for the community.
                 </p>
               </div>
             </div>
@@ -322,7 +322,7 @@ export default function Survey() {
                     🌟 Your consultation has been recorded and will directly influence our platform development.
                   </p>
                   <p className="text-forest/80 mb-4">
-                    As an Alpha Founding Member, your insights are now part of FloreSer's DNA. You've contributed an estimated <strong className="text-gold">$500+ value</strong> in development consultation.
+                    As an Alpha Founding Member, your insights are now part of FloreSer's DNA. You've contributed invaluable guidance that will shape our platform development.
                   </p>
                 </div>
                 

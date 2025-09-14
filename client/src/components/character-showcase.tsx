@@ -16,15 +16,14 @@ export default function CharacterShowcase() {
             Meet Your Alpha Research-Inspired Wellness Guides
           </h2>
           <p className="text-lg text-forest/70 max-w-4xl mx-auto">
-            These archetypal ambassadors are emerging from our ongoing cross-cultural healing research as 
-            resonant embodiments of practitioner patterns. Each character represents preliminary findings 
-            from our 200+ practitioner studies, making complex healing methodologies 
-            accessible and relatable for your wellness journey.
+            These archetypal ambassadors embody the spirit of our innovative pollinator-inspired approach. 
+            Each character represents different healing modalities and practitioner styles, making complex 
+            wellness concepts accessible and relatable for your journey.
           </p>
           <div className="mt-6 p-4 bg-cream/50 rounded-lg border border-sage/20 max-w-2xl mx-auto">
             <p className="text-sm text-forest/80 italic">
               "These archetypal guides are designed to transform abstract healing concepts into intuitive connection points. 
-              They represent our ongoing practitioner pattern analysis presented as relatable wisdom." 
+              They embody our vision for innovative wellness matching." 
               <span className="block mt-1 text-xs text-forest/60 font-medium">
                 - Alpha Development Team, FloreSer
               </span>
@@ -62,16 +61,15 @@ export default function CharacterShowcase() {
                   </p>
                   
                   <p className="text-forest/70 leading-relaxed mb-4 text-sm">
-                    MAIA represents alpha research patterns showing that practitioners with her characteristics 
-                    tend to have higher client retention through structured, community-focused healing approaches. 
-                    She guides you toward healers who tend to excel in evidence-based methodologies, sustainable 
+                    MAIA embodies the systematic, community-building approach to wellness. 
+                    She guides you toward healers who excel in evidence-based methodologies, sustainable 
                     practice development, and collaborative wellness ecosystems.
                   </p>
                   
                   <div className="space-y-3">
                     <div>
                       <h4 className="text-xs font-semibold text-forest/60 uppercase tracking-wide mb-1">
-                        Alpha Research Specialties
+                        Key Specialties
                       </h4>
                       <div className="flex flex-wrap gap-1">
                         <Badge className="bg-gold/20 text-gold text-xs">Nervous System Regulation</Badge>
@@ -86,8 +84,8 @@ export default function CharacterShowcase() {
                         <span className="text-xs font-semibold text-forest/60">Effectiveness Insight</span>
                       </div>
                       <p className="text-xs text-forest/70">
-                        Alpha testing suggests practitioners matching MAIA's profile may show promising outcomes in chronic condition 
-                        management and demonstrate strong long-term client satisfaction potential.
+                        MAIA represents practitioners who focus on systematic approaches to chronic condition 
+                        management and building strong long-term client relationships.
                       </p>
                     </div>
                   </div>
@@ -125,16 +123,15 @@ export default function CharacterShowcase() {
                   </p>
                   
                   <p className="text-forest/70 leading-relaxed mb-4 text-sm">
-                    ANGELICA represents practitioners who, according to preliminary alpha research, may achieve 
-                    breakthrough moments more rapidly through heightened energetic sensitivity and rapid-response healing protocols. 
-                    She connects you with healers who tend to excel in crisis intervention, intuitive assessment, 
-                    and precise energetic healing modalities.
+                    ANGELICA embodies the intuitive, precision-focused approach to healing through heightened energetic 
+                    sensitivity and rapid-response protocols. She connects you with healers who excel in crisis intervention, 
+                    intuitive assessment, and precise energetic healing modalities.
                   </p>
                   
                   <div className="space-y-3">
                     <div>
                       <h4 className="text-xs font-semibold text-forest/60 uppercase tracking-wide mb-1">
-                        Alpha Research Specialties
+                        Key Specialties
                       </h4>
                       <div className="flex flex-wrap gap-1">
                         <Badge className="bg-sage/20 text-sage text-xs">Energetic Assessment</Badge>
@@ -149,8 +146,8 @@ export default function CharacterShowcase() {
                         <span className="text-xs font-semibold text-forest/60">Effectiveness Insight</span>
                       </div>
                       <p className="text-xs text-forest/70">
-                        Alpha testing suggests practitioners embodying ANGELICA's archetype may demonstrate promising results 
-                        in acute stress resolution and often provide rapid, transformative insights.
+                        ANGELICA represents practitioners who specialize in acute stress resolution 
+                        and focus on providing rapid, transformative insights.
                       </p>
                     </div>
                   </div>
@@ -167,10 +164,9 @@ export default function CharacterShowcase() {
               Where Science Meets Story
             </h3>
             <p className="text-forest/70 leading-relaxed mb-4">
-              These archetypal ambassadors aren't just creative characters—they're data-inspired 
-              representations of promising healing patterns we're exploring across cultures 
-              and modalities. Each ambassador embodies preliminary practitioner characteristics that 
-              alpha testing suggests may produce enhanced client outcomes.
+              These archetypal ambassadors aren't just creative characters—they're inspiration-driven 
+              representations of healing patterns we're exploring across cultures and modalities. 
+              Each ambassador embodies different practitioner characteristics in our innovative wellness approach.
             </p>
             <div className="flex items-center justify-center space-x-6 text-sm text-forest/60">
               <div className="flex items-center space-x-2">

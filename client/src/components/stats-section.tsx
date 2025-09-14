@@ -1,7 +1,7 @@
 export default function StatsSection() {
   const stats = [
     { value: "100", label: "Alpha Members" },
-    { value: "$500+", label: "Your Contribution Value" },
+    { value: "Valued", label: "Your Contribution" },
     { value: "Innovative", label: "Archetype System" },
     { value: "Alpha", label: "Testing Phase" }
   ];

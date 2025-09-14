@@ -7,17 +7,17 @@ export default function HowItWorks() {
       number: 1,
       title: "Contribute to Research",
       subtitle: "Shape Innovative Matching Science",
-      description: "Complete our comprehensive alpha survey designed by wellness researchers to validate our proprietary archetype classification system. Your insights directly contribute to the development of our innovative pollinator-inspired practitioner matching approach.",
+      description: "Complete our comprehensive alpha survey to help shape our innovative pollinator-inspired practitioner matching approach. Your insights directly contribute to the development of this new wellness connection system.",
       icon: FlaskConical,
-      details: "Multi-dimensional wellness preference mapping • Cross-cultural healing pattern analysis • Outcome prediction modeling"
+      details: "Multi-dimensional wellness preference mapping • Healing pattern exploration • User experience optimization"
     },
     {
       number: 2,
       title: "Experience Innovative Technology",
       subtitle: "Test the Future of Wellness Matching",
-      description: "Get exclusive access to our innovative pollinator archetype system—extensive research condensed into an intuitive matching experience. Experience our developing pairing approach that considers healing modalities, energetic compatibility, and outcome optimization patterns in this alpha testing phase.",
+      description: "Get exclusive access to our innovative pollinator archetype system—a nature-inspired approach to wellness matching. Experience our developing pairing system that considers healing modalities, energetic compatibility, and personal preferences in this alpha testing phase.",
       icon: Brain,
-      details: "Advanced archetype assessment • Predictive outcome modeling • Cross-referenced practitioner effectiveness data"
+      details: "Advanced archetype assessment • Compatibility evaluation • User preference optimization"
     },
     {
       number: 3,
@@ -25,7 +25,7 @@ export default function HowItWorks() {
       subtitle: "Co-Create Industry Transformation",
       description: "Your ongoing feedback becomes integral to refining our innovative wellness matching methodology. Help us develop a system that aims to improve how people connect with healing practitioners and contribute to new approaches for practitioner-client compatibility.",
       icon: Target,
-      details: "Real-time algorithm optimization • Effectiveness tracking • Industry benchmark establishment"
+      details: "System refinement • User feedback integration • Alpha feature development"
     }
   ];
 
@@ -42,23 +42,23 @@ export default function HowItWorks() {
           </h2>
           <p className="text-xl text-forest/70 max-w-4xl mx-auto mb-8">
             As a founding alpha member, you're not just testing a platform—you're co-creating 
-            an innovative approach to wellness connections. Every interaction helps validate and 
-            refine our research that aims to meaningfully improve the wellness industry.
+            an innovative approach to wellness connections. Every interaction helps us develop 
+            and refine a system that aims to meaningfully improve how people find healing practitioners.
           </p>
           
-          {/* Research Impact Stats */}
+          {/* Alpha Program Highlights */}
           <div className="grid md:grid-cols-3 gap-6 mb-8 max-w-3xl mx-auto">
             <div className="text-center">
-              <div className="text-2xl font-bold text-forest">200+</div>
-              <div className="text-sm text-forest/60">Practitioners Studied</div>
+              <div className="text-2xl font-bold text-forest">Innovative</div>
+              <div className="text-sm text-forest/60">Approach</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-forest">4+</div>
-              <div className="text-sm text-forest/60">Years Research</div>
+              <div className="text-2xl font-bold text-forest">Nature</div>
+              <div className="text-sm text-forest/60">Inspired</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-forest">Promising</div>
-              <div className="text-sm text-forest/60">Alpha Results</div>
+              <div className="text-2xl font-bold text-forest">Alpha</div>
+              <div className="text-sm text-forest/60">Testing</div>
             </div>
           </div>
 
@@ -125,9 +125,9 @@ export default function HowItWorks() {
             </div>
             
             <p className="text-lg text-forest/70 leading-relaxed mb-8">
-              Your participation in this alpha program directly contributes to establishing new industry 
-              standards for practitioner-client compatibility. The insights and feedback we gather will 
-              inform the algorithms that millions will use to find their ideal healing practitioners.
+              Your participation in this alpha program directly contributes to developing an innovative 
+              approach to practitioner-client compatibility. The insights and feedback we gather will 
+              help us create a system that could transform how people find their ideal healing practitioners.
             </p>
 
             <div className="grid md:grid-cols-2 gap-8 mb-8">
@@ -143,11 +143,11 @@ export default function HowItWorks() {
                   </li>
                   <li className="flex items-start">
                     <div className="w-1 h-1 bg-gold rounded-full mt-2 mr-2 flex-shrink-0"></div>
-                    <span>Cross-cultural validation across 200+ practitioners</span>
+                    <span>Community-driven development and validation</span>
                   </li>
                   <li className="flex items-start">
                     <div className="w-1 h-1 bg-gold rounded-full mt-2 mr-2 flex-shrink-0"></div>
-                    <span>Predictive outcome modeling for optimal pairing</span>
+                    <span>Compatibility assessment for optimal pairing</span>
                   </li>
                 </ul>
               </div>

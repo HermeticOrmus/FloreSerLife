@@ -64,18 +64,18 @@ export default function Practitioners() {
             Discover Your Ideal Wellness Practitioner
           </h1>
           <p className="text-lg text-forest/70 max-w-3xl">
-            Experience our revolutionary pollinator archetype system in action. Each practitioner 
-            has been classified using our 4+ years of cross-cultural healing research, ensuring 
+            Experience our innovative pollinator archetype system in action. Each practitioner 
+            has been classified using our nature-inspired approach, helping you find 
             optimal compatibility with your wellness needs and preferred healing approaches.
           </p>
           <div className="mt-4 flex items-center space-x-6 text-sm text-forest/60">
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-gold rounded-full"></div>
-              <span>4 Validated Archetype Classifications</span>
+              <span>4 Nature-Inspired Archetype Classifications</span>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-sage rounded-full"></div>
-              <span>Research-Backed Matching Algorithm</span>
+              <span>Innovative Matching System</span>
             </div>
           </div>
         </div>

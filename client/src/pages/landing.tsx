@@ -65,11 +65,11 @@ export default function Landing() {
               {/* Alpha Value Proposition */}
               <div className="bg-sage/10 rounded-lg p-6 mb-8 border border-sage/20">
                 <h3 className="font-heading text-lg font-semibold text-forest mb-2">
-                  Your Alpha Participation Is Valued At $500+
+                  Your Alpha Participation Is Invaluable
                 </h3>
                 <p className="text-forest/70 text-sm leading-relaxed">
-                  Professional consultation fees for wellness platform development typically cost hundreds. 
-                  Your insights as a founding member are invaluable to creating something truly innovative.
+                  As a founding member, your insights and feedback are essential to creating 
+                  an innovative wellness platform that truly serves our community.
                 </p>
               </div>
               

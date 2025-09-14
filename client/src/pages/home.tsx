@@ -86,7 +86,7 @@ export default function Home() {
                   <div className="flex items-center space-x-4">
                     <div className="w-2 h-2 bg-gold rounded-full"></div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium">Session with Dr. Sarah Chen completed</p>
+                      <p className="text-sm font-medium">Session with Sarah C. completed</p>
                       <p className="text-xs text-forest/60">2 days ago</p>
                     </div>
                   </div>

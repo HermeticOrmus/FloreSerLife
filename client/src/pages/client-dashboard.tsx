@@ -27,7 +27,7 @@ const mockClientStats = {
 const mockUpcomingSessions = [
   {
     id: '1',
-    practitionerName: 'Dr. Sarah Chen',
+    practitionerName: 'Sarah C.',
     date: '2025-01-16',
     time: '14:00',
     duration: 60,
@@ -35,7 +35,7 @@ const mockUpcomingSessions = [
     status: 'confirmed' as const,
     avatar: '',
     meetingLink: 'https://meet.example.com/session-1',
-    notes: 'Follow-up on anxiety management techniques'
+    notes: 'Follow-up on wellness techniques'
   },
   {
     id: '2',
@@ -55,7 +55,7 @@ const mockRecentActivity = [
     id: '1',
     type: 'session' as const,
     title: 'Session completed',
-    description: 'Mindfulness session with Dr. Sarah Chen',
+    description: 'Mindfulness session with Sarah C.',
     timestamp: '2 days ago',
     status: 'completed' as const,
     metadata: { rating: 5 }
@@ -72,7 +72,7 @@ const mockRecentActivity = [
     id: '3',
     type: 'booking' as const,
     title: 'Session booked',
-    description: 'Upcoming session with Dr. Sarah Chen',
+    description: 'Upcoming session with Sarah C.',
     timestamp: '2 weeks ago',
     status: 'pending' as const
   }

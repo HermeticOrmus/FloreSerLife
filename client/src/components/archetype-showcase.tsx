@@ -18,54 +18,46 @@ export default function ArchetypeShowcase() {
             An Innovative Pollinator-Inspired Archetype System
           </h2>
           <p className="text-xl text-forest/70 max-w-4xl mx-auto mb-8">
-            Through extensive cross-cultural healing practice analysis and consultation with 
-            200+ wellness practitioners globally, we're developing an innovative classification 
-            system inspired by nature's most effective pollinators to help optimize healing connections.
+            We're developing an innovative classification system inspired by nature's most effective 
+            pollinators to help optimize healing connections in our alpha wellness platform.
           </p>
           
-          {/* Research Credentials Grid */}
+          {/* Alpha Development Highlights */}
           <div className="grid md:grid-cols-3 gap-6 mb-8 max-w-4xl mx-auto">
             <div className="flex items-center justify-center space-x-2 text-forest/70">
               <Users className="w-5 h-5" />
-              <span className="text-sm font-medium">200+ Practitioner Validation</span>
+              <span className="text-sm font-medium">Community-Driven Development</span>
             </div>
             <div className="flex items-center justify-center space-x-2 text-forest/70">
               <BookOpen className="w-5 h-5" />
-              <span className="text-sm font-medium">4+ Years Research</span>
+              <span className="text-sm font-medium">Innovative Approach</span>
             </div>
             <div className="flex items-center justify-center space-x-2 text-forest/70">
               <Globe className="w-5 h-5" />
-              <span className="text-sm font-medium">Cross-Cultural Analysis</span>
+              <span className="text-sm font-medium">Nature-Inspired Framework</span>
             </div>
           </div>
 
-          {/* Enhanced Testimonials */}
-          <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-            <div className="p-6 bg-gold/10 rounded-lg border border-gold/20">
-              <p className="text-sm text-forest/80 italic mb-3">
-                "This innovative archetype approach shows promising potential for wellness matching. 
-                Early alpha testing suggests interesting correlations between practitioner effectiveness and archetype alignment."
+          {/* Alpha Vision Statement */}
+          <div className="max-w-4xl mx-auto">
+            <div className="p-6 bg-gradient-to-br from-gold/10 to-sage/10 rounded-lg border border-sage/20">
+              <p className="text-center text-forest/80 italic leading-relaxed">
+                "Our pollinator-inspired approach represents a fresh perspective on wellness connections. 
+                As alpha users help us refine this innovative system, we're exploring how nature's most 
+                efficient pollinators can inspire better practitioner-client matching."
               </p>
-              <p className="text-xs text-forest/60 font-medium">- Wellness Research Professional, Leading Health Institution</p>
-            </div>
-            <div className="p-6 bg-sage/10 rounded-lg border border-sage/20">
-              <p className="text-sm text-forest/80 italic mb-3">
-                "This pollinator-inspired framework offers a fresh perspective on healing dynamics. 
-                Alpha testing suggests it could contribute meaningfully to improving client-practitioner connections."
-              </p>
-              <p className="text-xs text-forest/60 font-medium">- Academic Researcher, University Wellness Innovation Department</p>
             </div>
           </div>
 
-          {/* Methodology Highlight */}
+          {/* Development Approach */}
           <div className="mt-8 p-6 bg-cream/50 rounded-xl border border-sage/20 max-w-3xl mx-auto">
             <div className="flex items-center justify-center space-x-2 mb-3">
               <Microscope className="w-5 h-5 text-forest" />
-              <span className="text-sm font-semibold text-forest">Research Methodology</span>
+              <span className="text-sm font-semibold text-forest">Alpha Development</span>
             </div>
             <p className="text-sm text-forest/70">
-              Our classification system is being developed through ongoing outcome analysis, behavioral pattern research, 
-              and exploration of natural pollinator efficiency models as they relate to human healing connections.
+              Our classification system draws inspiration from natural pollinator efficiency patterns. 
+              Alpha users are helping us explore how these concepts can enhance wellness connections.
             </p>
           </div>
         </div>
