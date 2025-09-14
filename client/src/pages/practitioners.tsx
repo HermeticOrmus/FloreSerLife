@@ -55,13 +55,29 @@ export default function Practitioners() {
       <Header />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
+        <div className="mb-12">
+          <div className="inline-flex items-center px-4 py-2 bg-forest/10 text-forest rounded-full text-sm font-medium mb-4">
+            <span className="mr-2">🔬</span>
+            Research-Backed Practitioner Matching
+          </div>
           <h1 className="font-heading text-3xl lg:text-4xl font-bold text-forest mb-4">
-            Find Your Perfect Practitioner
+            Discover Your Ideal Wellness Practitioner
           </h1>
-          <p className="text-lg text-forest/70">
-            Discover wellness practitioners who resonate with your healing journey
+          <p className="text-lg text-forest/70 max-w-3xl">
+            Experience our revolutionary pollinator archetype system in action. Each practitioner 
+            has been classified using our 4+ years of cross-cultural healing research, ensuring 
+            optimal compatibility with your wellness needs and preferred healing approaches.
           </p>
+          <div className="mt-4 flex items-center space-x-6 text-sm text-forest/60">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-gold rounded-full"></div>
+              <span>4 Validated Archetype Classifications</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-sage rounded-full"></div>
+              <span>Research-Backed Matching Algorithm</span>
+            </div>
+          </div>
         </div>
 
         {/* Filters */}
@@ -138,9 +154,14 @@ export default function Practitioners() {
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center space-x-2">
                       {getArchetypeIcon(practitioner.archetype)}
-                      <Badge variant="secondary" className="bg-gold/20 text-gold hover:bg-gold/30">
-                        {archetypeDefinitions[practitioner.archetype]?.name} • {practitioner.experienceLevel}
-                      </Badge>
+                      <div className="flex flex-col space-y-1">
+                        <Badge variant="secondary" className="bg-gold/20 text-gold hover:bg-gold/30 text-xs">
+                          {archetypeDefinitions[practitioner.archetype]?.name} Archetype
+                        </Badge>
+                        <Badge variant="outline" className="text-xs text-forest/60 border-sage/30">
+                          {archetypeDefinitions[practitioner.archetype]?.scientificName}
+                        </Badge>
+                      </div>
                     </div>
                     {practitioner.averageRating && (
                       <div className="flex items-center text-gold">

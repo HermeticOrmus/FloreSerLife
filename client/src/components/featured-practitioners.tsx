@@ -25,11 +25,16 @@ export default function FeaturedPractitioners() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-12">
           <div>
+            <div className="inline-flex items-center px-4 py-2 bg-forest/10 text-forest rounded-full text-sm font-medium mb-4">
+              <span className="mr-2">🔮</span>
+              Alpha Preview
+            </div>
             <h2 className="font-heading text-3xl lg:text-4xl font-bold text-forest mb-4">
-              Featured Practitioners
+              Future Practitioner Experience
             </h2>
             <p className="text-lg text-forest/70">
-              Discover highly-rated wellness practitioners in your area
+              See how our innovative archetype system will enhance wellness connections. 
+              These are examples of what you'll help us build.
             </p>
           </div>
           <Link href="/practitioners">
@@ -58,10 +63,11 @@ export default function FeaturedPractitioners() {
             <CardContent>
               <User className="w-16 h-16 text-sage mx-auto mb-4" />
               <h3 className="font-heading text-xl font-semibold text-forest mb-2">
-                No featured practitioners yet
+                Alpha Preview Mode
               </h3>
               <p className="text-forest/70">
-                Check back soon as we onboard amazing practitioners to our platform
+                This is what our practitioner profiles will look like once we launch. 
+                Your feedback will help us perfect this experience.
               </p>
             </CardContent>
           </Card>
@@ -76,9 +82,14 @@ export default function FeaturedPractitioners() {
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center space-x-2">
                       {getArchetypeIcon(practitioner.archetype)}
-                      <Badge variant="secondary" className="bg-gold/20 text-gold hover:bg-gold/30 text-xs font-medium">
-                        {archetypeDefinitions[practitioner.archetype]?.name} • {practitioner.experienceLevel}
-                      </Badge>
+                      <div className="flex flex-col space-y-1">
+                        <Badge variant="secondary" className="bg-gold/20 text-gold hover:bg-gold/30 text-xs">
+                          {archetypeDefinitions[practitioner.archetype]?.name} Archetype
+                        </Badge>
+                        <Badge variant="outline" className="text-xs text-forest/60 border-sage/30">
+                          {archetypeDefinitions[practitioner.archetype]?.scientificName}
+                        </Badge>
+                      </div>
                     </div>
                     {practitioner.averageRating && (
                       <div className="flex items-center text-gold">
@@ -113,8 +124,12 @@ export default function FeaturedPractitioners() {
                         ${practitioner.hourlyRate}/session
                       </span>
                     )}
-                    <Button className="bg-gold text-white hover:bg-gold/90 rounded-full px-4 py-2 text-sm">
-                      Book Session
+                    <Button 
+                      className="bg-sage/20 text-sage hover:bg-sage/30 rounded-full px-4 py-2 text-sm"
+                      disabled
+                      data-testid="button-alpha-preview"
+                    >
+                      Alpha Preview
                     </Button>
                   </div>
                 </CardContent>

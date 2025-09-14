@@ -1,9 +1,9 @@
 export default function StatsSection() {
   const stats = [
-    { value: "2,500+", label: "Verified Practitioners" },
-    { value: "15,000+", label: "Healing Sessions" },
-    { value: "4.9", label: "Average Rating" },
-    { value: "98%", label: "Client Satisfaction" }
+    { value: "100", label: "Alpha Members" },
+    { value: "$500+", label: "Your Contribution Value" },
+    { value: "Innovative", label: "Archetype System" },
+    { value: "Alpha", label: "Testing Phase" }
   ];
 
   return (
@@ -11,10 +11,11 @@ export default function StatsSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="font-heading text-3xl lg:text-4xl font-bold mb-4">
-            Trusted by Thousands
+            Why Alpha Participation Matters
           </h2>
-          <p className="text-white/80 text-lg">
-            Join our growing community of healing and transformation
+          <p className="text-white/80 text-lg max-w-3xl mx-auto">
+            You're not just using our platform - you're creating it. Every insight you share 
+            helps us build something truly innovative for the wellness community.
           </p>
         </div>
         
