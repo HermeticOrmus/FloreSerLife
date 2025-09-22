@@ -1,31 +1,31 @@
 import { Badge } from "@/components/ui/badge";
-import { FlaskConical, Brain, Zap, Users, Target, TrendingUp } from "lucide-react";
+import { UserPlus, Search, Calendar, Star, Heart, Sparkles } from "lucide-react";
 
 export default function HowItWorks() {
   const steps = [
     {
       number: 1,
-      title: "Contribute to Research",
-      subtitle: "Shape Innovative Matching Science",
-      description: "Complete our comprehensive alpha survey to help shape our innovative pollinator-inspired practitioner matching approach. Your insights directly contribute to the development of this new wellness connection system.",
-      icon: FlaskConical,
-      details: "Multi-dimensional wellness preference mapping • Healing pattern exploration • User experience optimization"
+      title: "Create Your Profile",
+      subtitle: "Discover Your Archetype",
+      description: "Sign up and complete your wellness profile to discover which pollinator archetype best matches your healing journey. Our system identifies your preferences, goals, and the type of guidance that resonates with you.",
+      icon: UserPlus,
+      details: "Archetype assessment • Wellness preferences • Healing goals • Personal matching criteria"
     },
     {
       number: 2,
-      title: "Experience Innovative Technology",
-      subtitle: "Test the Future of Wellness Matching",
-      description: "Get exclusive access to our innovative pollinator archetype system—a nature-inspired approach to wellness matching. Experience our developing pairing system that considers healing modalities, energetic compatibility, and personal preferences in this alpha testing phase.",
-      icon: Brain,
-      details: "Advanced archetype assessment • Compatibility evaluation • User preference optimization"
+      title: "Find Your Match",
+      subtitle: "Connect with Verified Practitioners",
+      description: "Browse our curated collection of verified wellness practitioners, perfectly matched to your archetype and needs. Filter by specializations, experience level, location, and session type to find your ideal practitioner.",
+      icon: Search,
+      details: "Archetype-based matching • Verified practitioners • Advanced filtering • Practitioner profiles"
     },
     {
       number: 3,
-      title: "Refine the Algorithm",
-      subtitle: "Co-Create Industry Transformation",
-      description: "Your ongoing feedback becomes integral to refining our innovative wellness matching methodology. Help us develop a system that aims to improve how people connect with healing practitioners and contribute to new approaches for practitioner-client compatibility.",
-      icon: Target,
-      details: "System refinement • User feedback integration • Alpha feature development"
+      title: "Book & Experience",
+      subtitle: "Start Your Transformation",
+      description: "Easily book sessions with your chosen practitioners through our seamless booking system. Enjoy meaningful connections, transformative sessions, and continue your wellness journey with ongoing support.",
+      icon: Calendar,
+      details: "Easy booking • Session management • Progress tracking • Ongoing support"
     }
   ];
 
@@ -34,38 +34,38 @@ export default function HowItWorks() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-20">
           <div className="inline-flex items-center px-4 py-2 bg-forest/10 text-forest rounded-full text-sm font-medium mb-4">
-            <span className="mr-2">🚀</span>
-            Innovative Alpha Testing Program
+            <span className="mr-2">✨</span>
+            Simple • Effective • Transformative
           </div>
           <h2 className="font-heading text-3xl lg:text-5xl font-bold text-forest mb-6">
-            Your Journey to Transform Wellness Matching
+            How It Works
           </h2>
           <p className="text-xl text-forest/70 max-w-4xl mx-auto mb-8">
-            As a founding alpha member, you're not just testing a platform—you're co-creating 
-            an innovative approach to wellness connections. Every interaction helps us develop 
-            and refine a system that aims to meaningfully improve how people find healing practitioners.
+            From discovering your unique archetype to booking transformative sessions,
+            our streamlined process makes finding the perfect wellness practitioner
+            simple and meaningful.
           </p>
-          
-          {/* Alpha Program Highlights */}
+
+          {/* Key Benefits */}
           <div className="grid md:grid-cols-3 gap-6 mb-8 max-w-3xl mx-auto">
             <div className="text-center">
-              <div className="text-2xl font-bold text-forest">Innovative</div>
-              <div className="text-sm text-forest/60">Approach</div>
+              <div className="text-2xl font-bold text-forest">Personalized</div>
+              <div className="text-sm text-forest/60">Matching</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-forest">Nature</div>
-              <div className="text-sm text-forest/60">Inspired</div>
+              <div className="text-2xl font-bold text-forest">Verified</div>
+              <div className="text-sm text-forest/60">Practitioners</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-forest">Alpha</div>
-              <div className="text-sm text-forest/60">Testing</div>
+              <div className="text-2xl font-bold text-forest">Seamless</div>
+              <div className="text-sm text-forest/60">Experience</div>
             </div>
           </div>
 
           <div className="flex items-center justify-center">
             <div className="inline-flex items-center px-6 py-3 bg-sage/10 text-sage rounded-full text-sm font-medium">
-              <span className="mr-2">👥</span>
-              Limited to 100 Alpha Members • You're In!
+              <Star className="mr-2 h-4 w-4" />
+              Trusted by Wellness Seekers Everywhere
             </div>
           </div>
         </div>
@@ -114,61 +114,61 @@ export default function HowItWorks() {
           })}
         </div>
 
-        {/* Innovation Impact Section */}
+        {/* Value Proposition Section */}
         <div className="mt-20 text-center">
           <div className="max-w-4xl mx-auto bg-gradient-to-br from-sage/5 to-cream/30 rounded-2xl p-12 border border-sage/20">
             <div className="flex items-center justify-center space-x-2 mb-6">
-              <TrendingUp className="w-6 h-6 text-forest" />
+              <Heart className="w-6 h-6 text-forest" />
               <h3 className="font-heading text-2xl font-bold text-forest">
-                The Future of Wellness Matching Starts Here
+                Why FloreSer Works
               </h3>
             </div>
-            
+
             <p className="text-lg text-forest/70 leading-relaxed mb-8">
-              Your participation in this alpha program directly contributes to developing an innovative 
-              approach to practitioner-client compatibility. The insights and feedback we gather will 
-              help us create a system that could transform how people find their ideal healing practitioners.
+              Our unique archetype-based approach ensures meaningful connections between
+              clients and practitioners. Experience the power of nature-inspired matching
+              that goes beyond basic categories to find your perfect wellness companion.
             </p>
 
             <div className="grid md:grid-cols-2 gap-8 mb-8">
               <div className="text-left">
                 <h4 className="font-semibold text-forest mb-3 flex items-center">
-                  <FlaskConical className="w-5 h-5 mr-2 text-gold" />
-                  Research Innovation
+                  <Sparkles className="w-5 h-5 mr-2 text-gold" />
+                  Meaningful Connections
                 </h4>
                 <ul className="space-y-2 text-sm text-forest/70">
                   <li className="flex items-start">
                     <div className="w-1 h-1 bg-gold rounded-full mt-2 mr-2 flex-shrink-0"></div>
-                    <span>Innovative pollinator-inspired healing classification system</span>
+                    <span>Archetype-based compatibility for deeper resonance</span>
                   </li>
                   <li className="flex items-start">
                     <div className="w-1 h-1 bg-gold rounded-full mt-2 mr-2 flex-shrink-0"></div>
-                    <span>Community-driven development and validation</span>
+                    <span>Verified practitioners with proven expertise</span>
                   </li>
                   <li className="flex items-start">
                     <div className="w-1 h-1 bg-gold rounded-full mt-2 mr-2 flex-shrink-0"></div>
-                    <span>Compatibility assessment for optimal pairing</span>
+                    <span>Personalized matching based on your unique journey</span>
                   </li>
                 </ul>
               </div>
-              
+
               <div className="text-left">
                 <h4 className="font-semibold text-forest mb-3 flex items-center">
-                  <Users className="w-5 h-5 mr-2 text-sage" />
-                  Industry Impact
+                  <Star className="w-5 h-5 mr-2 text-sage" />
+                  Seamless Experience
                 </h4>
                 <ul className="space-y-2 text-sm text-forest/70">
                   <li className="flex items-start">
                     <div className="w-1 h-1 bg-sage rounded-full mt-2 mr-2 flex-shrink-0"></div>
-                    <span>Promising alpha results in practitioner-client compatibility</span>
+                    <span>Easy booking and session management</span>
                   </li>
                   <li className="flex items-start">
                     <div className="w-1 h-1 bg-sage rounded-full mt-2 mr-2 flex-shrink-0"></div>
-                    <span>Innovative approach to wellness marketplace matching</span>
+                    <span>Secure payments and trusted platform</span>
                   </li>
                   <li className="flex items-start">
                     <div className="w-1 h-1 bg-sage rounded-full mt-2 mr-2 flex-shrink-0"></div>
-                    <span>Future standard for holistic practitioner assessment</span>
+                    <span>Ongoing support for your wellness journey</span>
                   </li>
                 </ul>
               </div>
@@ -176,7 +176,7 @@ export default function HowItWorks() {
 
             <div className="flex items-center justify-center">
               <Badge className="bg-gold/20 text-gold px-4 py-2">
-                Alpha Testing • Shaping the Future • Innovative Research
+                Trusted • Verified • Transformative
               </Badge>
             </div>
           </div>

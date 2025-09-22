@@ -7,6 +7,7 @@ import session from "express-session";
 import connectPg from "connect-pg-simple";
 import type { Express, RequestHandler } from "express";
 import { storage } from "./storage";
+import { emailService } from "./email";
 
 if (!process.env.SESSION_SECRET) {
   throw new Error("Environment variable SESSION_SECRET not provided");
@@ -181,6 +182,14 @@ export async function setupAuth(app: Express) {
         lastName,
       });
 
+      // Send welcome email
+      try {
+        await emailService.sendWelcomeEmail(user.email, user.firstName || 'Friend');
+      } catch (emailError) {
+        console.error("Failed to send welcome email:", emailError);
+        // Don't fail signup if email fails
+      }
+
       // Log user in
       req.login(user, (err) => {
         if (err) {
@@ -263,6 +272,12 @@ export const requireAuth: RequestHandler = (req, res, next) => {
 };
 
 export const requireAdmin: RequestHandler = async (req, res, next) => {
+  // Check for session-based admin access first (for admin panel access)
+  if ((req.session as any)?.isAdmin) {
+    return next();
+  }
+
+  // Fall back to user-based admin checking
   if (!req.user) {
     return res.status(401).json({ message: "Authentication required" });
   }
@@ -277,4 +292,22 @@ export const requireAdmin: RequestHandler = async (req, res, next) => {
     console.error("Error checking admin privileges:", error);
     return res.status(500).json({ message: "Failed to verify admin privileges" });
   }
+};
+
+// New middleware for development admin access
+export const requireDevAdmin: RequestHandler = (req, res, next) => {
+  // Check for admin session access
+  if ((req.session as any)?.isAdmin) {
+    return next();
+  }
+
+  // Check for development admin access code in headers
+  const devAccessCode = req.headers['x-admin-access'] as string;
+  const adminAccessCode = process.env.ADMIN_ACCESS_CODE;
+
+  if (devAccessCode && adminAccessCode && devAccessCode === adminAccessCode) {
+    return next();
+  }
+
+  return res.status(403).json({ message: "Admin access required" });
 };

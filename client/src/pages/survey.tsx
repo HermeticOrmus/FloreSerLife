@@ -15,7 +15,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ArrowLeft, ArrowRight, CheckCircle, ChevronLeft, ChevronRight, Crown, Star, Trophy, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle, ChevronLeft, ChevronRight, Crown, Star, Trophy, Sparkles, Share2, Mail, MessageCircle, Copy } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -138,7 +138,7 @@ export default function Survey() {
 
   // Load saved draft on mount
   useEffect(() => {
-    document.title = "Alpha Founding Member Consultation - FloreSer";
+    document.title = "Community Wellness Vision Survey - FloreSer";
     const savedDraft = localStorage.getItem(STORAGE_KEY);
     if (savedDraft) {
       try {
@@ -222,77 +222,78 @@ export default function Survey() {
         <CardContent className="p-12">
           <div className="text-center">
             <div className="relative mb-6">
-              <Crown className="w-16 h-16 text-gold mx-auto mb-4" />
-              <div className="absolute -top-2 -right-8 bg-gold text-white text-xs font-bold px-2 py-1 rounded-full">
-                EXCLUSIVE
-              </div>
+              <Sparkles className="w-16 h-16 text-gold mx-auto mb-4" />
             </div>
             
             <div className="bg-gold/10 rounded-full px-6 py-2 mb-6 inline-block">
-              <span className="text-gold font-bold text-sm tracking-wide">ALPHA FOUNDING MEMBER CONSULTATION</span>
+              <span className="text-gold font-bold text-sm tracking-wide">COMMUNITY WELLNESS VISION SURVEY</span>
             </div>
-            
+
             <h1 className="font-heading text-4xl font-bold text-forest mb-6">
-              Help Build Your Ideal Wellness Platform
+              Help Shape the Future of Wellness Connection
             </h1>
-            
+
             <p className="text-xl text-forest/80 mb-8 leading-relaxed">
-              You're among the first <strong className="text-gold">150 visionaries</strong> invited to co-create the future of wellness technology. Your insights will directly shape every feature, design decision, and user experience we build.
+              Your voice matters in creating a wellness platform that truly serves our community. Whether you're a practitioner, seeker, or simply curious about wellness technology, your insights will help us build something meaningful together.
             </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-6 mb-8">
             <div className="bg-gradient-to-br from-sage/10 to-sage/5 rounded-lg p-6 text-center">
               <Star className="w-8 h-8 text-sage mx-auto mb-3" />
-              <h3 className="font-semibold text-forest mb-2">Industry Expert Input</h3>
-              <p className="text-sm text-forest/70">Your professional experience guides our platform development</p>
+              <h3 className="font-semibold text-forest mb-2">Your Voice Matters</h3>
+              <p className="text-sm text-forest/70">Every perspective helps us create a platform that truly serves the wellness community</p>
             </div>
             <div className="bg-gradient-to-br from-gold/10 to-gold/5 rounded-lg p-6 text-center">
               <Sparkles className="w-8 h-8 text-gold mx-auto mb-3" />
-              <h3 className="font-semibold text-forest mb-2">Revolutionary Features</h3>
-              <p className="text-sm text-forest/70">Co-design breakthrough wellness technology solutions</p>
+              <h3 className="font-semibold text-forest mb-2">Collaborative Innovation</h3>
+              <p className="text-sm text-forest/70">Help design features that make wellness more accessible and meaningful</p>
             </div>
             <div className="bg-gradient-to-br from-forest/10 to-forest/5 rounded-lg p-6 text-center">
               <Trophy className="w-8 h-8 text-forest mx-auto mb-3" />
-              <h3 className="font-semibold text-forest mb-2">Founding Recognition</h3>
-              <p className="text-sm text-forest/70">Lifetime status as a platform co-creator and founding member</p>
+              <h3 className="font-semibold text-forest mb-2">Community Impact</h3>
+              <p className="text-sm text-forest/70">Shape a platform that supports both practitioners and those seeking wellness</p>
             </div>
           </div>
           
           <div className="bg-gradient-to-r from-sage/20 to-gold/20 rounded-lg p-6 mb-8">
             <div className="flex items-start space-x-4">
               <div className="bg-gold text-white rounded-full p-2 flex-shrink-0">
-                <Crown className="w-5 h-5" />
+                <Star className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-semibold text-forest mb-2">Your Consultation is Invaluable</h3>
+                <h3 className="font-semibold text-forest mb-2">Thank You for Contributing</h3>
                 <p className="text-forest/80 text-sm">
-                  Your insights as a founding member are essential to creating an innovative wellness platform. This consultation helps us build something truly meaningful for the community.
+                  Your insights help us create a wellness platform that truly serves everyone. This survey is our way of ensuring we build something meaningful and accessible for the entire community.
                 </p>
               </div>
             </div>
           </div>
-          
+
           <Alert className="border-gold/30 bg-gold/5 mb-8">
             <Sparkles className="h-4 w-4 text-gold" />
             <AlertDescription className="text-forest">
-              <strong>Confidential Preview:</strong> You'll be among the first to see and test revolutionary features before public launch. Your feedback shapes the wellness technology landscape.
+              <strong>Early Access Benefits:</strong> Survey participants will receive special access codes and updates as we develop the platform. Your input directly influences what we build together.
             </AlertDescription>
           </Alert>
           
           <div className="text-center">
-            <Button 
-              onClick={() => setShowIntro(false)} 
+            <Button
+              onClick={() => setShowIntro(false)}
               className="bg-gold text-white hover:bg-gold/90 px-8 py-3 text-lg font-semibold"
-              data-testid="button-start-consultation"
+              data-testid="button-start-survey"
             >
-              Begin My Founding Member Consultation
+              Share Your Wellness Vision
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
-            
+
             <p className="text-xs text-forest/60 mt-4">
-              Estimated time: 15-20 minutes • Your input shapes the future • Completely confidential
+              Estimated time: 15-20 minutes • Help shape the future of wellness • Completely confidential
             </p>
+
+            <div className="mt-8 pt-6 border-t border-sage/20">
+              <SurveyShareSection />
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -312,38 +313,42 @@ export default function Survey() {
                 </div>
                 <Trophy className="w-20 h-20 text-gold mx-auto mb-6" />
                 <div className="bg-gold/10 rounded-full px-4 py-2 mb-4 inline-block">
-                  <span className="text-gold font-semibold text-sm">FOUNDING MEMBER #{ALPHA_MEMBER_NUMBER.toString().padStart(3, '0')}</span>
+                  <span className="text-gold font-semibold text-sm">COMMUNITY CONTRIBUTOR #{ALPHA_MEMBER_NUMBER.toString().padStart(3, '0')}</span>
                 </div>
                 <h1 className="font-heading text-3xl font-bold text-forest mb-4">
-                  Welcome to the Founding Circle!
+                  Thank You for Your Voice!
                 </h1>
                 <div className="bg-gradient-to-r from-sage/20 to-gold/20 rounded-lg p-6 mb-6">
                   <p className="text-forest text-lg font-medium mb-3">
-                    🌟 Your consultation has been recorded and will directly influence our platform development.
+                    🌟 Your insights have been received and will directly influence our platform development.
                   </p>
                   <p className="text-forest/80 mb-4">
-                    As an Alpha Founding Member, your insights are now part of FloreSer's DNA. You've contributed invaluable guidance that will shape our platform development.
+                    Your contribution is now part of FloreSer's foundation. Thank you for helping us build a platform that truly serves the wellness community.
                   </p>
                 </div>
                 
                 <div className="bg-white/50 rounded-lg p-6 mb-6 text-left">
                   <h3 className="font-heading text-lg font-semibold text-forest mb-3 flex items-center">
                     <Sparkles className="w-5 h-5 text-gold mr-2" />
-                    Your Founding Member Benefits
+                    Your Early Access Benefits
                   </h3>
                   <ul className="space-y-2 text-forest/80">
-                    <li className="flex items-center"><Star className="w-4 h-4 text-gold mr-2 flex-shrink-0" />Priority access to platform beta launch</li>
-                    <li className="flex items-center"><Star className="w-4 h-4 text-gold mr-2 flex-shrink-0" />Permanent founder recognition & special badge</li>
-                    <li className="flex items-center"><Star className="w-4 h-4 text-gold mr-2 flex-shrink-0" />Exclusive founder community access</li>
-                    <li className="flex items-center"><Star className="w-4 h-4 text-gold mr-2 flex-shrink-0" />Lifetime reduced platform fees</li>
-                    <li className="flex items-center"><Star className="w-4 h-4 text-gold mr-2 flex-shrink-0" />Direct line to our development team</li>
+                    <li className="flex items-center"><Star className="w-4 h-4 text-gold mr-2 flex-shrink-0" />Early access to platform beta launch</li>
+                    <li className="flex items-center"><Star className="w-4 h-4 text-gold mr-2 flex-shrink-0" />Special contributor recognition</li>
+                    <li className="flex items-center"><Star className="w-4 h-4 text-gold mr-2 flex-shrink-0" />Community updates on development progress</li>
+                    <li className="flex items-center"><Star className="w-4 h-4 text-gold mr-2 flex-shrink-0" />Launch day benefits and discounts</li>
+                    <li className="flex items-center"><Star className="w-4 h-4 text-gold mr-2 flex-shrink-0" />Opportunity to provide ongoing feedback</li>
                   </ul>
                 </div>
 
-                <div className="space-y-3">
+                <div className="mt-8 pt-6 border-t border-sage/20">
+                  <SurveyShareSection isCompleted={true} />
+                </div>
+
+                <div className="space-y-3 mt-8">
                   <Link href="/">
                     <Button className="bg-gold text-white hover:bg-gold/90 w-full font-semibold" data-testid="button-return-home">
-                      🏡 Return to Your FloreSer Platform
+                      🏡 Return to FloreSer Platform
                     </Button>
                   </Link>
                   <Link href="/practitioners">
@@ -1192,6 +1197,106 @@ export default function Survey() {
       </main>
       
       <Footer />
+    </div>
+  );
+}
+
+// Survey sharing component
+function SurveyShareSection({ isCompleted = false }: { isCompleted?: boolean }) {
+  const { toast } = useToast();
+
+  const surveyUrl = `${window.location.origin}/survey`;
+  const shareText = isCompleted
+    ? "I just contributed to shaping the future of wellness technology! Join me in providing input for FloreSer, a new platform that's building something meaningful for our community. Your voice matters too! 🌱"
+    : "Help shape the future of wellness technology! Join me in providing input for FloreSer, a new platform connecting practitioners and seekers through innovative archetype matching. Your voice matters in building something meaningful for our community. 🌱";
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(`${shareText}\n\n${surveyUrl}`);
+      toast({
+        title: "Copied to clipboard!",
+        description: "Survey link and message copied. Ready to share with your network.",
+      });
+    } catch (error) {
+      toast({
+        title: "Copy failed",
+        description: "Please copy the link manually.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const shareViaEmail = () => {
+    const subject = "Help Shape the Future of Wellness Technology - FloreSer Survey";
+    const body = `${shareText}\n\nTake the survey here: ${surveyUrl}`;
+    window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+  };
+
+  const shareViaTwitter = () => {
+    const tweetText = `${shareText}\n\n${surveyUrl} #WellnessTech #Community #FloreSer`;
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`, '_blank');
+  };
+
+  const shareViaLinkedIn = () => {
+    const linkedInText = `${shareText}\n\n${surveyUrl}`;
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(surveyUrl)}&summary=${encodeURIComponent(linkedInText)}`, '_blank');
+  };
+
+  return (
+    <div className="text-center">
+      <div className="flex items-center justify-center space-x-2 mb-4">
+        <Share2 className="w-4 h-4 text-forest/60" />
+        <span className="text-sm text-forest/60 font-medium">Know someone who'd like to contribute?</span>
+      </div>
+
+      <p className="text-xs text-forest/50 mb-4 max-w-md mx-auto">
+        The more diverse voices we hear from, the better we can serve the entire wellness community.
+        Share this survey to help us build something truly inclusive.
+      </p>
+
+      <div className="flex items-center justify-center space-x-3">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={copyToClipboard}
+          className="text-forest border-forest/20 hover:bg-forest/5"
+        >
+          <Copy className="w-3 h-3 mr-1" />
+          Copy Link
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={shareViaEmail}
+          className="text-forest border-forest/20 hover:bg-forest/5"
+        >
+          <Mail className="w-3 h-3 mr-1" />
+          Email
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={shareViaTwitter}
+          className="text-forest border-forest/20 hover:bg-forest/5"
+        >
+          Share
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={shareViaLinkedIn}
+          className="text-forest border-forest/20 hover:bg-forest/5"
+        >
+          LinkedIn
+        </Button>
+      </div>
+
+      <p className="text-xs text-forest/40 mt-3">
+        Survey responses are anonymous and help us create a platform that serves everyone
+      </p>
     </div>
   );
 }

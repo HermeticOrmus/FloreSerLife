@@ -26,15 +26,15 @@ export default function FeaturedPractitioners() {
         <div className="flex justify-between items-center mb-12">
           <div>
             <div className="inline-flex items-center px-4 py-2 bg-forest/10 text-forest rounded-full text-sm font-medium mb-4">
-              <span className="mr-2">🔮</span>
-              Alpha Preview
+              <span className="mr-2">⭐</span>
+              Featured Practitioners
             </div>
             <h2 className="font-heading text-3xl lg:text-4xl font-bold text-forest mb-4">
-              Future Practitioner Experience
+              Meet Our Verified Practitioners
             </h2>
             <p className="text-lg text-forest/70">
-              See how our innovative archetype system will enhance wellness connections. 
-              These are examples of what you'll help us build.
+              Discover our carefully curated wellness practitioners, each bringing unique
+              expertise and deep commitment to your healing journey.
             </p>
           </div>
           <Link href="/practitioners">
@@ -63,11 +63,11 @@ export default function FeaturedPractitioners() {
             <CardContent>
               <User className="w-16 h-16 text-sage mx-auto mb-4" />
               <h3 className="font-heading text-xl font-semibold text-forest mb-2">
-                Alpha Preview Mode
+                Practitioners Coming Soon
               </h3>
               <p className="text-forest/70">
-                This is what our practitioner profiles will look like once we launch. 
-                Your feedback will help us perfect this experience.
+                Our verified wellness practitioners are joining the platform.
+                Check back soon to discover amazing healers in your area.
               </p>
             </CardContent>
           </Card>
@@ -124,13 +124,14 @@ export default function FeaturedPractitioners() {
                         ${practitioner.hourlyRate}/session
                       </span>
                     )}
-                    <Button 
-                      className="bg-sage/20 text-sage hover:bg-sage/30 rounded-full px-4 py-2 text-sm"
-                      disabled
-                      data-testid="button-alpha-preview"
-                    >
-                      Alpha Preview
-                    </Button>
+                    <Link href={`/practitioners/${practitioner.id}`}>
+                      <Button
+                        className="bg-gold/20 text-gold hover:bg-gold/30 rounded-full px-4 py-2 text-sm"
+                        data-testid="button-view-profile"
+                      >
+                        View Profile
+                      </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>

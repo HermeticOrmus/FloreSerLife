@@ -6,6 +6,11 @@ import {
   sessions_table,
   reviews,
   surveyResponses,
+  seedsWallets,
+  seedsTransactions,
+  pollinatorTiers,
+  gardenContent,
+  gardenInteractions,
   type User,
   type UpsertUser,
   type Practitioner,
@@ -14,9 +19,20 @@ import {
   type Session,
   type Review,
   type SurveyResponse,
+  type SeedsWallet,
+  type SeedsTransaction,
+  type PollinatorTier,
+  type GardenContent,
+  type GardenInteraction,
   type InsertPractitioner,
   type InsertClient,
   type InsertSurveyResponse,
+  type InsertSeedsWallet,
+  type InsertSeedsTransaction,
+  type InsertGardenContent,
+  type InsertGardenInteraction,
+  pollinatorTierDefinitions,
+  seedsEarningRates,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, sql } from "drizzle-orm";
@@ -61,6 +77,27 @@ export interface IStorage {
   getSurveyResponseById(id: string): Promise<SurveyResponse | undefined>;
   getAllSurveyResponses(): Promise<SurveyResponse[]>;
   getSurveyResponsesByUserId(userId: string): Promise<SurveyResponse[]>;
+
+  // Admin overview operations
+  getTotalUsers(): Promise<number>;
+  getTotalPractitioners(): Promise<number>;
+  getTotalClients(): Promise<number>;
+  getTotalSessions(): Promise<number>;
+  getTotalReviews(): Promise<number>;
+  getTotalSurveyResponses(): Promise<number>;
+  getTotalGardenContent(): Promise<number>;
+  getTotalSeedsTransactions(): Promise<number>;
+  getAllUsersWithProfiles(): Promise<any[]>;
+  getAllPractitionersWithDetails(): Promise<any[]>;
+  getAllSessionsWithDetails(): Promise<any[]>;
+  getAllGardenContentWithDetails(): Promise<any[]>;
+  getAllSeedsData(): Promise<any>;
+
+  // Access control operations
+  getUserAccessLevel(userId: string): Promise<string | null>;
+  updateUserAccess(userId: string, accessLevel: string, subscriptionStatus: string, options?: any): Promise<void>;
+  getUserSessionsThisMonth(userId: string): Promise<number>;
+  hasUsedTrial(userId: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -388,6 +425,639 @@ export class DatabaseStorage implements IStorage {
       .from(surveyResponses)
       .where(eq(surveyResponses.userId, userId))
       .orderBy(desc(surveyResponses.createdAt));
+  }
+
+  // Reviews operations
+  async createReview(reviewData: {
+    sessionId: string;
+    clientId: string;
+    practitionerId: string;
+    rating: number;
+    comment?: string;
+  }): Promise<Review> {
+    const [review] = await db
+      .insert(reviews)
+      .values(reviewData)
+      .returning();
+
+    // Update practitioner's average rating
+    await this.updatePractitionerRating(reviewData.practitionerId);
+
+    // Award Seeds for review submission
+    const client = await this.getClient(reviewData.clientId);
+    if (client) {
+      await this.awardSeedsForAction(
+        client.userId,
+        "review_submission",
+        review.id,
+        "review"
+      );
+    }
+
+    return review;
+  }
+
+  async getReviewsByPractitionerId(practitionerId: string): Promise<Review[]> {
+    return await db
+      .select()
+      .from(reviews)
+      .where(eq(reviews.practitionerId, practitionerId))
+      .orderBy(desc(reviews.createdAt));
+  }
+
+  async getReviewsByClientId(clientId: string): Promise<Review[]> {
+    return await db
+      .select()
+      .from(reviews)
+      .where(eq(reviews.clientId, clientId))
+      .orderBy(desc(reviews.createdAt));
+  }
+
+  async getReviewBySessionId(sessionId: string): Promise<Review | undefined> {
+    const [review] = await db
+      .select()
+      .from(reviews)
+      .where(eq(reviews.sessionId, sessionId));
+    return review;
+  }
+
+  async updatePractitionerRating(practitionerId: string): Promise<void> {
+    // Calculate average rating and total sessions
+    const reviewStats = await db
+      .select({
+        avgRating: sql<number>`AVG(${reviews.rating})::numeric(3,2)`,
+        totalReviews: sql<number>`COUNT(*)::integer`
+      })
+      .from(reviews)
+      .where(eq(reviews.practitionerId, practitionerId));
+
+    const stats = reviewStats[0];
+    if (stats && stats.totalReviews > 0) {
+      await db
+        .update(practitioners)
+        .set({
+          averageRating: stats.avgRating.toString(),
+          totalSessions: stats.totalReviews
+        })
+        .where(eq(practitioners.id, practitionerId));
+    }
+  }
+
+  async getPractitionerReviewsWithClient(practitionerId: string): Promise<any[]> {
+    return await db
+      .select({
+        id: reviews.id,
+        rating: reviews.rating,
+        comment: reviews.comment,
+        createdAt: reviews.createdAt,
+        clientName: sql<string>`CONCAT(${users.firstName}, ' ', ${users.lastName})`,
+        clientInitials: sql<string>`CONCAT(LEFT(${users.firstName}, 1), LEFT(${users.lastName}, 1))`
+      })
+      .from(reviews)
+      .innerJoin(clients, eq(reviews.clientId, clients.id))
+      .innerJoin(users, eq(clients.userId, users.id))
+      .where(eq(reviews.practitionerId, practitionerId))
+      .orderBy(desc(reviews.createdAt));
+  }
+
+  // Seeds Currency Operations
+  async createSeedsWallet(userId: string): Promise<SeedsWallet> {
+    const [wallet] = await db
+      .insert(seedsWallets)
+      .values({ userId })
+      .returning();
+    return wallet;
+  }
+
+  async getSeedsWallet(userId: string): Promise<SeedsWallet | undefined> {
+    const [wallet] = await db
+      .select()
+      .from(seedsWallets)
+      .where(eq(seedsWallets.userId, userId));
+    return wallet;
+  }
+
+  async getOrCreateSeedsWallet(userId: string): Promise<SeedsWallet> {
+    let wallet = await this.getSeedsWallet(userId);
+    if (!wallet) {
+      wallet = await this.createSeedsWallet(userId);
+    }
+    return wallet;
+  }
+
+  async addSeeds(
+    userId: string,
+    amount: number,
+    reason: string,
+    description?: string,
+    referenceId?: string,
+    referenceType?: string,
+    metadata?: any
+  ): Promise<SeedsTransaction> {
+    const wallet = await this.getOrCreateSeedsWallet(userId);
+    const newBalance = wallet.seedsBalance + amount;
+    const newTotalEarned = wallet.totalEarned + amount;
+
+    // Update wallet
+    await db
+      .update(seedsWallets)
+      .set({
+        seedsBalance: newBalance,
+        totalEarned: newTotalEarned,
+        lastActiveDate: new Date(),
+        updatedAt: new Date(),
+      })
+      .where(eq(seedsWallets.userId, userId));
+
+    // Check and update tier
+    await this.updatePollinatorTier(userId, newTotalEarned);
+
+    // Create transaction record
+    const [transaction] = await db
+      .insert(seedsTransactions)
+      .values({
+        userId,
+        amount,
+        type: "earned",
+        reason: reason as any,
+        description,
+        referenceId,
+        referenceType,
+        balanceAfter: newBalance,
+        metadata,
+      })
+      .returning();
+
+    return transaction;
+  }
+
+  async spendSeeds(
+    userId: string,
+    amount: number,
+    description: string,
+    referenceId?: string,
+    referenceType?: string,
+    metadata?: any
+  ): Promise<SeedsTransaction | null> {
+    const wallet = await this.getSeedsWallet(userId);
+    if (!wallet || wallet.seedsBalance < amount) {
+      return null; // Insufficient funds
+    }
+
+    const newBalance = wallet.seedsBalance - amount;
+    const newTotalSpent = wallet.totalSpent + amount;
+
+    // Update wallet
+    await db
+      .update(seedsWallets)
+      .set({
+        seedsBalance: newBalance,
+        totalSpent: newTotalSpent,
+        lastActiveDate: new Date(),
+        updatedAt: new Date(),
+      })
+      .where(eq(seedsWallets.userId, userId));
+
+    // Create transaction record
+    const [transaction] = await db
+      .insert(seedsTransactions)
+      .values({
+        userId,
+        amount: -amount, // Negative for spending
+        type: "spent",
+        description,
+        referenceId,
+        referenceType,
+        balanceAfter: newBalance,
+        metadata,
+      })
+      .returning();
+
+    return transaction;
+  }
+
+  async updatePollinatorTier(userId: string, totalEarned: number): Promise<void> {
+    const currentTier = this.calculatePollinatorTier(totalEarned);
+    const nextThreshold = this.getNextTierThreshold(currentTier);
+
+    await db
+      .update(seedsWallets)
+      .set({
+        currentTier: currentTier as any,
+        nextTierThreshold: nextThreshold || 0,
+      })
+      .where(eq(seedsWallets.userId, userId));
+  }
+
+  calculatePollinatorTier(totalEarned: number): string {
+    if (totalEarned >= pollinatorTierDefinitions.wise_garden.requiredSeeds) return "wise_garden";
+    if (totalEarned >= pollinatorTierDefinitions.blooming.requiredSeeds) return "blooming";
+    if (totalEarned >= pollinatorTierDefinitions.sprout.requiredSeeds) return "sprout";
+    return "seedling";
+  }
+
+  getNextTierThreshold(currentTier: string): number | null {
+    const tierDef = pollinatorTierDefinitions[currentTier as keyof typeof pollinatorTierDefinitions];
+    return tierDef?.nextThreshold || null;
+  }
+
+  async getSeedsTransactions(userId: string, limit: number = 50): Promise<SeedsTransaction[]> {
+    return await db
+      .select()
+      .from(seedsTransactions)
+      .where(eq(seedsTransactions.userId, userId))
+      .orderBy(desc(seedsTransactions.createdAt))
+      .limit(limit);
+  }
+
+  async getUserSeedsStats(userId: string): Promise<{
+    wallet: SeedsWallet;
+    tier: any;
+    recentTransactions: SeedsTransaction[];
+  }> {
+    const wallet = await this.getOrCreateSeedsWallet(userId);
+    const tier = pollinatorTierDefinitions[wallet.currentTier as keyof typeof pollinatorTierDefinitions];
+    const recentTransactions = await this.getSeedsTransactions(userId, 10);
+
+    return {
+      wallet,
+      tier,
+      recentTransactions,
+    };
+  }
+
+  // Seeds earning helper methods
+  async awardSeedsForAction(
+    userId: string,
+    action: keyof typeof seedsEarningRates,
+    referenceId?: string,
+    referenceType?: string,
+    metadata?: any
+  ): Promise<SeedsTransaction | null> {
+    const amount = seedsEarningRates[action];
+    const description = this.getActionDescription(action);
+
+    return await this.addSeeds(
+      userId,
+      amount,
+      action,
+      description,
+      referenceId,
+      referenceType,
+      metadata
+    );
+  }
+
+  private getActionDescription(action: keyof typeof seedsEarningRates): string {
+    const descriptions = {
+      profile_completion: "Completed profile setup",
+      session_attendance: "Attended a wellness session",
+      review_submission: "Submitted a helpful review",
+      garden_upload: "Contributed content to Community Garden",
+      referral: "Successfully referred a new member",
+      daily_login: "Daily platform engagement",
+      survey_completion: "Completed feedback survey",
+      milestone_achievement: "Reached a platform milestone",
+    };
+    return descriptions[action];
+  }
+
+  // Community Garden Operations
+  async createGardenContent(contentData: InsertGardenContent): Promise<GardenContent> {
+    const [content] = await db
+      .insert(gardenContent)
+      .values(contentData)
+      .returning();
+
+    // Award Seeds for garden upload
+    if (content.authorId) {
+      await this.awardSeedsForAction(
+        content.authorId,
+        "garden_upload",
+        content.id,
+        "garden_content"
+      );
+    }
+
+    return content;
+  }
+
+  async getGardenContent(options?: {
+    authorId?: string;
+    contentType?: string;
+    status?: string;
+    isPublic?: boolean;
+    limit?: number;
+    offset?: number;
+  }): Promise<GardenContent[]> {
+    const conditions = [];
+
+    if (options?.authorId) {
+      conditions.push(eq(gardenContent.authorId, options.authorId));
+    }
+    if (options?.contentType) {
+      conditions.push(eq(gardenContent.contentType, options.contentType));
+    }
+    if (options?.status) {
+      conditions.push(eq(gardenContent.status, options.status));
+    }
+    if (options?.isPublic !== undefined) {
+      conditions.push(eq(gardenContent.isPublic, options.isPublic));
+    }
+
+    let baseQuery = db.select().from(gardenContent);
+
+    if (conditions.length > 0) {
+      baseQuery = baseQuery.where(and(...conditions)) as any;
+    }
+
+    let finalQuery = baseQuery.orderBy(desc(gardenContent.createdAt)) as any;
+
+    if (options?.limit) {
+      finalQuery = finalQuery.limit(options.limit);
+    }
+    if (options?.offset) {
+      finalQuery = finalQuery.offset(options.offset);
+    }
+
+    return await finalQuery;
+  }
+
+  async getGardenContentById(id: string): Promise<GardenContent | undefined> {
+    const [content] = await db
+      .select()
+      .from(gardenContent)
+      .where(eq(gardenContent.id, id));
+    return content;
+  }
+
+  async recordGardenInteraction(
+    userId: string,
+    contentId: string,
+    interactionType: string,
+    aiResponse?: string
+  ): Promise<GardenInteraction> {
+    // Check if it's a new view to increment view count
+    if (interactionType === "view") {
+      await db
+        .update(gardenContent)
+        .set({
+          viewCount: sql`${gardenContent.viewCount} + 1`,
+          updatedAt: new Date(),
+        })
+        .where(eq(gardenContent.id, contentId));
+    }
+
+    // Record the interaction
+    const [interaction] = await db
+      .insert(gardenInteractions)
+      .values({
+        userId,
+        contentId,
+        interactionType,
+        aiResponse,
+      })
+      .returning();
+
+    return interaction;
+  }
+
+  // Admin overview methods
+  async getTotalUsers(): Promise<number> {
+    const result = await db.select({ count: sql<number>`COUNT(*)` }).from(users);
+    return result[0]?.count || 0;
+  }
+
+  async getTotalPractitioners(): Promise<number> {
+    const result = await db.select({ count: sql<number>`COUNT(*)` }).from(practitioners);
+    return result[0]?.count || 0;
+  }
+
+  async getTotalClients(): Promise<number> {
+    const result = await db.select({ count: sql<number>`COUNT(*)` }).from(clients);
+    return result[0]?.count || 0;
+  }
+
+  async getTotalSessions(): Promise<number> {
+    const result = await db.select({ count: sql<number>`COUNT(*)` }).from(sessions_table);
+    return result[0]?.count || 0;
+  }
+
+  async getTotalReviews(): Promise<number> {
+    const result = await db.select({ count: sql<number>`COUNT(*)` }).from(reviews);
+    return result[0]?.count || 0;
+  }
+
+  async getTotalSurveyResponses(): Promise<number> {
+    const result = await db.select({ count: sql<number>`COUNT(*)` }).from(surveyResponses);
+    return result[0]?.count || 0;
+  }
+
+  async getTotalGardenContent(): Promise<number> {
+    const result = await db.select({ count: sql<number>`COUNT(*)` }).from(gardenContent);
+    return result[0]?.count || 0;
+  }
+
+  async getTotalSeedsTransactions(): Promise<number> {
+    const result = await db.select({ count: sql<number>`COUNT(*)` }).from(seedsTransactions);
+    return result[0]?.count || 0;
+  }
+
+  async getAllUsersWithProfiles(): Promise<any[]> {
+    return await db
+      .select({
+        id: users.id,
+        email: users.email,
+        firstName: users.firstName,
+        lastName: users.lastName,
+        createdAt: users.createdAt,
+        isEmailVerified: users.isEmailVerified,
+        googleId: users.googleId,
+      })
+      .from(users)
+      .orderBy(desc(users.createdAt))
+      .limit(100);
+  }
+
+  async getAllPractitionersWithDetails(): Promise<any[]> {
+    return await db
+      .select({
+        id: practitioners.id,
+        archetype: practitioners.archetype,
+        experienceLevel: practitioners.experienceLevel,
+        bio: practitioners.bio,
+        specializations: practitioners.specializations,
+        hourlyRate: practitioners.hourlyRate,
+        isVerified: practitioners.isVerified,
+        totalSessions: practitioners.totalSessions,
+        averageRating: practitioners.averageRating,
+        createdAt: practitioners.createdAt,
+        userEmail: users.email,
+        userName: sql<string>`CONCAT(${users.firstName}, ' ', ${users.lastName})`,
+      })
+      .from(practitioners)
+      .innerJoin(users, eq(practitioners.userId, users.id))
+      .orderBy(desc(practitioners.createdAt))
+      .limit(100);
+  }
+
+  async getAllSessionsWithDetails(): Promise<any[]> {
+    return await db
+      .select({
+        id: sessions_table.id,
+        scheduledDatetime: sessions_table.scheduledDatetime,
+        duration: sessions_table.duration,
+        status: sessions_table.status,
+        totalAmount: sessions_table.totalAmount,
+        isVirtual: sessions_table.isVirtual,
+        createdAt: sessions_table.createdAt,
+        clientEmail: sql<string>`client_user.email`,
+        practitionerEmail: sql<string>`practitioner_user.email`,
+      })
+      .from(sessions_table)
+      .innerJoin(clients, eq(sessions_table.clientId, clients.id))
+      .innerJoin(practitioners, eq(sessions_table.practitionerId, practitioners.id))
+      .innerJoin(users.as("client_user"), eq(clients.userId, sql`client_user.id`))
+      .innerJoin(users.as("practitioner_user"), eq(practitioners.userId, sql`practitioner_user.id`))
+      .orderBy(desc(sessions_table.createdAt))
+      .limit(100);
+  }
+
+  async getAllGardenContentWithDetails(): Promise<any[]> {
+    return await db
+      .select({
+        id: gardenContent.id,
+        title: gardenContent.title,
+        description: gardenContent.description,
+        contentType: gardenContent.contentType,
+        status: gardenContent.status,
+        isPublic: gardenContent.isPublic,
+        isFeatured: gardenContent.isFeatured,
+        viewCount: gardenContent.viewCount,
+        likeCount: gardenContent.likeCount,
+        seedsReward: gardenContent.seedsReward,
+        createdAt: gardenContent.createdAt,
+        authorEmail: users.email,
+        authorName: sql<string>`CONCAT(${users.firstName}, ' ', ${users.lastName})`,
+      })
+      .from(gardenContent)
+      .innerJoin(users, eq(gardenContent.authorId, users.id))
+      .orderBy(desc(gardenContent.createdAt))
+      .limit(100);
+  }
+
+  async getAllSeedsData(): Promise<any> {
+    const walletsData = await db
+      .select({
+        userId: seedsWallets.userId,
+        seedsBalance: seedsWallets.seedsBalance,
+        totalEarned: seedsWallets.totalEarned,
+        totalSpent: seedsWallets.totalSpent,
+        currentTier: seedsWallets.currentTier,
+        userEmail: users.email,
+        userName: sql<string>`CONCAT(${users.firstName}, ' ', ${users.lastName})`,
+      })
+      .from(seedsWallets)
+      .innerJoin(users, eq(seedsWallets.userId, users.id))
+      .orderBy(desc(seedsWallets.totalEarned))
+      .limit(50);
+
+    const recentTransactions = await db
+      .select({
+        id: seedsTransactions.id,
+        amount: seedsTransactions.amount,
+        type: seedsTransactions.type,
+        reason: seedsTransactions.reason,
+        description: seedsTransactions.description,
+        balanceAfter: seedsTransactions.balanceAfter,
+        createdAt: seedsTransactions.createdAt,
+        userEmail: users.email,
+      })
+      .from(seedsTransactions)
+      .innerJoin(users, eq(seedsTransactions.userId, users.id))
+      .orderBy(desc(seedsTransactions.createdAt))
+      .limit(100);
+
+    const totalSeeds = await db
+      .select({
+        totalBalance: sql<number>`SUM(${seedsWallets.seedsBalance})`,
+        totalEarned: sql<number>`SUM(${seedsWallets.totalEarned})`,
+        totalSpent: sql<number>`SUM(${seedsWallets.totalSpent})`
+      })
+      .from(seedsWallets);
+
+    return {
+      wallets: walletsData,
+      recentTransactions,
+      totals: totalSeeds[0] || { totalBalance: 0, totalEarned: 0, totalSpent: 0 }
+    };
+  }
+
+  // Access control methods
+  async getUserAccessLevel(userId: string): Promise<string | null> {
+    const user = await db.select({ accessLevel: users.accessLevel })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+
+    return user[0]?.accessLevel || null;
+  }
+
+  async updateUserAccess(userId: string, accessLevel: string, subscriptionStatus: string, options?: any): Promise<void> {
+    const updateData: any = {
+      accessLevel,
+      subscriptionStatus,
+      updatedAt: new Date(),
+    };
+
+    if (options?.trialEndDate) {
+      updateData.trialEndDate = options.trialEndDate;
+    }
+
+    if (options?.subscriptionStartDate) {
+      updateData.subscriptionStartDate = options.subscriptionStartDate;
+    }
+
+    if (options?.subscriptionEndDate) {
+      updateData.subscriptionEndDate = options.subscriptionEndDate;
+    }
+
+    await db.update(users)
+      .set(updateData)
+      .where(eq(users.id, userId));
+  }
+
+  async getUserSessionsThisMonth(userId: string): Promise<number> {
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
+    const endOfMonth = new Date(startOfMonth);
+    endOfMonth.setMonth(endOfMonth.getMonth() + 1);
+
+    // Count sessions where user is the client
+    const clientSessions = await db
+      .select({ count: sql<number>`COUNT(*)` })
+      .from(sessions_table)
+      .innerJoin(clients, eq(sessions_table.clientId, clients.id))
+      .where(
+        and(
+          eq(clients.userId, userId),
+          gte(sessions_table.createdAt, startOfMonth),
+          lt(sessions_table.createdAt, endOfMonth)
+        )
+      );
+
+    return clientSessions[0]?.count || 0;
+  }
+
+  async hasUsedTrial(userId: string): Promise<boolean> {
+    const user = await db.select({ trialEndDate: users.trialEndDate })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+
+    return !!user[0]?.trialEndDate;
   }
 }
 

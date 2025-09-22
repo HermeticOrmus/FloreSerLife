@@ -23,7 +23,7 @@ export default function Home() {
             Welcome back, {user?.firstName || 'Friend'}!
           </h1>
           <p className="text-forest/70">
-            Your wellness journey continues here.
+            Your Life-Tending journey continues here.
           </p>
         </div>
 

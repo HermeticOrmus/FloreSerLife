@@ -8,17 +8,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Star, MapPin, Video, User } from "lucide-react";
+import { Star, MapPin, Video, User, Users, Hexagon, Crown, Award, Calendar, BookOpen } from "lucide-react";
 import { ArchetypeIcons } from "@/components/icons/archetype-icons";
 import { ReviewsSummary } from "@/components/reviews";
-import { AccessLevelBadge, FeaturePreview, UpgradeModal, UsageProgress } from "@/components/access-control";
 import { archetypeDefinitions, type Practitioner } from "@shared/schema";
 
-export default function Practitioners() {
+export default function Hive() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedArchetype, setSelectedArchetype] = useState<string>("");
   const [selectedExperience, setSelectedExperience] = useState<string>("");
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [, setLocation] = useLocation();
 
   const { data: practitionersData, isLoading } = useQuery({
@@ -30,23 +28,21 @@ export default function Practitioners() {
     ? practitionersData
     : practitionersData?.practitioners || [];
 
-  const accessInfo = !Array.isArray(practitionersData) ? practitionersData?.accessInfo : null;
-
   useEffect(() => {
-    document.title = "Find Practitioners - FloreSer";
+    document.title = "The Hive - Facilitator Community - FloreSer";
   }, []);
 
   const filteredPractitioners = practitioners.filter(practitioner => {
-    const matchesSearch = searchTerm === "" || 
+    const matchesSearch = searchTerm === "" ||
       practitioner.bio?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      practitioner.specializations?.some(spec => 
+      practitioner.specializations?.some(spec =>
         spec.toLowerCase().includes(searchTerm.toLowerCase())
       );
-    
-    const matchesArchetype = selectedArchetype === "" || 
+
+    const matchesArchetype = selectedArchetype === "" ||
       practitioner.archetype === selectedArchetype;
-    
-    const matchesExperience = selectedExperience === "" || 
+
+    const matchesExperience = selectedExperience === "" ||
       practitioner.experienceLevel === selectedExperience;
 
     return matchesSearch && matchesArchetype && matchesExperience;
@@ -62,62 +58,115 @@ export default function Practitioners() {
     }
   };
 
+  const getExperienceBadge = (level: string) => {
+    const badgeStyles = {
+      rising: "bg-green-100 text-green-700 border-green-200",
+      evolving: "bg-blue-100 text-blue-700 border-blue-200",
+      wise: "bg-purple-100 text-purple-700 border-purple-200"
+    };
+
+    const icons = {
+      rising: <Star className="w-3 h-3 mr-1" />,
+      evolving: <Award className="w-3 h-3 mr-1" />,
+      wise: <Crown className="w-3 h-3 mr-1" />
+    };
+
+    return (
+      <Badge className={`${badgeStyles[level as keyof typeof badgeStyles]} text-xs border`}>
+        {icons[level as keyof typeof icons]}
+        {level.charAt(0).toUpperCase() + level.slice(1)}
+      </Badge>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-cream">
       <Header />
-      
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-12">
-          <div className="inline-flex items-center px-4 py-2 bg-forest/10 text-forest rounded-full text-sm font-medium mb-4">
-            <span className="mr-2">🔬</span>
-            Research-Backed Practitioner Matching
+        {/* Hero Section */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-gold/20 to-forest/20 text-forest rounded-full text-sm font-medium mb-6">
+            <Hexagon className="mr-2 h-5 w-5 text-gold" />
+            Welcome to The Hive
           </div>
-          <h1 className="font-heading text-3xl lg:text-4xl font-bold text-forest mb-4">
-            Discover Your Ideal Wellness Practitioner
+          <h1 className="font-heading text-4xl lg:text-5xl font-bold text-forest mb-6">
+            Meet Our <span className="text-gold">Facilitator Community</span>
           </h1>
-          <p className="text-lg text-forest/70 max-w-3xl">
-            Experience our innovative pollinator archetype system in action. Each practitioner 
-            has been classified using our nature-inspired approach, helping you find 
-            optimal compatibility with your wellness needs and preferred healing approaches.
+          <p className="text-lg text-forest/70 max-w-4xl mx-auto mb-8">
+            The Hive is where our verified wellness facilitators come together to share wisdom,
+            collaborate on healing approaches, and support each other's growth. Each facilitator
+            brings unique gifts classified through our pollinator archetype system.
           </p>
-          <div className="mt-4 flex items-center space-x-6 text-sm text-forest/60">
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-gold rounded-full"></div>
-              <span>4 Nature-Inspired Archetype Classifications</span>
+
+          {/* Community Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto mb-8">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-gold">150+</div>
+              <div className="text-sm text-forest/60">Active Facilitators</div>
             </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-sage rounded-full"></div>
-              <span>Innovative Matching System</span>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-gold">4</div>
+              <div className="text-sm text-forest/60">Archetype Categories</div>
             </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-gold">89%</div>
+              <div className="text-sm text-forest/60">Success Rate</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-gold">24/7</div>
+              <div className="text-sm text-forest/60">Community Support</div>
+            </div>
+          </div>
+
+          {/* Call to Action */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <Button
+              size="lg"
+              className="bg-gold text-white hover:bg-gold/90 rounded-full px-8 py-4 font-medium"
+              onClick={() => setLocation("/auth/signup")}
+            >
+              <Users className="mr-2 h-5 w-5" />
+              Join The Hive
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              className="border-2 border-forest text-forest hover:bg-forest hover:text-white rounded-full px-8 py-4 font-medium"
+              onClick={() => setLocation("/practitioners")}
+            >
+              <BookOpen className="mr-2 h-5 w-5" />
+              Book a Session
+            </Button>
           </div>
         </div>
 
-        {/* Access Control Info */}
-        {accessInfo && accessInfo.upgradeRequired && (
-          <Alert className="border-gold/30 bg-gold/5 mb-6">
-            <Star className="h-4 w-4 text-gold" />
-            <AlertDescription className="flex items-center justify-between">
-              <div>
-                <div className="flex items-center space-x-2 mb-1">
-                  <span className="font-medium text-forest">
-                    Showing {accessInfo.shown} of {accessInfo.total} practitioners
-                  </span>
-                  <AccessLevelBadge accessLevel={accessInfo.accessLevel} />
-                </div>
-                <p className="text-sm text-forest/70">
-                  Upgrade to see all {accessInfo.total} verified practitioners and unlock full platform features.
-                </p>
-              </div>
-              <Button
-                size="sm"
-                className="bg-gold text-white hover:bg-gold/90"
-                onClick={() => setShowUpgradeModal(true)}
-              >
-                Upgrade Access
-              </Button>
-            </AlertDescription>
-          </Alert>
-        )}
+        {/* Archetype Overview */}
+        <div className="mb-12">
+          <h2 className="font-heading text-2xl font-bold text-forest mb-6 text-center">
+            Our Four Pollinator Archetypes
+          </h2>
+          <div className="grid md:grid-cols-4 gap-6">
+            {Object.entries(archetypeDefinitions).map(([key, archetype]) => (
+              <Card key={key} className="border-sage/20 text-center hover:shadow-lg transition-all">
+                <CardContent className="p-6">
+                  <div className="mb-4 flex justify-center">
+                    {getArchetypeIcon(key)}
+                  </div>
+                  <h3 className="font-heading font-semibold text-forest mb-2">
+                    {archetype.name}
+                  </h3>
+                  <p className="text-sm text-forest/60 mb-3">
+                    {archetype.scientificName}
+                  </p>
+                  <p className="text-sm text-forest/70">
+                    {archetype.healingApproach}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
 
         {/* Filters */}
         <div className="grid md:grid-cols-4 gap-4 mb-8">
@@ -127,7 +176,7 @@ export default function Practitioners() {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="md:col-span-2"
           />
-          
+
           <Select value={selectedArchetype} onValueChange={setSelectedArchetype}>
             <SelectTrigger>
               <SelectValue placeholder="All Archetypes" />
@@ -155,7 +204,7 @@ export default function Practitioners() {
           </Select>
         </div>
 
-        {/* Results */}
+        {/* Facilitators Grid */}
         {isLoading ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
@@ -173,21 +222,27 @@ export default function Practitioners() {
         ) : filteredPractitioners.length === 0 ? (
           <Card className="border-sage/20 text-center py-12">
             <CardContent>
-              <User className="w-16 h-16 text-sage mx-auto mb-4" />
+              <Users className="w-16 h-16 text-sage mx-auto mb-4" />
               <h3 className="font-heading text-xl font-semibold text-forest mb-2">
-                No practitioners found
+                No facilitators found
               </h3>
               <p className="text-forest/70">
-                Try adjusting your search criteria or browse all practitioners
+                Try adjusting your search criteria or browse all facilitators
               </p>
             </CardContent>
           </Card>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredPractitioners.map((practitioner) => (
-              <Card key={practitioner.id} className="border-sage/20 hover:shadow-lg transition-all duration-300 practitioner-card">
-                <div className="aspect-video bg-gradient-to-br from-cream to-light-green/20 rounded-t-lg flex items-center justify-center">
+              <Card key={practitioner.id} className="border-sage/20 hover:shadow-lg transition-all duration-300 facilitator-card">
+                <div className="aspect-video bg-gradient-to-br from-cream to-light-green/20 rounded-t-lg flex items-center justify-center relative overflow-hidden">
                   <User className="w-16 h-16 text-forest/30" />
+                  <div className="absolute top-3 right-3">
+                    <Badge className="bg-gold/90 text-white">
+                      <Hexagon className="w-3 h-3 mr-1" />
+                      Hive Member
+                    </Badge>
+                  </div>
                 </div>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-3">
@@ -195,11 +250,9 @@ export default function Practitioners() {
                       {getArchetypeIcon(practitioner.archetype)}
                       <div className="flex flex-col space-y-1">
                         <Badge variant="secondary" className="bg-gold/20 text-gold hover:bg-gold/30 text-xs">
-                          {archetypeDefinitions[practitioner.archetype]?.name} Archetype
+                          {archetypeDefinitions[practitioner.archetype]?.name}
                         </Badge>
-                        <Badge variant="outline" className="text-xs text-forest/60 border-sage/30">
-                          {archetypeDefinitions[practitioner.archetype]?.scientificName}
-                        </Badge>
+                        {getExperienceBadge(practitioner.experienceLevel)}
                       </div>
                     </div>
                     <ReviewsSummary
@@ -211,9 +264,9 @@ export default function Practitioners() {
                   </div>
 
                   <h3 className="font-heading text-lg font-semibold text-forest mb-2">
-                    Practitioner #{practitioner.id.slice(-6)}
+                    Facilitator #{practitioner.id.slice(-6)}
                   </h3>
-                  
+
                   {practitioner.bio && (
                     <p className="text-forest/70 text-sm mb-3 line-clamp-2">
                       {practitioner.bio}
@@ -242,9 +295,9 @@ export default function Practitioners() {
                       {practitioner.isVirtual && <Video className="w-4 h-4 mr-1" />}
                       {practitioner.isInPerson && <MapPin className="w-4 h-4 mr-1" />}
                       <span>
-                        {practitioner.isVirtual && practitioner.isInPerson 
+                        {practitioner.isVirtual && practitioner.isInPerson
                           ? "Virtual & In-Person"
-                          : practitioner.isVirtual 
+                          : practitioner.isVirtual
                           ? "Virtual Only"
                           : "In-Person Only"}
                       </span>
@@ -268,6 +321,7 @@ export default function Practitioners() {
                         View Profile
                       </Button>
                       <Button className="flex-1 bg-gold text-white hover:bg-gold/90">
+                        <Calendar className="w-4 h-4 mr-2" />
                         Book Session
                       </Button>
                     </div>
@@ -277,17 +331,63 @@ export default function Practitioners() {
             ))}
           </div>
         )}
+
+        {/* Community Benefits Section */}
+        <div className="mt-16 bg-gradient-to-br from-forest/5 to-gold/5 rounded-2xl p-8">
+          <div className="text-center mb-8">
+            <h2 className="font-heading text-3xl font-bold text-forest mb-4">
+              Why Join The Hive?
+            </h2>
+            <p className="text-forest/70 max-w-2xl mx-auto">
+              Our facilitator community offers exclusive benefits and opportunities
+              for professional growth and meaningful connections.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="bg-gold/20 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Users className="w-8 h-8 text-gold" />
+              </div>
+              <h3 className="font-heading text-lg font-semibold text-forest mb-2">
+                Peer Learning Network
+              </h3>
+              <p className="text-sm text-forest/70">
+                Connect with like-minded facilitators, share best practices, and learn
+                from diverse healing approaches across all archetypes.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="bg-gold/20 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Star className="w-8 h-8 text-gold" />
+              </div>
+              <h3 className="font-heading text-lg font-semibold text-forest mb-2">
+                Professional Recognition
+              </h3>
+              <p className="text-sm text-forest/70">
+                Build your reputation through our verification system, client reviews,
+                and archetype-based matching that highlights your unique strengths.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="bg-gold/20 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Hexagon className="w-8 h-8 text-gold" />
+              </div>
+              <h3 className="font-heading text-lg font-semibold text-forest mb-2">
+                Exclusive Resources
+              </h3>
+              <p className="text-sm text-forest/70">
+                Access facilitator-only content, advanced training materials, and
+                early access to new platform features and opportunities.
+              </p>
+            </div>
+          </div>
+        </div>
       </main>
 
       <Footer />
-
-      {/* Upgrade Modal */}
-      <UpgradeModal
-        isOpen={showUpgradeModal}
-        onClose={() => setShowUpgradeModal(false)}
-        currentLevel={accessInfo?.accessLevel || "preview"}
-        feature="unlimited practitioner viewing"
-      />
     </div>
   );
 }

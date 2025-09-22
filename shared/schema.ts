@@ -38,6 +38,16 @@ export const users = pgTable("users", {
   resetPasswordToken: varchar("reset_password_token"),
   resetPasswordExpires: timestamp("reset_password_expires"),
   googleId: varchar("google_id"), // for Google OAuth
+
+  // Subscription and access control
+  subscriptionStatus: subscriptionStatusEnum("subscription_status").default("free"),
+  accessLevel: accessLevelEnum("access_level").default("preview"),
+  subscriptionStartDate: timestamp("subscription_start_date"),
+  subscriptionEndDate: timestamp("subscription_end_date"),
+  trialEndDate: timestamp("trial_end_date"),
+  stripeCustomerId: varchar("stripe_customer_id"),
+  stripeSubscriptionId: varchar("stripe_subscription_id"),
+
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -50,6 +60,24 @@ export const sessionStatusEnum = pgEnum("session_status", ["scheduled", "complet
 export const surveyIdentityEnum = pgEnum("survey_identity", ["facilitator", "client", "both", "neither", "exploring"]);
 export const surveyFrequencyEnum = pgEnum("survey_frequency", ["weekly", "2-3_monthly", "monthly", "occasionally", "rarely"]);
 export const surveyInterestEnum = pgEnum("survey_interest", ["very_interested", "maybe", "not_for_me"]);
+
+// Subscription and access control enums
+export const subscriptionStatusEnum = pgEnum("subscription_status", ["free", "trial", "premium", "cancelled", "expired"]);
+export const accessLevelEnum = pgEnum("access_level", ["preview", "basic", "premium", "unlimited"]);
+
+// Seeds Currency System Enums
+export const pollinatorTierEnum = pgEnum("pollinator_tier", ["seedling", "sprout", "blooming", "wise_garden"]);
+export const transactionTypeEnum = pgEnum("transaction_type", ["earned", "spent", "gifted", "reward", "refund"]);
+export const earningReasonEnum = pgEnum("earning_reason", [
+  "profile_completion",
+  "session_attendance",
+  "review_submission",
+  "garden_upload",
+  "referral",
+  "daily_login",
+  "survey_completion",
+  "milestone_achievement"
+]);
 
 // User roles table
 export const userRoles = pgTable("user_roles", {
@@ -157,12 +185,89 @@ export const surveyResponses = pgTable("survey_responses", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Seeds Currency System Tables
+export const seedsWallets = pgTable("seeds_wallets", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id).unique(),
+  seedsBalance: integer("seeds_balance").notNull().default(0),
+  totalEarned: integer("total_earned").notNull().default(0),
+  totalSpent: integer("total_spent").notNull().default(0),
+  currentTier: pollinatorTierEnum("current_tier").notNull().default("seedling"),
+  nextTierThreshold: integer("next_tier_threshold").notNull().default(100),
+  lastActiveDate: timestamp("last_active_date").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const seedsTransactions = pgTable("seeds_transactions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  amount: integer("amount").notNull(),
+  type: transactionTypeEnum("type").notNull(),
+  reason: earningReasonEnum("reason"),
+  description: text("description"),
+  referenceId: varchar("reference_id"), // session_id, review_id, garden_content_id, etc.
+  referenceType: varchar("reference_type"), // "session", "review", "garden_content", etc.
+  balanceAfter: integer("balance_after").notNull(),
+  metadata: jsonb("metadata"), // Additional data for specific transaction types
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const pollinatorTiers = pgTable("pollinator_tiers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tier: pollinatorTierEnum("tier").notNull().unique(),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  requiredSeeds: integer("required_seeds").notNull(),
+  benefits: text("benefits").array(),
+  badgeColor: varchar("badge_color").notNull(),
+  badgeIcon: varchar("badge_icon"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Community Garden Tables
+export const gardenContent = pgTable("garden_content", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  authorId: varchar("author_id").notNull().references(() => users.id),
+  title: varchar("title").notNull(),
+  description: text("description"),
+  contentType: varchar("content_type").notNull(), // "article", "video", "audio", "exercise", "meditation"
+  content: text("content"), // For text content
+  fileUrl: varchar("file_url"), // For uploaded files
+  fileName: varchar("file_name"),
+  fileSize: integer("file_size"),
+  thumbnailUrl: varchar("thumbnail_url"),
+  tags: text("tags").array(),
+  isPublic: boolean("is_public").default(true),
+  isFeatured: boolean("is_featured").default(false),
+  status: varchar("status").notNull().default("pending"), // "pending", "approved", "rejected"
+  viewCount: integer("view_count").default(0),
+  likeCount: integer("like_count").default(0),
+  downloadCount: integer("download_count").default(0),
+  seedsReward: integer("seeds_reward").default(10), // Seeds earned by author for this content
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const gardenInteractions = pgTable("garden_interactions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  contentId: varchar("content_id").notNull().references(() => gardenContent.id),
+  interactionType: varchar("interaction_type").notNull(), // "view", "like", "download", "share"
+  aiResponse: text("ai_response"), // For AI Guardian interactions
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ many, one }) => ({
   userRoles: many(userRoles),
   practitionerProfile: many(practitioners),
   clientProfile: many(clients),
   surveyResponses: many(surveyResponses),
+  seedsWallet: one(seedsWallets),
+  seedsTransactions: many(seedsTransactions),
+  gardenContent: many(gardenContent),
+  gardenInteractions: many(gardenInteractions),
 }));
 
 export const userRolesRelations = relations(userRoles, ({ one }) => ({
@@ -224,6 +329,46 @@ export const surveyResponsesRelations = relations(surveyResponses, ({ one }) => 
   }),
 }));
 
+// Seeds Currency Relations
+export const seedsWalletsRelations = relations(seedsWallets, ({ one, many }) => ({
+  user: one(users, {
+    fields: [seedsWallets.userId],
+    references: [users.id],
+  }),
+  transactions: many(seedsTransactions),
+}));
+
+export const seedsTransactionsRelations = relations(seedsTransactions, ({ one }) => ({
+  user: one(users, {
+    fields: [seedsTransactions.userId],
+    references: [users.id],
+  }),
+  wallet: one(seedsWallets, {
+    fields: [seedsTransactions.userId],
+    references: [seedsWallets.userId],
+  }),
+}));
+
+// Community Garden Relations
+export const gardenContentRelations = relations(gardenContent, ({ one, many }) => ({
+  author: one(users, {
+    fields: [gardenContent.authorId],
+    references: [users.id],
+  }),
+  interactions: many(gardenInteractions),
+}));
+
+export const gardenInteractionsRelations = relations(gardenInteractions, ({ one }) => ({
+  user: one(users, {
+    fields: [gardenInteractions.userId],
+    references: [users.id],
+  }),
+  content: one(gardenContent, {
+    fields: [gardenInteractions.contentId],
+    references: [gardenContent.id],
+  }),
+}));
+
 // Zod schemas
 export const upsertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -261,6 +406,38 @@ export const insertSurveyResponseSchema = createInsertSchema(surveyResponses).om
   createdAt: true,
 });
 
+// Seeds Currency Schemas
+export const insertSeedsWalletSchema = createInsertSchema(seedsWallets).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertSeedsTransactionSchema = createInsertSchema(seedsTransactions).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertPollinatorTierSchema = createInsertSchema(pollinatorTiers).omit({
+  id: true,
+  createdAt: true,
+});
+
+// Community Garden Schemas
+export const insertGardenContentSchema = createInsertSchema(gardenContent).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  viewCount: true,
+  likeCount: true,
+  downloadCount: true,
+});
+
+export const insertGardenInteractionSchema = createInsertSchema(gardenInteractions).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type UpsertUser = z.infer<typeof upsertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -276,6 +453,20 @@ export type InsertSession = z.infer<typeof insertSessionSchema>;
 export type InsertReview = z.infer<typeof insertReviewSchema>;
 export type InsertSurveyResponse = z.infer<typeof insertSurveyResponseSchema>;
 export type SurveyResponse = typeof surveyResponses.$inferSelect;
+
+// Seeds Currency Types
+export type SeedsWallet = typeof seedsWallets.$inferSelect;
+export type SeedsTransaction = typeof seedsTransactions.$inferSelect;
+export type PollinatorTier = typeof pollinatorTiers.$inferSelect;
+export type InsertSeedsWallet = z.infer<typeof insertSeedsWalletSchema>;
+export type InsertSeedsTransaction = z.infer<typeof insertSeedsTransactionSchema>;
+export type InsertPollinatorTier = z.infer<typeof insertPollinatorTierSchema>;
+
+// Community Garden Types
+export type GardenContent = typeof gardenContent.$inferSelect;
+export type GardenInteraction = typeof gardenInteractions.$inferSelect;
+export type InsertGardenContent = z.infer<typeof insertGardenContentSchema>;
+export type InsertGardenInteraction = z.infer<typeof insertGardenInteractionSchema>;
 
 // Pollinator Archetype System - Innovative Wellness Practitioner Categorization
 // An alpha concept for practitioner classification inspired by nature's pollinator patterns
@@ -381,4 +572,82 @@ export const experienceLevelDefinitions = {
     color: '#4B3F72',
     requirements: 'Extensive experience, mentorship of other practitioners'
   }
+} as const;
+
+// Seeds Currency Pollinator Tier System
+export const pollinatorTierDefinitions = {
+  seedling: {
+    name: '🌱 Seedling Pollinator',
+    description: 'Just beginning your wellness journey',
+    requiredSeeds: 0,
+    color: '#7FB069', // Light green
+    benefits: [
+      'Access to basic Community Garden content',
+      'Earn Seeds for profile completion',
+      'Join FloreSer community discussions',
+      'Basic practitioner discovery'
+    ],
+    nextTier: 'sprout',
+    nextThreshold: 100
+  },
+  sprout: {
+    name: '🌿 Sprout Pollinator',
+    description: 'Growing your wellness practice and engagement',
+    requiredSeeds: 100,
+    color: '#52A675', // Medium green
+    benefits: [
+      'All Seedling benefits',
+      '10% discount on first session',
+      'Access to premium Garden content',
+      'Upload content to Community Garden',
+      'Enhanced profile visibility'
+    ],
+    nextTier: 'blooming',
+    nextThreshold: 500
+  },
+  blooming: {
+    name: '🌸 Blooming Pollinator',
+    description: 'Flourishing in the wellness ecosystem',
+    requiredSeeds: 500,
+    color: '#D4AF37', // FloreSer gold
+    benefits: [
+      'All Sprout benefits',
+      '20% discount on all sessions',
+      'Priority booking access',
+      'Featured Garden content placement',
+      'AI Guardian premium features',
+      'Monthly Seeds bonus'
+    ],
+    nextTier: 'wise_garden',
+    nextThreshold: 2000
+  },
+  wise_garden: {
+    name: '🌳 Wise Garden Pollinator',
+    description: 'Master cultivator of wellness wisdom',
+    requiredSeeds: 2000,
+    color: '#4B3F72', // Deep purple
+    benefits: [
+      'All Blooming benefits',
+      '30% discount on all sessions',
+      'Exclusive practitioner access',
+      'Garden content moderation privileges',
+      'Beta feature early access',
+      'Community leadership opportunities',
+      'Custom pollinator badge'
+    ],
+    nextTier: null,
+    nextThreshold: null
+  }
+} as const;
+
+// Seeds Earning Rates
+export const seedsEarningRates = {
+  profile_completion: 50,
+  session_attendance: 20,
+  review_submission: 15,
+  garden_upload: 25, // Base rate, varies by content quality
+  referral: 100,
+  daily_login: 5,
+  survey_completion: 30,
+  milestone_achievement: 75
 } as const;

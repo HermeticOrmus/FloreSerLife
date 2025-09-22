@@ -3,17 +3,23 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AIGuardianProvider } from "@/components/ai-guardian";
 import { useAuth } from "@/hooks/useAuth";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
+import Alpha from "@/pages/alpha";
 import Home from "@/pages/home";
 import Practitioners from "@/pages/practitioners";
+import PractitionerProfile from "@/pages/practitioner-profile";
 import ClientDashboard from "@/pages/client-dashboard";
 import PractitionerDashboard from "@/pages/practitioner-dashboard";
 import AdminSurveyPage from "@/pages/admin-survey";
+import AdminDashboard from "@/pages/admin-dashboard";
 import SignIn from "@/pages/SignIn";
 import SignUp from "@/pages/SignUp";
 import Survey from "@/pages/survey";
+import Hive from "@/pages/hive";
+import Garden from "@/pages/garden";
 import SimpleAdminLogin from "@/pages/simple-admin-login";
 import SimpleAdminPanel from "@/pages/simple-admin-panel";
 
@@ -47,11 +53,15 @@ function Router() {
       {/* Auth routes - always accessible */}
       <Route path="/auth/signin" component={SignIn} />
       <Route path="/auth/signup" component={SignUp} />
-      
-      {/* Survey route - always accessible */}
+
+      {/* Survey, Hive, Garden and Alpha routes - always accessible */}
       <Route path="/survey" component={Survey} />
-      
-      {/* Simple admin routes - always accessible */}
+      <Route path="/hive" component={Hive} />
+      <Route path="/garden" component={Garden} />
+      <Route path="/alpha" component={Alpha} />
+
+      {/* Admin routes - always accessible */}
+      <Route path="/admin/dashboard" component={AdminDashboard} />
       <Route path="/simple-admin/login" component={SimpleAdminLogin} />
       <Route path="/simple-admin/panel" component={SimpleAdminPanel} />
       
@@ -59,19 +69,21 @@ function Router() {
         <>
           <Route path="/" component={Landing} />
           <Route path="/practitioners" component={Practitioners} />
+          <Route path="/practitioners/:id" component={PractitionerProfile} />
         </>
       ) : (
         <>
           <Route path="/" component={getUserDashboard()} />
           <Route path="/dashboard/client" component={ClientDashboard} />
           <Route path="/dashboard/practitioner" component={PractitionerDashboard} />
-          
+
           {/* Admin routes - only accessible to admin users */}
           {user?.roles?.includes('admin') && (
             <Route path="/admin/survey" component={AdminSurveyPage} />
           )}
-          
+
           <Route path="/practitioners" component={Practitioners} />
+          <Route path="/practitioners/:id" component={PractitionerProfile} />
         </>
       )}
       <Route component={NotFound} />
@@ -83,8 +95,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Router />
+        <AIGuardianProvider>
+          <Toaster />
+          <Router />
+        </AIGuardianProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

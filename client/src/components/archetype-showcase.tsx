@@ -11,54 +11,43 @@ export default function ArchetypeShowcase() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-20">
           <div className="inline-flex items-center px-4 py-2 bg-forest/10 text-forest rounded-full text-sm font-medium mb-4">
-            <span className="mr-2">🔬</span>
-            Innovative Alpha Practitioner Categorization System
+            <span className="mr-2">🌸</span>
+            Nature-Inspired Practitioner Matching
           </div>
           <h2 className="font-heading text-3xl lg:text-5xl font-bold text-forest mb-6">
-            An Innovative Pollinator-Inspired Archetype System
+            Discover Your Perfect Practitioner Match
           </h2>
           <p className="text-xl text-forest/70 max-w-4xl mx-auto mb-8">
-            We're developing an innovative classification system inspired by nature's most effective 
-            pollinators to help optimize healing connections in our alpha wellness platform.
+            Our unique pollinator archetype system connects you with wellness practitioners
+            whose healing approach naturally aligns with your journey. Experience meaningful
+            connections that foster genuine transformation.
           </p>
-          
-          {/* Alpha Development Highlights */}
+
+          {/* Key Benefits */}
           <div className="grid md:grid-cols-3 gap-6 mb-8 max-w-4xl mx-auto">
             <div className="flex items-center justify-center space-x-2 text-forest/70">
               <Users className="w-5 h-5" />
-              <span className="text-sm font-medium">Community-Driven Development</span>
+              <span className="text-sm font-medium">Personalized Matching</span>
             </div>
             <div className="flex items-center justify-center space-x-2 text-forest/70">
               <BookOpen className="w-5 h-5" />
-              <span className="text-sm font-medium">Innovative Approach</span>
+              <span className="text-sm font-medium">Verified Expertise</span>
             </div>
             <div className="flex items-center justify-center space-x-2 text-forest/70">
               <Globe className="w-5 h-5" />
-              <span className="text-sm font-medium">Nature-Inspired Framework</span>
+              <span className="text-sm font-medium">Meaningful Connections</span>
             </div>
           </div>
 
-          {/* Alpha Vision Statement */}
+          {/* Value Proposition */}
           <div className="max-w-4xl mx-auto">
             <div className="p-6 bg-gradient-to-br from-gold/10 to-sage/10 rounded-lg border border-sage/20">
               <p className="text-center text-forest/80 italic leading-relaxed">
-                "Our pollinator-inspired approach represents a fresh perspective on wellness connections. 
-                As alpha users help us refine this innovative system, we're exploring how nature's most 
-                efficient pollinators can inspire better practitioner-client matching."
+                "Like pollinators in nature, each practitioner brings unique gifts to nurture growth and transformation.
+                Our archetype system helps you find the practitioner whose approach resonates deeply with your
+                personal healing journey."
               </p>
             </div>
-          </div>
-
-          {/* Development Approach */}
-          <div className="mt-8 p-6 bg-cream/50 rounded-xl border border-sage/20 max-w-3xl mx-auto">
-            <div className="flex items-center justify-center space-x-2 mb-3">
-              <Microscope className="w-5 h-5 text-forest" />
-              <span className="text-sm font-semibold text-forest">Alpha Development</span>
-            </div>
-            <p className="text-sm text-forest/70">
-              Our classification system draws inspiration from natural pollinator efficiency patterns. 
-              Alpha users are helping us explore how these concepts can enhance wellness connections.
-            </p>
           </div>
         </div>
         
@@ -157,19 +146,28 @@ export default function ArchetypeShowcase() {
             <div className="flex items-center justify-center space-x-2 mb-4">
               <Award className="w-6 h-6 text-gold" />
               <h3 className="font-heading text-2xl font-bold text-forest">
-                Alpha Testing Phase: Help Validate the Future
+                Start Your Wellness Journey Today
               </h3>
             </div>
             <p className="text-forest/70 mb-6 leading-relaxed">
-              As an alpha member, you'll experience this innovative matching system firsthand and help us refine 
-              our approach that aims to improve how people connect with wellness practitioners.
+              Experience the power of archetype-based matching and connect with practitioners
+              who truly understand your healing journey. Your transformation awaits.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-gold text-white hover:bg-gold/90 rounded-full px-8" data-testid="button-join-alpha">
-                Join Alpha Testing
+              <Button
+                className="bg-gold text-white hover:bg-gold/90 rounded-full px-8"
+                onClick={() => (window.location.href = "/practitioners")}
+                data-testid="button-find-practitioners"
+              >
+                Find Your Practitioner
               </Button>
-              <Button variant="outline" className="border-forest text-forest hover:bg-forest/5 rounded-full px-8" data-testid="button-learn-methodology">
-                Learn About Our Methodology
+              <Button
+                variant="outline"
+                className="border-forest text-forest hover:bg-forest/5 rounded-full px-8"
+                onClick={() => (window.location.href = "/auth/signup")}
+                data-testid="button-get-started"
+              >
+                Get Started
               </Button>
             </div>
           </div>

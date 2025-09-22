@@ -39,6 +39,16 @@ export default function Header() {
           Find Practitioners
         </Button>
       </Link>
+      <Link href="/hive">
+        <Button variant="ghost" className="w-full justify-start" data-testid="button-mobile-hive">
+          The Hive
+        </Button>
+      </Link>
+      <Link href="/garden">
+        <Button variant="ghost" className="w-full justify-start" data-testid="button-mobile-garden">
+          Community Garden
+        </Button>
+      </Link>
       <Link href="/survey">
         <Button variant="ghost" className="w-full justify-start" data-testid="button-mobile-survey">
           Platform Survey
@@ -111,9 +121,27 @@ export default function Header() {
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
+            <Link href="/hive">
+              <Button
+                variant="ghost"
+                className="text-forest hover:text-gold"
+                data-testid="button-hive-desktop"
+              >
+                The Hive
+              </Button>
+            </Link>
+            <Link href="/garden">
+              <Button
+                variant="ghost"
+                className="text-forest hover:text-gold"
+                data-testid="button-garden-desktop"
+              >
+                Garden
+              </Button>
+            </Link>
             <Link href="/survey">
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="text-forest hover:text-gold"
                 data-testid="button-survey-desktop"
               >
