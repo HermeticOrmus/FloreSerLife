@@ -11,6 +11,7 @@ import {
   pollinatorTiers,
   gardenContent,
   gardenInteractions,
+  favoritePractitioners,
   type User,
   type UpsertUser,
   type Practitioner,
@@ -35,7 +36,7 @@ import {
   seedsEarningRates,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, desc, sql } from "drizzle-orm";
+import { eq, and, desc, sql, gte, lt, count, inArray } from "drizzle-orm";
 
 // Interface for storage operations
 export interface IStorage {
@@ -98,6 +99,13 @@ export interface IStorage {
   updateUserAccess(userId: string, accessLevel: string, subscriptionStatus: string, options?: any): Promise<void>;
   getUserSessionsThisMonth(userId: string): Promise<number>;
   hasUsedTrial(userId: string): Promise<boolean>;
+
+  // Seeds system methods
+  addSeedsTransaction(transactionData: any): Promise<void>;
+
+  // Garden interaction methods
+  createGardenInteraction(interactionData: any): Promise<any>;
+  incrementGardenContentViews(contentId: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -917,8 +925,8 @@ export class DatabaseStorage implements IStorage {
       .from(sessions_table)
       .innerJoin(clients, eq(sessions_table.clientId, clients.id))
       .innerJoin(practitioners, eq(sessions_table.practitionerId, practitioners.id))
-      .innerJoin(users.as("client_user"), eq(clients.userId, sql`client_user.id`))
-      .innerJoin(users.as("practitioner_user"), eq(practitioners.userId, sql`practitioner_user.id`))
+      .innerJoin(users, eq(clients.userId, users.id))
+      .innerJoin(users, eq(practitioners.userId, users.id))
       .orderBy(desc(sessions_table.createdAt))
       .limit(100);
   }
@@ -1058,6 +1066,139 @@ export class DatabaseStorage implements IStorage {
       .limit(1);
 
     return !!user[0]?.trialEndDate;
+  }
+
+  // Seeds system methods
+  async addSeedsTransaction(transactionData: any): Promise<void> {
+    await db.insert(seedsTransactions).values(transactionData);
+  }
+
+  // Garden interaction methods
+  async createGardenInteraction(interactionData: any): Promise<any> {
+    const [interaction] = await db
+      .insert(gardenInteractions)
+      .values(interactionData)
+      .returning();
+    return interaction;
+  }
+
+  async incrementGardenContentViews(contentId: string): Promise<void> {
+    await db
+      .update(gardenContent)
+      .set({
+        viewCount: sql`${gardenContent.viewCount} + 1`
+      })
+      .where(eq(gardenContent.id, contentId));
+  }
+
+  // Favorites methods
+  async getFavoritePractitioners(userId: string): Promise<any[]> {
+    return await db.select()
+      .from(favoritePractitioners)
+      .where(eq(favoritePractitioners.userId, userId));
+  }
+
+  async addFavoritePractitioner(userId: string, practitionerId: string): Promise<void> {
+    await db.insert(favoritePractitioners).values({
+      userId,
+      practitionerId
+    });
+  }
+
+  async removeFavoritePractitioner(userId: string, practitionerId: string): Promise<void> {
+    await db.delete(favoritePractitioners)
+      .where(
+        and(
+          eq(favoritePractitioners.userId, userId),
+          eq(favoritePractitioners.practitionerId, practitionerId)
+        )
+      );
+  }
+
+  // Booking methods
+  async getPractitionerBookingsByDate(practitionerId: string, date: Date): Promise<any[]> {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    return await db.select()
+      .from(sessions_table)
+      .where(
+        and(
+          eq(sessions_table.practitionerId, practitionerId),
+          gte(sessions_table.scheduledDatetime, startOfDay),
+          lt(sessions_table.scheduledDatetime, endOfDay),
+          eq(sessions_table.status, 'scheduled')
+        )
+      );
+  }
+
+  async checkBookingConflicts(
+    practitionerId: string,
+    scheduledDatetime: Date,
+    duration: number
+  ): Promise<any[]> {
+    const endTime = new Date(scheduledDatetime.getTime() + duration * 60000);
+
+    return await db.select()
+      .from(sessions_table)
+      .where(
+        and(
+          eq(sessions_table.practitionerId, practitionerId),
+          eq(sessions_table.status, 'scheduled'),
+          // Check if new booking overlaps with existing bookings
+          sql`${sessions_table.scheduledDatetime} < ${endTime} AND
+              ${sessions_table.scheduledDatetime} + (${sessions_table.duration} * interval '1 minute') > ${scheduledDatetime}`
+        )
+      );
+  }
+
+  async createBooking(bookingData: any): Promise<any> {
+    const result = await db.insert(sessions_table).values(bookingData).returning();
+    return result[0];
+  }
+
+  async getUserBookings(userId: string): Promise<any[]> {
+    // Get user's client and practitioner profiles
+    const clientProfile = await this.getClientByUserId(userId);
+    const practitionerProfile = await this.getPractitionerByUserId(userId);
+
+    const bookings = [];
+
+    // Get bookings where user is the client
+    if (clientProfile) {
+      const clientBookings = await db.select()
+        .from(sessions_table)
+        .where(eq(sessions_table.clientId, clientProfile.id))
+        .orderBy(desc(sessions_table.scheduledDatetime));
+      bookings.push(...clientBookings);
+    }
+
+    // Get bookings where user is the practitioner
+    if (practitionerProfile) {
+      const practitionerBookings = await db.select()
+        .from(sessions_table)
+        .where(eq(sessions_table.practitionerId, practitionerProfile.id))
+        .orderBy(desc(sessions_table.scheduledDatetime));
+      bookings.push(...practitionerBookings);
+    }
+
+    return bookings;
+  }
+
+  async getBookingById(id: string): Promise<any> {
+    const result = await db.select()
+      .from(sessions_table)
+      .where(eq(sessions_table.id, id))
+      .limit(1);
+    return result[0];
+  }
+
+  async updateBookingStatus(id: string, status: string): Promise<void> {
+    await db.update(sessions_table)
+      .set({ status: status as any })
+      .where(eq(sessions_table.id, id));
   }
 }
 

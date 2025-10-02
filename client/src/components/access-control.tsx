@@ -14,7 +14,7 @@ import {
   MessageCircle,
   Calendar,
   Sparkles,
-  Upgrade,
+  ArrowUp,
   CheckCircle,
   X
 } from "lucide-react";
@@ -132,7 +132,7 @@ export function AccessDenied({
               className="bg-gold text-white hover:bg-gold/90"
               onClick={onUpgrade}
             >
-              <Upgrade className="w-3 h-3 mr-1" />
+              <ArrowUp className="w-3 h-3 mr-1" />
               Upgrade
             </Button>
           )}

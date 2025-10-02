@@ -6,10 +6,10 @@ export default function HowItWorks() {
     {
       number: 1,
       title: "Create Your Profile",
-      subtitle: "Discover Your Archetype",
-      description: "Sign up and complete your wellness profile to discover which pollinator archetype best matches your healing journey. Our system identifies your preferences, goals, and the type of guidance that resonates with you.",
+      subtitle: "Discover Your Path",
+      description: "Sign up and complete your profile to discover your ideal path on FloreSer. Whether you're seeking healing as a client or ready to start facilitating, our system helps identify the approach that resonates with you. New facilitators are welcomed into the supportive Bee community.",
       icon: UserPlus,
-      details: "Archetype assessment • Wellness preferences • Healing goals • Personal matching criteria"
+      details: "Role selection • Archetype discovery • Skill development path • Community matching"
     },
     {
       number: 2,
@@ -40,11 +40,25 @@ export default function HowItWorks() {
           <h2 className="font-heading text-3xl lg:text-5xl font-bold text-forest mb-6">
             How It Works
           </h2>
-          <p className="text-xl text-forest/70 max-w-4xl mx-auto mb-8">
+          <p className="text-xl text-forest/70 max-w-4xl mx-auto mb-6">
             From discovering your unique archetype to booking transformative sessions,
             our streamlined process makes finding the perfect wellness practitioner
             simple and meaningful.
           </p>
+
+          {/* Facilitator Pathway Callout */}
+          <div className="max-w-3xl mx-auto mb-8">
+            <div className="bg-gradient-to-r from-gold/10 to-gold/5 rounded-lg p-4 border border-gold/20">
+              <div className="text-center">
+                <h3 className="font-semibold text-forest mb-2">🐝 New Facilitators Welcome</h3>
+                <p className="text-sm text-forest/80">
+                  Ready to start your facilitator journey? The <span className="font-semibold text-gold">Bee archetype</span> is
+                  specifically designed as your entry point - perfect for developing foundational skills
+                  in a supportive, growth-oriented community.
+                </p>
+              </div>
+            </div>
+          </div>
 
           {/* Key Benefits */}
           <div className="grid md:grid-cols-3 gap-6 mb-8 max-w-3xl mx-auto">

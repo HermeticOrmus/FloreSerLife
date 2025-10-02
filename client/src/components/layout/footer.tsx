@@ -17,7 +17,7 @@ export default function Footer() {
               <span className="font-heading text-lg font-bold">FloreSer</span>
             </div>
             <p className="text-white/70 text-sm leading-relaxed">
-              Connecting souls through nature-inspired wellness. Find your perfect practitioner match through our unique pollinator archetype system.
+              A nature-inspired wellness community where seekers find healing support and new facilitators discover their calling. Start your journey with the Bee archetype - perfect for beginners.
             </p>
           </div>
           
@@ -42,19 +42,19 @@ export default function Footer() {
           </div>
           
           <div>
-            <h4 className="font-heading text-lg font-semibold mb-4">For Practitioners</h4>
+            <h4 className="font-heading text-lg font-semibold mb-4">For Facilitators</h4>
             <ul className="space-y-2 text-sm text-white/70">
               <li>
-                <a href="/api/login" className="hover:text-gold transition-colors">Join FloreSer</a>
+                <Link href="/auth/signup" className="hover:text-gold transition-colors">🐝 Start with Bee Archetype</Link>
               </li>
               <li>
-                <a href="#" className="hover:text-gold transition-colors">Practitioner Resources</a>
+                <a href="#" className="hover:text-gold transition-colors">Facilitator Resources</a>
               </li>
               <li>
-                <a href="#" className="hover:text-gold transition-colors">Success Stories</a>
+                <a href="#" className="hover:text-gold transition-colors">Community & Mentorship</a>
               </li>
               <li>
-                <a href="#" className="hover:text-gold transition-colors">Support</a>
+                <a href="#" className="hover:text-gold transition-colors">Growth Support</a>
               </li>
             </ul>
           </div>

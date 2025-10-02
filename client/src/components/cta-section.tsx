@@ -1,7 +1,9 @@
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Search, UserPlus, Heart } from "lucide-react";
 
 export default function CTASection() {
+  const [, setLocation] = useLocation();
   return (
     <section className="py-20 bg-gradient-to-br from-cream to-light-green/30">
       <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
@@ -12,19 +14,20 @@ export default function CTASection() {
             Start Your Journey
           </div>
           <h2 className="font-heading text-3xl lg:text-4xl font-bold text-forest mb-6">
-            Stop Settling for Mismatched Practitioners
+            Your Wellness Journey Starts Here
           </h2>
           <p className="text-lg text-forest/70 mb-8 max-w-2xl mx-auto">
-            <strong>89% satisfaction rate</strong> vs the industry standard of 40%.
-            Experience the difference when your practitioner truly understands your healing journey.
-            Join 2,400+ people who found their perfect wellness match.
+            Whether you're seeking healing support or ready to begin facilitating,
+            FloreSer welcomes you. Find practitioners who resonate with your journey,
+            or discover your calling as a facilitator in our supportive Bee community.
+            Every path starts with a single step.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
             <Button
               size="lg"
               className="bg-gold text-white px-8 py-4 rounded-full font-medium hover:bg-gold/90 shadow-lg transform hover:scale-105 transition-all"
-              onClick={() => window.location.href = '/practitioners'}
+              onClick={() => setLocation('/practitioners')}
               data-testid="button-find-practitioner"
             >
               <Search className="mr-2 h-5 w-5" />
@@ -34,29 +37,40 @@ export default function CTASection() {
               variant="outline"
               size="lg"
               className="border-2 border-forest text-forest px-8 py-4 rounded-full font-medium hover:bg-forest hover:text-white"
-              onClick={() => window.location.href = '/auth/signup'}
+              onClick={() => setLocation('/auth/signup')}
               data-testid="button-become-practitioner"
             >
               <UserPlus className="mr-2 h-5 w-5" />
-              Join as Practitioner
+              Begin Facilitating
             </Button>
           </div>
 
-          {/* Value Statement */}
-          <div className="bg-sage/10 rounded-lg p-6 max-w-2xl mx-auto">
-            <div className="flex items-center justify-center mb-4">
-              <div className="bg-gold/20 rounded-full p-2 mr-3">
-                <Heart className="text-gold h-5 w-5" />
+          {/* Dual Path Value Statement */}
+          <div className="grid md:grid-cols-2 gap-4 max-w-3xl mx-auto">
+            <div className="bg-sage/10 rounded-lg p-4">
+              <div className="flex items-center mb-3">
+                <div className="bg-sage/20 rounded-full p-2 mr-3">
+                  <Search className="text-sage h-4 w-4" />
+                </div>
+                <h3 className="font-semibold text-forest text-sm">For Seekers</h3>
               </div>
-              <h3 className="font-heading text-lg font-semibold text-forest">
-                Science Meets Intuition
-              </h3>
+              <p className="text-forest/70 text-xs leading-relaxed">
+                Find practitioners whose energy and approach truly resonate with your healing journey.
+                Our archetype system ensures meaningful connections.
+              </p>
             </div>
-            <p className="text-forest/70 text-sm leading-relaxed">
-              "Finally found a practitioner who truly gets me. The archetype matching is incredible!"
-              <br />
-              <span className="italic">- Sarah M., Beta User</span>
-            </p>
+            <div className="bg-gold/10 rounded-lg p-4">
+              <div className="flex items-center mb-3">
+                <div className="bg-gold/20 rounded-full p-2 mr-3">
+                  <Heart className="text-gold h-4 w-4" />
+                </div>
+                <h3 className="font-semibold text-forest text-sm">For New Facilitators</h3>
+              </div>
+              <p className="text-forest/70 text-xs leading-relaxed">
+                Start your facilitator journey with the Bee archetype - a welcoming community
+                designed to support your growth from day one.
+              </p>
+            </div>
           </div>
         </div>
       </div>

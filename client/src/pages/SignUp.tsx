@@ -102,8 +102,16 @@ export default function SignUp() {
               Join FloreSer
             </CardTitle>
             <CardDescription>
-              Create your account to connect with wellness practitioners
+              Create your account to connect with wellness practitioners or start your facilitator journey
             </CardDescription>
+
+            {/* Facilitator Pathway Highlight */}
+            <div className="mt-4 p-3 bg-gold/10 rounded-lg border border-gold/20">
+              <p className="text-sm text-forest">
+                <span className="font-semibold">🐝 New to facilitating?</span> Perfect! The Bee archetype is designed as your starting point -
+                a supportive community where you can develop foundational wellness skills.
+              </p>
+            </div>
           </CardHeader>
 
           <CardContent className="space-y-6">

@@ -48,7 +48,7 @@ export default function SignIn() {
       }
 
       // Redirect to dashboard or home
-      window.location.href = "/";
+      setLocation("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to sign in");
     } finally {

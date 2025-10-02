@@ -1,14 +1,15 @@
 import { ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { 
-  User, 
-  Calendar, 
-  MessageSquare, 
-  Settings, 
+import {
+  User,
+  Calendar,
+  MessageSquare,
+  Settings,
   HelpCircle,
   Star,
   Users,
@@ -33,6 +34,7 @@ interface DashboardSidebarProps {
 
 export default function DashboardSidebar({ userType, activeSection, onNavigate }: DashboardSidebarProps) {
   const { user } = useAuth();
+  const [, setLocation] = useLocation();
 
   const clientNavItems: SidebarNavItem[] = [
     { title: "Dashboard", icon: BarChart3, href: "dashboard" },
@@ -128,10 +130,11 @@ export default function DashboardSidebar({ userType, activeSection, onNavigate }
         <h4 className="text-sm font-medium text-forest/60 px-3">Quick Actions</h4>
         
         {userType === 'client' ? (
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <Button
+            variant="outline"
+            size="sm"
             className="w-full border-gold text-gold hover:bg-gold hover:text-white"
+            onClick={() => setLocation('/hive')}
           >
             <PlusCircle className="w-4 h-4 mr-2" />
             Book Session

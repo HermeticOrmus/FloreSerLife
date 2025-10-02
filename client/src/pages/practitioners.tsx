@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Star, MapPin, Video, User } from "lucide-react";
 import { ArchetypeIcons } from "@/components/icons/archetype-icons";
@@ -21,25 +22,25 @@ export default function Practitioners() {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [, setLocation] = useLocation();
 
-  const { data: practitionersData, isLoading } = useQuery({
+  const { data: practitionersData, isLoading } = useQuery<any>({
     queryKey: ["/api/practitioners/all"],
   });
 
   // Handle both old format (array) and new format (object with access info)
   const practitioners = Array.isArray(practitionersData)
     ? practitionersData
-    : practitionersData?.practitioners || [];
+    : (practitionersData as any)?.practitioners || [];
 
-  const accessInfo = !Array.isArray(practitionersData) ? practitionersData?.accessInfo : null;
+  const accessInfo = !Array.isArray(practitionersData) ? (practitionersData as any)?.accessInfo : null;
 
   useEffect(() => {
     document.title = "Find Practitioners - FloreSer";
   }, []);
 
-  const filteredPractitioners = practitioners.filter(practitioner => {
-    const matchesSearch = searchTerm === "" || 
+  const filteredPractitioners = practitioners.filter((practitioner: any) => {
+    const matchesSearch = searchTerm === "" ||
       practitioner.bio?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      practitioner.specializations?.some(spec => 
+      practitioner.specializations?.some((spec: string) =>
         spec.toLowerCase().includes(searchTerm.toLowerCase())
       );
     
@@ -69,25 +70,44 @@ export default function Practitioners() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-12">
           <div className="inline-flex items-center px-4 py-2 bg-forest/10 text-forest rounded-full text-sm font-medium mb-4">
-            <span className="mr-2">🔬</span>
-            Research-Backed Practitioner Matching
+            <span className="mr-2">🌸</span>
+            Connect • Learn • Grow Together
           </div>
           <h1 className="font-heading text-3xl lg:text-4xl font-bold text-forest mb-4">
-            Discover Your Ideal Wellness Practitioner
+            Find Your Wellness Community
           </h1>
-          <p className="text-lg text-forest/70 max-w-3xl">
-            Experience our innovative pollinator archetype system in action. Each practitioner 
-            has been classified using our nature-inspired approach, helping you find 
-            optimal compatibility with your wellness needs and preferred healing approaches.
+          <p className="text-lg text-forest/70 max-w-3xl mb-6">
+            Whether you're seeking healing support or ready to start your facilitator journey,
+            our nature-inspired archetype system helps you find your perfect match.
+            Each practitioner embodies one of four unique approaches to wellness.
           </p>
-          <div className="mt-4 flex items-center space-x-6 text-sm text-forest/60">
+
+          {/* Dual Path Guidance */}
+          <div className="grid md:grid-cols-2 gap-4 mb-6 max-w-4xl">
+            <div className="bg-sage/10 rounded-lg p-4 border border-sage/20">
+              <h3 className="font-semibold text-forest mb-2">🔍 Seeking Support?</h3>
+              <p className="text-sm text-forest/80">
+                Browse practitioners by archetype to find someone whose approach resonates with your healing journey.
+                <span className="font-semibold text-gold"> Bee practitioners</span> are especially welcoming for first-time seekers.
+              </p>
+            </div>
+            <div className="bg-gold/10 rounded-lg p-4 border border-gold/20">
+              <h3 className="font-semibold text-forest mb-2">🐝 Ready to Facilitate?</h3>
+              <p className="text-sm text-forest/80">
+                Explore <span className="font-semibold text-gold">Bee practitioners</span> to see your future community!
+                This archetype welcomes new facilitators and provides mentorship for developing foundational skills.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-6 text-sm text-forest/60">
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-gold rounded-full"></div>
-              <span>4 Nature-Inspired Archetype Classifications</span>
+              <span>Bee: Perfect for beginners & experienced alike</span>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-sage rounded-full"></div>
-              <span>Innovative Matching System</span>
+              <span>Other archetypes: For experienced practitioners</span>
             </div>
           </div>
         </div>
@@ -134,11 +154,16 @@ export default function Practitioners() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="">All Archetypes</SelectItem>
-              {Object.entries(archetypeDefinitions).map(([key, archetype]) => (
-                <SelectItem key={key} value={key}>
-                  {archetype.name}
-                </SelectItem>
-              ))}
+              <SelectItem value="bee">
+                🐝 Bee (Perfect for New Facilitators)
+              </SelectItem>
+              {Object.entries(archetypeDefinitions)
+                .filter(([key]) => key !== 'bee')
+                .map(([key, archetype]) => (
+                  <SelectItem key={key} value={key}>
+                    {archetype.name} (Experienced Practitioners)
+                  </SelectItem>
+                ))}
             </SelectContent>
           </Select>
 
@@ -184,7 +209,7 @@ export default function Practitioners() {
           </Card>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPractitioners.map((practitioner) => (
+            {filteredPractitioners.map((practitioner: any) => (
               <Card key={practitioner.id} className="border-sage/20 hover:shadow-lg transition-all duration-300 practitioner-card">
                 <div className="aspect-video bg-gradient-to-br from-cream to-light-green/20 rounded-t-lg flex items-center justify-center">
                   <User className="w-16 h-16 text-forest/30" />
@@ -195,10 +220,10 @@ export default function Practitioners() {
                       {getArchetypeIcon(practitioner.archetype)}
                       <div className="flex flex-col space-y-1">
                         <Badge variant="secondary" className="bg-gold/20 text-gold hover:bg-gold/30 text-xs">
-                          {archetypeDefinitions[practitioner.archetype]?.name} Archetype
+                          {(archetypeDefinitions as any)[practitioner.archetype]?.name} Archetype
                         </Badge>
                         <Badge variant="outline" className="text-xs text-forest/60 border-sage/30">
-                          {archetypeDefinitions[practitioner.archetype]?.scientificName}
+                          {(archetypeDefinitions as any)[practitioner.archetype]?.scientificName}
                         </Badge>
                       </div>
                     </div>
@@ -223,7 +248,7 @@ export default function Practitioners() {
                   {practitioner.specializations && practitioner.specializations.length > 0 && (
                     <div className="mb-4">
                       <div className="flex flex-wrap gap-1">
-                        {practitioner.specializations.slice(0, 3).map((spec, index) => (
+                        {practitioner.specializations.slice(0, 3).map((spec: string, index: number) => (
                           <Badge key={index} variant="outline" className="text-xs">
                             {spec}
                           </Badge>
@@ -267,7 +292,10 @@ export default function Practitioners() {
                       >
                         View Profile
                       </Button>
-                      <Button className="flex-1 bg-gold text-white hover:bg-gold/90">
+                      <Button
+                        className="flex-1 bg-gold text-white hover:bg-gold/90"
+                        onClick={() => setLocation(`/book/${practitioner.id}`)}
+                      >
                         Book Session
                       </Button>
                     </div>

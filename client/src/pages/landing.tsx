@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
@@ -13,11 +14,38 @@ import { Star, Shield, Search, Calendar, UserCheck } from "lucide-react";
 import { characters } from "@/assets";
 
 export default function Landing() {
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
+  const [, setLocation] = useLocation();
 
   useEffect(() => {
     document.title = "FloreSer - Find Your Ideal Wellness Practitioner";
   }, []);
+
+  const handleFindYourMatch = () => {
+    if (isAuthenticated) {
+      setLocation("/practitioners");
+    } else {
+      setLocation("/auth/signup");
+    }
+  };
+
+  const handleJoinAsPractitioner = () => {
+    if (isAuthenticated) {
+      // If user already has practitioner role, go to dashboard
+      if (user?.roles?.includes('practitioner')) {
+        setLocation("/dashboard/practitioner");
+      } else {
+        // If authenticated but not a practitioner, go to practitioners page to set up profile
+        setLocation("/practitioners");
+      }
+    } else {
+      setLocation("/auth/signup");
+    }
+  };
+
+  const handleJoinAlphaProgram = () => {
+    setLocation("/alpha");
+  };
 
   return (
     <div className="min-h-screen bg-cream text-forest">
@@ -49,7 +77,7 @@ export default function Landing() {
                 <Button
                   size="lg"
                   className="bg-gold text-white hover:bg-gold/90 rounded-full px-8 py-4 font-medium shadow-lg transform hover:scale-105 transition-all"
-                  onClick={() => (window.location.href = isAuthenticated ? "/practitioners" : "/auth/signup")}
+                  onClick={handleFindYourMatch}
                   data-testid="button-find-practitioners"
                 >
                   <Search className="mr-2 h-5 w-5" />
@@ -59,51 +87,55 @@ export default function Landing() {
                   variant="outline"
                   size="lg"
                   className="border-2 border-forest text-forest hover:bg-forest hover:text-white rounded-full px-8 py-4 font-medium"
-                  onClick={() => (window.location.href = isAuthenticated ? "/dashboard/practitioner" : "/auth/signup")}
+                  onClick={handleJoinAsPractitioner}
                   data-testid="button-become-practitioner"
                 >
-                  Join as Practitioner
+                  Start as Facilitator
                 </Button>
               </div>
 
-              {/* Social Proof */}
-              <div className="bg-white/50 rounded-lg p-4 mb-8 border border-cream">
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center space-x-4">
-                    <div className="text-center">
-                      <div className="font-bold text-forest text-lg">150+</div>
-                      <div className="text-forest/60">Verified Practitioners</div>
-                    </div>
-                    <div className="w-px h-8 bg-sage/30"></div>
-                    <div className="text-center">
-                      <div className="font-bold text-forest text-lg">89%</div>
-                      <div className="text-forest/60">Satisfaction Rate</div>
-                    </div>
-                    <div className="w-px h-8 bg-sage/30"></div>
-                    <div className="text-center">
-                      <div className="font-bold text-forest text-lg">2.4k+</div>
-                      <div className="text-forest/60">Successful Matches</div>
-                    </div>
+              {/* New Facilitator Guidance */}
+              <div className="bg-gold/10 rounded-lg p-4 mb-8 border border-gold/20">
+                <div className="flex items-start space-x-3">
+                  <div className="w-2 h-2 bg-gold rounded-full mt-2 flex-shrink-0"></div>
+                  <div>
+                    <p className="text-forest text-sm">
+                      <span className="font-semibold">New to wellness facilitation?</span> Start with our{" "}
+                      <span className="font-semibold text-gold">Bee archetype</span> - designed as the
+                      perfect foundation for developing your facilitator skills in a supportive community environment.
+                    </p>
                   </div>
-                  <div className="text-xs text-forest/50">Updated daily</div>
+                </div>
+              </div>
+
+              {/* Community Promise */}
+              <div className="bg-white/50 rounded-lg p-6 mb-8 border border-cream">
+                <div className="text-center">
+                  <h3 className="font-heading text-lg font-semibold text-forest mb-3">
+                    Our Promise to You
+                  </h3>
+                  <p className="text-forest/70 leading-relaxed">
+                    Every practitioner in our community is carefully verified and embodies one of our four
+                    nature-inspired archetypes. We believe healing happens best when there's genuine resonance
+                    between you and your practitioner's approach to wellness.
+                  </p>
                 </div>
               </div>
 
               {/* Value Propositions */}
               <div className="bg-sage/10 rounded-lg p-6 mb-8 border border-sage/20">
                 <h3 className="font-heading text-lg font-semibold text-forest mb-3">
-                  Why Traditional Matchmaking Fails
+                  Healing is Personal
                 </h3>
                 <p className="text-forest/70 text-sm leading-relaxed mb-4">
-                  Most platforms use basic filters like location or price. We believe
-                  healing is more nuanced. Our revolutionary pollinator archetype system
-                  matches you based on energy, approach, and intuitive compatibility.
+                  We know that finding the right wellness practitioner isn't just about credentials or location.
+                  It's about finding someone whose approach truly resonates with your journey. Our nature-inspired
+                  archetype system helps you discover practitioners whose energy and methods align with your needs.
                 </p>
                 <div className="flex items-start space-x-3">
                   <div className="w-2 h-2 bg-gold rounded-full mt-2 flex-shrink-0"></div>
                   <p className="text-forest/80 text-sm font-medium">
-                    "Finally found a practitioner who truly understood my healing journey"
-                    <span className="text-forest/60">- Early adopter feedback</span>
+                    Every connection matters. Every journey is unique. Every healing path deserves respect.
                   </p>
                 </div>
               </div>
@@ -112,15 +144,15 @@ export default function Landing() {
               <div className="space-y-3">
                 <div className="flex items-center text-sm text-forest/70">
                   <Shield className="text-gold mr-3 h-4 w-4" />
-                  <span><strong className="text-forest">100% Verified</strong> - Every practitioner background-checked</span>
+                  <span><strong className="text-forest">Carefully Verified</strong> - Every practitioner thoughtfully reviewed</span>
                 </div>
                 <div className="flex items-center text-sm text-forest/70">
                   <Star className="text-gold mr-3 h-4 w-4" />
-                  <span><strong className="text-forest">Science-Backed Matching</strong> - Pollinator archetype system</span>
+                  <span><strong className="text-forest">Nature-Inspired Wisdom</strong> - Four unique healing approaches</span>
                 </div>
                 <div className="flex items-center text-sm text-forest/70">
                   <Calendar className="text-gold mr-3 h-4 w-4" />
-                  <span><strong className="text-forest">Seamless Experience</strong> - Book, meet, grow</span>
+                  <span><strong className="text-forest">Meaningful Connections</strong> - Find your healing match</span>
                 </div>
               </div>
 
@@ -129,7 +161,7 @@ export default function Landing() {
                 <p className="text-xs text-forest/50">
                   Interested in contributing to our development?{" "}
                   <button
-                    onClick={() => (window.location.href = "/alpha")}
+                    onClick={handleJoinAlphaProgram}
                     className="text-gold hover:text-gold/80 underline"
                   >
                     Join our Alpha Program

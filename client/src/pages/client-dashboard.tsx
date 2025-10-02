@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import DashboardLayout from "@/components/dashboard/dashboard-layout";
 import DashboardSidebar from "@/components/dashboard/dashboard-sidebar";
 import StatCard from "@/components/dashboard/stat-card";
@@ -80,21 +82,65 @@ const mockRecentActivity = [
 
 export default function ClientDashboard() {
   const { user } = useAuth();
+  const [, setLocation] = useLocation();
   const [activeSection, setActiveSection] = useState('dashboard');
 
   useEffect(() => {
     document.title = "Client Dashboard - FloreSer";
   }, []);
 
+  // Fetch user's bookings
+  const { data: bookings = [], isLoading: bookingsLoading } = useQuery({
+    queryKey: ['/api/bookings'],
+    enabled: !!user,
+  });
+
+  // Transform bookings into session format for UpcomingSessions component
+  const upcomingSessions = (bookings as any[])
+    .filter((booking: any) =>
+      booking.status === 'scheduled' &&
+      new Date(booking.scheduledDatetime) > new Date()
+    )
+    .map((booking: any) => ({
+      id: booking.id,
+      practitionerName: booking.practitionerName || 'Practitioner',
+      date: new Date(booking.scheduledDatetime).toLocaleDateString(),
+      time: new Date(booking.scheduledDatetime).toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit'
+      }),
+      duration: booking.duration,
+      type: (booking.isVirtual ? 'virtual' : 'in-person') as 'virtual' | 'in-person',
+      status: booking.status as 'scheduled' | 'confirmed' | 'pending' | 'cancelled',
+      meetingLink: booking.isVirtual ? 'https://floreser.life/sessions' : undefined
+    }));
+
+  const pastSessions = (bookings as any[])
+    .filter((booking: any) =>
+      booking.status === 'completed' ||
+      new Date(booking.scheduledDatetime) < new Date()
+    )
+    .sort((a: any, b: any) =>
+      new Date(b.scheduledDatetime).getTime() - new Date(a.scheduledDatetime).getTime()
+    );
+
+  // Calculate stats from real booking data
+  const stats = {
+    upcomingSessions: upcomingSessions.length,
+    totalSessions: (bookings as any[]).length,
+    unreadMessages: mockClientStats.unreadMessages, // TODO: fetch from API
+    favoritePractitioners: mockClientStats.favoritePractitioners // TODO: fetch from API
+  };
+
   const handleQuickAction = (actionType: string) => {
     console.log('Quick action:', actionType);
     // Handle navigation or actions
     switch (actionType) {
       case 'book-session':
-        // Navigate to practitioner search
+        setLocation('/hive');
         break;
       case 'browse-practitioners':
-        // Navigate to practitioners page
+        setLocation('/practitioners');
         break;
       case 'view-messages':
         setActiveSection('messages');
@@ -159,29 +205,28 @@ export default function ClientDashboard() {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard
             title="Upcoming Sessions"
-            value={mockClientStats.upcomingSessions}
-            description="Next session tomorrow"
+            value={bookingsLoading ? '-' : stats.upcomingSessions}
+            description={stats.upcomingSessions > 0 ? 'Scheduled' : 'No upcoming sessions'}
             icon={Calendar}
             iconColor="text-blue-600"
           />
           <StatCard
             title="Total Sessions"
-            value={mockClientStats.totalSessions}
-            description="This year"
+            value={bookingsLoading ? '-' : stats.totalSessions}
+            description="All time"
             icon={TrendingUp}
             iconColor="text-green-600"
-            trend={{ value: "3 this month", isPositive: true }}
           />
           <StatCard
             title="Messages"
-            value={mockClientStats.unreadMessages}
+            value={stats.unreadMessages}
             description="Unread"
             icon={MessageSquare}
             iconColor="text-purple-600"
           />
           <StatCard
             title="Favorite Practitioners"
-            value={mockClientStats.favoritePractitioners}
+            value={stats.favoritePractitioners}
             description="Saved"
             icon={Heart}
             iconColor="text-red-500"
@@ -193,15 +238,68 @@ export default function ClientDashboard() {
           {/* Left Column - Sessions and Actions */}
           <div className="lg:col-span-2 space-y-6">
             <UpcomingSessions
-              sessions={mockUpcomingSessions}
+              sessions={bookingsLoading ? mockUpcomingSessions : upcomingSessions}
               userType="client"
               onSessionAction={handleSessionAction}
             />
-            
+
             <QuickActions
               userType="client"
               onAction={handleQuickAction}
             />
+
+            {/* Booking History */}
+            {!bookingsLoading && pastSessions.length > 0 && (
+              <div className="bg-white rounded-lg border border-sage/20 p-6">
+                <h3 className="font-heading text-lg font-semibold text-forest mb-4">
+                  Booking History
+                </h3>
+                <div className="space-y-3">
+                  {pastSessions.slice(0, 5).map((booking: any) => (
+                    <div
+                      key={booking.id}
+                      className="flex items-center justify-between p-4 bg-sage/5 rounded-lg hover:bg-sage/10 transition-colors"
+                    >
+                      <div className="flex-1">
+                        <p className="font-medium text-forest">
+                          {booking.practitionerName || 'Practitioner'}
+                        </p>
+                        <p className="text-sm text-forest/60">
+                          {new Date(booking.scheduledDatetime).toLocaleDateString('en-US', {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric'
+                          })} at {new Date(booking.scheduledDatetime).toLocaleTimeString('en-US', {
+                            hour: 'numeric',
+                            minute: '2-digit'
+                          })}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          booking.status === 'completed' ? 'bg-green-100 text-green-800' :
+                          booking.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {booking.status}
+                        </span>
+                        <p className="text-sm text-forest/60 mt-1">
+                          {booking.duration} min
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {pastSessions.length > 5 && (
+                  <Button
+                    variant="ghost"
+                    className="w-full mt-4 text-gold hover:text-gold/80"
+                  >
+                    View All History ({pastSessions.length} sessions)
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Right Column - Activity Feed */}

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { format } from "date-fns";
 import DashboardLayout from "@/components/dashboard/dashboard-layout";
 import DashboardSidebar from "@/components/dashboard/dashboard-sidebar";
@@ -52,6 +52,7 @@ interface AdminSurveyPageProps {}
 export default function AdminSurveyPage({}: AdminSurveyPageProps) {
   const { user, isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
   const [currentPage, setCurrentPage] = useState(1);
   const [filterIdentityType, setFilterIdentityType] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
@@ -72,7 +73,7 @@ export default function AdminSurveyPage({}: AdminSurveyPageProps) {
         description: "You need admin privileges to access this page.",
         variant: "destructive"
       });
-      window.location.href = '/';
+      setLocation('/');
     }
   }, [isLoading, isAuthenticated, isAdmin, toast]);
 

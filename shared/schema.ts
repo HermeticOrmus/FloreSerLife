@@ -25,6 +25,10 @@ export const sessions = pgTable(
   (table) => [index("IDX_session_expire").on(table.expire)],
 );
 
+// Subscription and access control enums (needed before users table)
+export const subscriptionStatusEnum = pgEnum("subscription_status", ["free", "trial", "premium", "cancelled", "expired"]);
+export const accessLevelEnum = pgEnum("access_level", ["preview", "basic", "premium", "unlimited"]);
+
 // User storage table
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -57,13 +61,84 @@ export const archetypeEnum = pgEnum("archetype", ["bee", "hummingbird", "butterf
 export const experienceLevelEnum = pgEnum("experience_level", ["rising", "evolving", "wise"]);
 export const userRoleEnum = pgEnum("user_role", ["client", "practitioner", "admin"]);
 export const sessionStatusEnum = pgEnum("session_status", ["scheduled", "completed", "cancelled", "no-show"]);
+
+// Professional category enum - comprehensive healing modalities
+export const professionalCategoryEnum = pgEnum("professional_category", [
+  // Bodywork & Somatic
+  "massage_therapy",
+  "bodywork",
+  "somatic_experiencing",
+  "craniosacral_therapy",
+  "rolfing",
+  "myofascial_release",
+
+  // Energy Healing
+  "reiki",
+  "energy_healing",
+  "pranic_healing",
+  "quantum_healing",
+  "biofield_tuning",
+
+  // Eastern Medicine
+  "acupuncture",
+  "acupressure",
+  "shiatsu",
+  "traditional_chinese_medicine",
+  "ayurveda",
+
+  // Psychology & Counseling
+  "psychology",
+  "psychotherapy",
+  "counseling",
+  "life_coaching",
+  "trauma_therapy",
+  "emdr",
+
+  // Spiritual & Consciousness
+  "past_life_regression",
+  "shamanic_healing",
+  "sound_healing",
+  "crystal_healing",
+  "spiritual_counseling",
+  "meditation_instruction",
+
+  // Movement & Dance
+  "yoga_instruction",
+  "dance_therapy",
+  "movement_therapy",
+  "tai_chi",
+  "qigong",
+
+  // Breathwork & Voice
+  "breathwork",
+  "holotropic_breathwork",
+  "voice_healing",
+  "toning",
+
+  // Nutrition & Herbalism
+  "nutrition_counseling",
+  "herbalism",
+  "naturopathy",
+  "functional_medicine",
+
+  // Creative Arts
+  "art_therapy",
+  "music_therapy",
+  "expressive_arts",
+
+  // Other Modalities
+  "hypnotherapy",
+  "nlp",
+  "eft_tapping",
+  "kinesiology",
+  "reflexology",
+  "aromatherapy"
+]);
 export const surveyIdentityEnum = pgEnum("survey_identity", ["facilitator", "client", "both", "neither", "exploring"]);
 export const surveyFrequencyEnum = pgEnum("survey_frequency", ["weekly", "2-3_monthly", "monthly", "occasionally", "rarely"]);
 export const surveyInterestEnum = pgEnum("survey_interest", ["very_interested", "maybe", "not_for_me"]);
 
-// Subscription and access control enums
-export const subscriptionStatusEnum = pgEnum("subscription_status", ["free", "trial", "premium", "cancelled", "expired"]);
-export const accessLevelEnum = pgEnum("access_level", ["preview", "basic", "premium", "unlimited"]);
+// Subscription and access control enums (moved to top of file)
 
 // Seeds Currency System Enums
 export const pollinatorTierEnum = pgEnum("pollinator_tier", ["seedling", "sprout", "blooming", "wise_garden"]);
@@ -95,13 +170,17 @@ export const practitioners = pgTable("practitioners", {
   experienceLevel: experienceLevelEnum("experience_level").notNull(),
   bio: text("bio"),
   specializations: text("specializations").array(),
+  professionalCategories: professionalCategoryEnum("professional_category").array(),
   hourlyRate: decimal("hourly_rate", { precision: 10, scale: 2 }),
   location: varchar("location"),
   isVirtual: boolean("is_virtual").default(true),
   isInPerson: boolean("is_in_person").default(false),
   isVerified: boolean("is_verified").default(false),
+  isFeatured: boolean("is_featured").default(false),
   totalSessions: integer("total_sessions").default(0),
   averageRating: decimal("average_rating", { precision: 3, scale: 2 }),
+  responseTimeHours: integer("response_time_hours"), // Average response time
+  yearsActive: integer("years_active"), // Years in practice
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -255,6 +334,14 @@ export const gardenInteractions = pgTable("garden_interactions", {
   contentId: varchar("content_id").notNull().references(() => gardenContent.id),
   interactionType: varchar("interaction_type").notNull(), // "view", "like", "download", "share"
   aiResponse: text("ai_response"), // For AI Guardian interactions
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// User favorites table
+export const favoritePractitioners = pgTable("favorite_practitioners", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  practitionerId: varchar("practitioner_id").notNull().references(() => practitioners.id),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -474,22 +561,23 @@ export const archetypeDefinitions = {
   bee: {
     name: 'Bee',
     scientificName: 'Apis Therapeuticus',
-    description: 'Systematic community builders who excel in creating structured healing environments and sustainable wellness practices',
-    fullDescription: 'The Bee archetype represents practitioners who excel in creating systematic, community-oriented healing approaches with structured, collaborative methodologies.',
-    methodology: 'Evidence-based somatic practices with emphasis on nervous system regulation and sustainable habit formation',
-    approach: 'Collaborative, structured, and community-focused with emphasis on measurable outcomes',
+    description: 'Foundation builders who create safe, supportive spaces for healing and growth. The natural starting point for facilitators at any experience level, from newcomers developing their practice to seasoned practitioners with decades of grounding wisdom.',
+    fullDescription: 'The Bee archetype represents the foundational practice where facilitators build core skills in creating safe, structured healing environments. Whether you\'re just beginning your journey or a seasoned practitioner with years of experience, the Bee approach emphasizes community, practical skill development, and steady growth.',
+    methodology: 'Practical, grounding approaches that focus on creating safety, building community connections, and developing sustainable wellness practices through hands-on learning',
+    approach: 'Welcoming to all levels, community-centered, and growth-oriented with emphasis on practical skills and steady development',
     specialties: [
-      'nervous system regulation and polyvagal theory application',
-      'evidence-based daily practice development',
-      'somatic experiencing and body-based trauma recovery',
-      'group healing facilitation and community wellness',
-      'sustainable lifestyle architecture and habit formation',
-      'workplace wellness and organizational healing'
+      'creating safe healing spaces and therapeutic relationships',
+      'basic nervous system awareness and grounding techniques',
+      'community building and group support facilitation',
+      'practical daily wellness and self-care practices',
+      'foundational listening and holding space skills',
+      'mentorship and peer learning in wellness settings'
     ],
     color: '#D4AF37',
-    traits: ['Systematic Integration', 'Community Catalyst', 'Sustainable Architecture', 'Collaborative Healing'],
-    clientBenefits: ['Long-term sustainable changes', 'Community support systems', 'Evidence-based progress tracking', 'Structured healing journey'],
-    researchInsights: 'Bee practitioners tend to excel in systematic approaches and community-building in wellness settings'
+    traits: ['Foundation Building', 'Growth Mindset', 'Community Support', 'Practical Wisdom'],
+    clientBenefits: ['Safe, welcoming environment', 'Steady, sustainable progress', 'Community connection', 'Practical tools and skills'],
+    facilitatorBenefits: ['Perfect entry point for new facilitators', 'Continuous skill development opportunities', 'Mentorship and peer learning', 'Builds confidence through practice'],
+    researchInsights: 'Bee practitioners create the foundational skills that support all wellness work. This archetype welcomes facilitators at every stage - from those just discovering their calling to experienced practitioners who specialize in grounding, community-building approaches.'
   },
   hummingbird: {
     name: 'Hummingbird',
@@ -556,22 +644,114 @@ export const archetypeDefinitions = {
 export const experienceLevelDefinitions = {
   rising: {
     name: 'Rising Pollinator',
-    description: '0-2 years experience, fresh energy and passion',
+    description: '0-2 years developing core skills and finding their approach',
+    growthFocus: 'Building foundation, discovering strengths, learning from mentors',
     color: '#FFF5B7',
-    requirements: 'Basic certification, mentorship support'
+    requirements: 'Open heart, willingness to learn, basic wellness awareness',
+    beeContext: 'Perfect place to start! Bee community welcomes new facilitators with open arms'
   },
   evolving: {
     name: 'Evolving Pollinator',
-    description: '3-7 years experience, established practice',
+    description: '3-7 years deepening expertise and developing signature approach',
+    growthFocus: 'Refining skills, building confidence, developing unique style',
     color: '#FF8B6A',
-    requirements: 'Proven track record, client testimonials'
+    requirements: 'Demonstrated growth, emerging expertise, peer recognition',
+    beeContext: 'May choose to stay in Bee community or explore other archetypes based on calling'
   },
   wise: {
     name: 'Wise Pollinator',
-    description: '8+ years experience, deep embodied wisdom',
+    description: '8+ years of embodied wisdom and masterful practice',
+    growthFocus: 'Mentoring others, innovating approaches, sharing deep wisdom',
     color: '#4B3F72',
-    requirements: 'Extensive experience, mentorship of other practitioners'
+    requirements: 'Established practice, mentorship capacity, recognized expertise',
+    beeContext: 'Wise Bee practitioners often become mentors and community anchors'
   }
+} as const;
+
+// Professional Category Definitions
+export const professionalCategoryDefinitions = {
+  // Bodywork & Somatic
+  massage_therapy: { name: 'Massage Therapy', icon: '💆', group: 'bodywork' },
+  bodywork: { name: 'Bodywork', icon: '🙌', group: 'bodywork' },
+  somatic_experiencing: { name: 'Somatic Experiencing', icon: '🌊', group: 'bodywork' },
+  craniosacral_therapy: { name: 'Craniosacral Therapy', icon: '🧠', group: 'bodywork' },
+  rolfing: { name: 'Rolfing', icon: '⚖️', group: 'bodywork' },
+  myofascial_release: { name: 'Myofascial Release', icon: '🌀', group: 'bodywork' },
+
+  // Energy Healing
+  reiki: { name: 'Reiki', icon: '✨', group: 'energy' },
+  energy_healing: { name: 'Energy Healing', icon: '⚡', group: 'energy' },
+  pranic_healing: { name: 'Pranic Healing', icon: '🌟', group: 'energy' },
+  quantum_healing: { name: 'Quantum Healing', icon: '🔮', group: 'energy' },
+  biofield_tuning: { name: 'Biofield Tuning', icon: '📻', group: 'energy' },
+
+  // Eastern Medicine
+  acupuncture: { name: 'Acupuncture', icon: '📌', group: 'eastern' },
+  acupressure: { name: 'Acupressure', icon: '👆', group: 'eastern' },
+  shiatsu: { name: 'Shiatsu', icon: '🤲', group: 'eastern' },
+  traditional_chinese_medicine: { name: 'Traditional Chinese Medicine', icon: '🏮', group: 'eastern' },
+  ayurveda: { name: 'Ayurveda', icon: '🕉️', group: 'eastern' },
+
+  // Psychology & Counseling
+  psychology: { name: 'Psychology', icon: '🧠', group: 'psychology' },
+  psychotherapy: { name: 'Psychotherapy', icon: '💭', group: 'psychology' },
+  counseling: { name: 'Counseling', icon: '💬', group: 'psychology' },
+  life_coaching: { name: 'Life Coaching', icon: '🎯', group: 'psychology' },
+  trauma_therapy: { name: 'Trauma Therapy', icon: '🛡️', group: 'psychology' },
+  emdr: { name: 'EMDR', icon: '👁️', group: 'psychology' },
+
+  // Spiritual & Consciousness
+  past_life_regression: { name: 'Past Life Regression', icon: '🔄', group: 'spiritual' },
+  shamanic_healing: { name: 'Shamanic Healing', icon: '🪶', group: 'spiritual' },
+  sound_healing: { name: 'Sound Healing', icon: '🔊', group: 'spiritual' },
+  crystal_healing: { name: 'Crystal Healing', icon: '💎', group: 'spiritual' },
+  spiritual_counseling: { name: 'Spiritual Counseling', icon: '🙏', group: 'spiritual' },
+  meditation_instruction: { name: 'Meditation Instruction', icon: '🧘', group: 'spiritual' },
+
+  // Movement & Dance
+  yoga_instruction: { name: 'Yoga Instruction', icon: '🧘‍♀️', group: 'movement' },
+  dance_therapy: { name: 'Dance Therapy', icon: '💃', group: 'movement' },
+  movement_therapy: { name: 'Movement Therapy', icon: '🏃', group: 'movement' },
+  tai_chi: { name: 'Tai Chi', icon: '☯️', group: 'movement' },
+  qigong: { name: 'Qigong', icon: '🌬️', group: 'movement' },
+
+  // Breathwork & Voice
+  breathwork: { name: 'Breathwork', icon: '💨', group: 'breath' },
+  holotropic_breathwork: { name: 'Holotropic Breathwork', icon: '🌀', group: 'breath' },
+  voice_healing: { name: 'Voice Healing', icon: '🎤', group: 'breath' },
+  toning: { name: 'Toning', icon: '🎵', group: 'breath' },
+
+  // Nutrition & Herbalism
+  nutrition_counseling: { name: 'Nutrition Counseling', icon: '🥗', group: 'nutrition' },
+  herbalism: { name: 'Herbalism', icon: '🌿', group: 'nutrition' },
+  naturopathy: { name: 'Naturopathy', icon: '🌱', group: 'nutrition' },
+  functional_medicine: { name: 'Functional Medicine', icon: '⚕️', group: 'nutrition' },
+
+  // Creative Arts
+  art_therapy: { name: 'Art Therapy', icon: '🎨', group: 'creative' },
+  music_therapy: { name: 'Music Therapy', icon: '🎶', group: 'creative' },
+  expressive_arts: { name: 'Expressive Arts', icon: '🎭', group: 'creative' },
+
+  // Other Modalities
+  hypnotherapy: { name: 'Hypnotherapy', icon: '😴', group: 'other' },
+  nlp: { name: 'NLP (Neuro-Linguistic Programming)', icon: '🧩', group: 'other' },
+  eft_tapping: { name: 'EFT Tapping', icon: '👋', group: 'other' },
+  kinesiology: { name: 'Kinesiology', icon: '🏋️', group: 'other' },
+  reflexology: { name: 'Reflexology', icon: '🦶', group: 'other' },
+  aromatherapy: { name: 'Aromatherapy', icon: '🌸', group: 'other' }
+} as const;
+
+export const categoryGroups = {
+  bodywork: { name: 'Bodywork & Somatic', color: '#8B7355', description: 'Hands-on healing through touch and body awareness' },
+  energy: { name: 'Energy Healing', color: '#9370DB', description: 'Working with subtle energy fields and chakras' },
+  eastern: { name: 'Eastern Medicine', color: '#DC143C', description: 'Traditional healing practices from Asia' },
+  psychology: { name: 'Psychology & Counseling', color: '#4682B4', description: 'Mental health and emotional support' },
+  spiritual: { name: 'Spiritual & Consciousness', color: '#DAA520', description: 'Soul work and consciousness expansion' },
+  movement: { name: 'Movement & Dance', color: '#32CD32', description: 'Healing through movement and embodiment' },
+  breath: { name: 'Breathwork & Voice', color: '#87CEEB', description: 'Breath and vocal expression for healing' },
+  nutrition: { name: 'Nutrition & Herbalism', color: '#228B22', description: 'Food as medicine and plant healing' },
+  creative: { name: 'Creative Arts', color: '#FF69B4', description: 'Healing through artistic expression' },
+  other: { name: 'Other Modalities', color: '#708090', description: 'Additional healing approaches' }
 } as const;
 
 // Seeds Currency Pollinator Tier System

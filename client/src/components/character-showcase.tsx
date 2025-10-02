@@ -57,13 +57,14 @@ export default function CharacterShowcase() {
                     </Badge>
                   </div>
                   <p className="text-sm text-gold/80 font-medium mb-3">
-                    Systematic Community Builder Archetype
+                    Foundation Builder & Mentor Archetype
                   </p>
-                  
+
                   <p className="text-forest/70 leading-relaxed mb-4 text-sm">
-                    MAIA embodies the systematic, community-building approach to wellness. 
-                    She guides you toward healers who excel in evidence-based methodologies, sustainable 
-                    practice development, and collaborative wellness ecosystems.
+                    MAIA embodies the welcoming, growth-oriented approach to wellness.
+                    She represents facilitators who create safe spaces for learning and healing,
+                    perfect for new facilitators starting their journey and experienced practitioners
+                    who specialize in community-building and foundational support.
                   </p>
                   
                   <div className="space-y-3">
@@ -72,20 +73,20 @@ export default function CharacterShowcase() {
                         Key Specialties
                       </h4>
                       <div className="flex flex-wrap gap-1">
-                        <Badge className="bg-gold/20 text-gold text-xs">Nervous System Regulation</Badge>
-                        <Badge className="bg-gold/20 text-gold text-xs">Community Healing</Badge>
-                        <Badge className="bg-gold/20 text-gold text-xs">Sustainable Practices</Badge>
+                        <Badge className="bg-gold/20 text-gold text-xs">Safe Spaces</Badge>
+                        <Badge className="bg-gold/20 text-gold text-xs">Skill Development</Badge>
+                        <Badge className="bg-gold/20 text-gold text-xs">Community Support</Badge>
                       </div>
                     </div>
                     
                     <div className="p-3 bg-gold/10 rounded-lg border border-gold/20">
                       <div className="flex items-center space-x-2 mb-1">
                         <Star className="w-3 h-3 text-gold" />
-                        <span className="text-xs font-semibold text-forest/60">Effectiveness Insight</span>
+                        <span className="text-xs font-semibold text-forest/60">Perfect Starting Point</span>
                       </div>
                       <p className="text-xs text-forest/70">
-                        MAIA represents practitioners who focus on systematic approaches to chronic condition 
-                        management and building strong long-term client relationships.
+                        MAIA represents the Bee archetype - welcoming to new facilitators while honoring
+                        experienced practitioners who choose grounding, community-focused approaches.
                       </p>
                     </div>
                   </div>
@@ -121,10 +122,10 @@ export default function CharacterShowcase() {
                   <p className="text-sm text-sage/80 font-medium mb-3">
                     Precision Intuitive Healer Archetype
                   </p>
-                  
+
                   <p className="text-forest/70 leading-relaxed mb-4 text-sm">
-                    ANGELICA embodies the intuitive, precision-focused approach to healing through heightened energetic 
-                    sensitivity and rapid-response protocols. She connects you with healers who excel in crisis intervention, 
+                    ANGELICA embodies the intuitive, precision-focused approach to healing through heightened energetic
+                    sensitivity and rapid-response protocols. She represents experienced practitioners who excel in crisis intervention,
                     intuitive assessment, and precise energetic healing modalities.
                   </p>
                   
@@ -146,8 +147,8 @@ export default function CharacterShowcase() {
                         <span className="text-xs font-semibold text-forest/60">Effectiveness Insight</span>
                       </div>
                       <p className="text-xs text-forest/70">
-                        ANGELICA represents practitioners who specialize in acute stress resolution 
-                        and focus on providing rapid, transformative insights.
+                        ANGELICA represents the Hummingbird archetype - for experienced practitioners
+                        who specialize in acute interventions and rapid, transformative insights.
                       </p>
                     </div>
                   </div>

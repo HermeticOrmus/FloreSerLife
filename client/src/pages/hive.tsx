@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
@@ -8,35 +8,101 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Star, MapPin, Video, User, Users, Hexagon, Crown, Award, Calendar, BookOpen } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
+import {
+  Star,
+  MapPin,
+  Video,
+  User,
+  Users,
+  Hexagon,
+  Crown,
+  Award,
+  Calendar,
+  BookOpen,
+  Heart,
+  Clock,
+  TrendingUp,
+  Filter,
+  X,
+  Sparkles
+} from "lucide-react";
 import { ArchetypeIcons } from "@/components/icons/archetype-icons";
 import { ReviewsSummary } from "@/components/reviews";
-import { archetypeDefinitions, type Practitioner } from "@shared/schema";
+import {
+  archetypeDefinitions,
+  professionalCategoryDefinitions,
+  categoryGroups
+} from "@shared/schema";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Hive() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedArchetype, setSelectedArchetype] = useState<string>("");
   const [selectedExperience, setSelectedExperience] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedGroup, setSelectedGroup] = useState<string>("");
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 300]);
+  const [sortBy, setSortBy] = useState<string>("featured");
+  const [showFilters, setShowFilters] = useState(false);
   const [, setLocation] = useLocation();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  const { data: practitionersData, isLoading } = useQuery({
+  const { data: practitionersData, isLoading } = useQuery<any>({
     queryKey: ["/api/practitioners/all"],
+  });
+
+  const { data: favoritesData } = useQuery<any>({
+    queryKey: ["/api/favorites", user?.id],
+    enabled: !!user?.id,
+    queryFn: async () => {
+      const res = await fetch(`/api/favorites/${user?.id}`, {
+        credentials: 'include'
+      });
+      if (!res.ok) return [];
+      return res.json();
+    }
+  });
+
+  const toggleFavoriteMutation = useMutation({
+    mutationFn: async (practitionerId: string) => {
+      const res = await fetch('/api/favorites', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ practitionerId })
+      });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/favorites"] });
+      toast({ title: "Favorites updated!" });
+    }
   });
 
   // Handle both old format (array) and new format (object with access info)
   const practitioners = Array.isArray(practitionersData)
     ? practitionersData
-    : practitionersData?.practitioners || [];
+    : (practitionersData as any)?.practitioners || [];
+
+  const favorites = Array.isArray(favoritesData) ? favoritesData.map((f: any) => f.practitionerId) : [];
 
   useEffect(() => {
     document.title = "The Hive - Facilitator Community - FloreSer";
   }, []);
 
-  const filteredPractitioners = practitioners.filter(practitioner => {
+  const filteredPractitioners = practitioners.filter((practitioner: any) => {
     const matchesSearch = searchTerm === "" ||
       practitioner.bio?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      practitioner.specializations?.some(spec =>
+      practitioner.specializations?.some((spec: string) =>
         spec.toLowerCase().includes(searchTerm.toLowerCase())
+      ) ||
+      practitioner.professionalCategories?.some((cat: string) =>
+        (professionalCategoryDefinitions as any)[cat]?.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
 
     const matchesArchetype = selectedArchetype === "" ||
@@ -45,8 +111,64 @@ export default function Hive() {
     const matchesExperience = selectedExperience === "" ||
       practitioner.experienceLevel === selectedExperience;
 
-    return matchesSearch && matchesArchetype && matchesExperience;
+    const matchesCategory = selectedCategory === "" ||
+      practitioner.professionalCategories?.includes(selectedCategory);
+
+    const matchesGroup = selectedGroup === "" ||
+      practitioner.professionalCategories?.some((cat: string) =>
+        (professionalCategoryDefinitions as any)[cat]?.group === selectedGroup
+      );
+
+    const matchesPrice = !practitioner.hourlyRate ||
+      (parseFloat(practitioner.hourlyRate) >= priceRange[0] &&
+       parseFloat(practitioner.hourlyRate) <= priceRange[1]);
+
+    return matchesSearch && matchesArchetype && matchesExperience && matchesCategory && matchesGroup && matchesPrice;
   });
+
+  // Sort practitioners
+  const sortedPractitioners = [...filteredPractitioners].sort((a: any, b: any) => {
+    switch (sortBy) {
+      case "featured":
+        // Featured first, then by rating
+        if (a.isFeatured && !b.isFeatured) return -1;
+        if (!a.isFeatured && b.isFeatured) return 1;
+        return parseFloat(b.averageRating || 0) - parseFloat(a.averageRating || 0);
+      case "rating":
+        return parseFloat(b.averageRating || 0) - parseFloat(a.averageRating || 0);
+      case "price-low":
+        return parseFloat(a.hourlyRate || 9999) - parseFloat(b.hourlyRate || 9999);
+      case "price-high":
+        return parseFloat(b.hourlyRate || 0) - parseFloat(a.hourlyRate || 0);
+      case "experience":
+        const expOrder = { wise: 3, evolving: 2, rising: 1 };
+        return (expOrder[b.experienceLevel as keyof typeof expOrder] || 0) -
+               (expOrder[a.experienceLevel as keyof typeof expOrder] || 0);
+      case "newest":
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      case "sessions":
+        return (b.totalSessions || 0) - (a.totalSessions || 0);
+      default:
+        return 0;
+    }
+  });
+
+  const activeFiltersCount = [
+    selectedArchetype,
+    selectedExperience,
+    selectedCategory,
+    selectedGroup,
+    searchTerm
+  ].filter(Boolean).length + (priceRange[0] > 0 || priceRange[1] < 300 ? 1 : 0);
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setSelectedArchetype("");
+    setSelectedExperience("");
+    setSelectedCategory("");
+    setSelectedGroup("");
+    setPriceRange([0, 300]);
+  };
 
   const getArchetypeIcon = (archetype: string) => {
     switch (archetype) {
@@ -79,6 +201,19 @@ export default function Hive() {
     );
   };
 
+  const handleToggleFavorite = (practitionerId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to save favorites",
+        variant: "destructive"
+      });
+      return;
+    }
+    toggleFavoriteMutation.mutate(practitionerId);
+  };
+
   return (
     <div className="min-h-screen bg-cream">
       <Header />
@@ -93,29 +228,34 @@ export default function Hive() {
           <h1 className="font-heading text-4xl lg:text-5xl font-bold text-forest mb-6">
             Meet Our <span className="text-gold">Facilitator Community</span>
           </h1>
-          <p className="text-lg text-forest/70 max-w-4xl mx-auto mb-8">
-            The Hive is where our verified wellness facilitators come together to share wisdom,
-            collaborate on healing approaches, and support each other's growth. Each facilitator
-            brings unique gifts classified through our pollinator archetype system.
+          <p className="text-lg text-forest/70 max-w-4xl mx-auto mb-6">
+            The Hive is where our wellness facilitators come together to share wisdom,
+            collaborate on healing approaches, and support each other's growth. From new
+            facilitators starting their journey in the Bee community to experienced practitioners
+            across all archetypes.
           </p>
 
-          {/* Community Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto mb-8">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-gold">150+</div>
-              <div className="text-sm text-forest/60">Active Facilitators</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-gold">4</div>
-              <div className="text-sm text-forest/60">Archetype Categories</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-gold">89%</div>
-              <div className="text-sm text-forest/60">Success Rate</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-gold">24/7</div>
-              <div className="text-sm text-forest/60">Community Support</div>
+          {/* New Facilitator Encouragement */}
+          <div className="bg-gold/10 rounded-lg p-4 mb-8 border border-gold/20 max-w-4xl mx-auto">
+            <p className="text-sm text-forest text-center">
+              <span className="font-semibold">🐝 Considering facilitation?</span> Browse our Bee facilitators
+              to see your future community - a supportive space where you can learn, grow, and develop
+              your foundational wellness skills alongside mentors and peers.
+            </p>
+          </div>
+
+          {/* Community Values */}
+          <div className="max-w-4xl mx-auto mb-8">
+            <div className="bg-white/30 rounded-lg p-6 text-center">
+              <h3 className="font-heading text-xl font-semibold text-forest mb-4">
+                A Community United by Purpose
+              </h3>
+              <p className="text-forest/70 leading-relaxed">
+                Our facilitators come from diverse backgrounds and healing traditions, yet they share
+                a common commitment: to meet each person where they are with compassion, skill, and
+                authentic presence. Here, you'll find practitioners who honor the sacred nature of
+                healing work and approach each connection with reverence and care.
+              </p>
             </div>
           </div>
 
@@ -160,7 +300,7 @@ export default function Hive() {
                     {archetype.scientificName}
                   </p>
                   <p className="text-sm text-forest/70">
-                    {archetype.healingApproach}
+                    {archetype.approach}
                   </p>
                 </CardContent>
               </Card>
@@ -182,7 +322,7 @@ export default function Hive() {
               <SelectValue placeholder="All Archetypes" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Archetypes</SelectItem>
+              <SelectItem value="all">All Archetypes</SelectItem>
               {Object.entries(archetypeDefinitions).map(([key, archetype]) => (
                 <SelectItem key={key} value={key}>
                   {archetype.name}
@@ -196,7 +336,7 @@ export default function Hive() {
               <SelectValue placeholder="All Experience Levels" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Experience Levels</SelectItem>
+              <SelectItem value="all">All Experience Levels</SelectItem>
               <SelectItem value="rising">Rising</SelectItem>
               <SelectItem value="evolving">Evolving</SelectItem>
               <SelectItem value="wise">Wise</SelectItem>
@@ -233,7 +373,7 @@ export default function Hive() {
           </Card>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPractitioners.map((practitioner) => (
+            {filteredPractitioners.map((practitioner: any) => (
               <Card key={practitioner.id} className="border-sage/20 hover:shadow-lg transition-all duration-300 facilitator-card">
                 <div className="aspect-video bg-gradient-to-br from-cream to-light-green/20 rounded-t-lg flex items-center justify-center relative overflow-hidden">
                   <User className="w-16 h-16 text-forest/30" />
@@ -250,7 +390,7 @@ export default function Hive() {
                       {getArchetypeIcon(practitioner.archetype)}
                       <div className="flex flex-col space-y-1">
                         <Badge variant="secondary" className="bg-gold/20 text-gold hover:bg-gold/30 text-xs">
-                          {archetypeDefinitions[practitioner.archetype]?.name}
+                          {(archetypeDefinitions as any)[practitioner.archetype]?.name}
                         </Badge>
                         {getExperienceBadge(practitioner.experienceLevel)}
                       </div>
@@ -276,7 +416,7 @@ export default function Hive() {
                   {practitioner.specializations && practitioner.specializations.length > 0 && (
                     <div className="mb-4">
                       <div className="flex flex-wrap gap-1">
-                        {practitioner.specializations.slice(0, 3).map((spec, index) => (
+                        {practitioner.specializations.slice(0, 3).map((spec: string, index: number) => (
                           <Badge key={index} variant="outline" className="text-xs">
                             {spec}
                           </Badge>
@@ -320,7 +460,10 @@ export default function Hive() {
                       >
                         View Profile
                       </Button>
-                      <Button className="flex-1 bg-gold text-white hover:bg-gold/90">
+                      <Button
+                        className="flex-1 bg-gold text-white hover:bg-gold/90"
+                        onClick={() => setLocation(`/book/${practitioner.id}`)}
+                      >
                         <Calendar className="w-4 h-4 mr-2" />
                         Book Session
                       </Button>

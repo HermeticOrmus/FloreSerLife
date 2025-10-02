@@ -15,7 +15,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { logos } from "@/assets";
 
 export default function Header() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const { user, isAuthenticated } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -25,6 +25,18 @@ export default function Header() {
       // TODO: Implement search functionality
       console.log("Search for:", searchQuery);
     }
+  };
+
+  const handleSignIn = () => {
+    setLocation('/auth/signin');
+  };
+
+  const handleJoinFloreSer = () => {
+    setLocation('/auth/signup');
+  };
+
+  const handleSignOut = () => {
+    fetch('/api/auth/logout', { method: 'POST' }).then(() => setLocation('/'));
   };
 
   const MobileNav = () => (
@@ -56,27 +68,27 @@ export default function Header() {
       </Link>
       {!isAuthenticated ? (
         <>
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             className="w-full justify-start"
-            onClick={() => window.location.href = '/auth/signin'}
+            onClick={handleSignIn}
             data-testid="button-mobile-sign-in"
           >
             Sign In
           </Button>
-          <Button 
+          <Button
             className="w-full bg-gold text-white hover:bg-gold/90"
-            onClick={() => window.location.href = '/auth/signup'}
+            onClick={handleJoinFloreSer}
             data-testid="button-mobile-join-floreser"
           >
-            Join FloreSer
+            Start Your Journey
           </Button>
         </>
       ) : (
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           className="w-full justify-start text-destructive"
-          onClick={() => fetch('/api/auth/logout', { method: 'POST' }).then(() => window.location.href = '/')}
+          onClick={handleSignOut}
           data-testid="button-mobile-sign-out"
         >
           <LogOut className="w-4 h-4 mr-2" />
@@ -150,20 +162,20 @@ export default function Header() {
             </Link>
             {!isAuthenticated ? (
               <>
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   className="text-forest hover:text-gold"
-                  onClick={() => window.location.href = '/auth/signin'}
+                  onClick={handleSignIn}
                   data-testid="button-sign-in-desktop"
                 >
                   Sign In
                 </Button>
-                <Button 
+                <Button
                   className="bg-gold text-white px-6 py-2 rounded-full hover:bg-gold/90"
-                  onClick={() => window.location.href = '/auth/signup'}
+                  onClick={handleJoinFloreSer}
                   data-testid="button-join-floreser-desktop"
                 >
-                  Join FloreSer
+                  Start Your Journey
                 </Button>
               </>
             ) : (
@@ -219,9 +231,9 @@ export default function Header() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem 
+                  <DropdownMenuItem
                     className="text-destructive cursor-pointer"
-                    onClick={() => fetch('/api/auth/logout', { method: 'POST' }).then(() => window.location.href = '/')}
+                    onClick={handleSignOut}
                     data-testid="button-sign-out"
                   >
                     <LogOut className="w-4 h-4 mr-2" />

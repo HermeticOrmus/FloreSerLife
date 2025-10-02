@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
 import DashboardLayout from "@/components/dashboard/dashboard-layout";
 import DashboardSidebar from "@/components/dashboard/dashboard-sidebar";
 import StatCard from "@/components/dashboard/stat-card";
@@ -112,6 +113,54 @@ export default function PractitionerDashboard() {
     document.title = "Practitioner Dashboard - FloreSer";
   }, []);
 
+  // Fetch practitioner's bookings
+  const { data: bookings = [], isLoading: bookingsLoading } = useQuery({
+    queryKey: ['/api/bookings'],
+    enabled: !!user,
+  });
+
+  // Transform bookings into session format
+  const upcomingSessions = (bookings as any[])
+    .filter((booking: any) =>
+      booking.status === 'scheduled' &&
+      new Date(booking.scheduledDatetime) > new Date()
+    )
+    .map((booking: any) => ({
+      id: booking.id,
+      clientName: booking.clientName || 'Client',
+      date: new Date(booking.scheduledDatetime).toLocaleDateString(),
+      time: new Date(booking.scheduledDatetime).toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit'
+      }),
+      duration: booking.duration,
+      type: (booking.isVirtual ? 'virtual' : 'in-person') as 'virtual' | 'in-person',
+      status: booking.status as 'scheduled' | 'confirmed' | 'pending' | 'cancelled',
+      meetingLink: booking.isVirtual ? 'https://floreser.life/sessions' : undefined
+    }));
+
+  const completedSessions = (bookings as any[])
+    .filter((booking: any) => booking.status === 'completed')
+    .length;
+
+  // Calculate stats from real booking data
+  const stats = {
+    upcomingSessions: upcomingSessions.length,
+    totalClients: mockPractitionerStats.totalClients, // TODO: calculate unique clients
+    unreadMessages: mockPractitionerStats.unreadMessages,
+    monthlyEarnings: (bookings as any[])
+      .filter((b: any) => {
+        const bookingDate = new Date(b.scheduledDatetime);
+        const now = new Date();
+        return bookingDate.getMonth() === now.getMonth() &&
+               bookingDate.getFullYear() === now.getFullYear() &&
+               b.status === 'completed';
+      })
+      .reduce((sum: number, b: any) => sum + (parseFloat(b.totalAmount) || 0), 0),
+    averageRating: mockPractitionerStats.averageRating,
+    completedSessions
+  };
+
   const handleQuickAction = (actionType: string) => {
     console.log('Quick action:', actionType);
     // Handle navigation or actions
@@ -194,34 +243,32 @@ export default function PractitionerDashboard() {
         {/* Stats Overview */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard
-            title="Today's Sessions"
-            value={mockPractitionerStats.upcomingSessions}
-            description="Scheduled"
+            title="Upcoming Sessions"
+            value={bookingsLoading ? '-' : stats.upcomingSessions}
+            description={stats.upcomingSessions > 0 ? 'Scheduled' : 'No upcoming sessions'}
             icon={Calendar}
             iconColor="text-blue-600"
           />
           <StatCard
             title="Active Clients"
-            value={mockPractitionerStats.totalClients}
+            value={stats.totalClients}
             description="This month"
             icon={Users}
             iconColor="text-green-600"
-            trend={{ value: "3 new", isPositive: true }}
           />
           <StatCard
             title="Monthly Earnings"
-            value={`$${mockPractitionerStats.monthlyEarnings}`}
+            value={bookingsLoading ? '-' : `$${stats.monthlyEarnings.toFixed(0)}`}
             description="This month"
             icon={DollarSign}
             iconColor="text-emerald-600"
-            trend={{ value: "12%", isPositive: true }}
           />
           <StatCard
-            title="Average Rating"
-            value={mockPractitionerStats.averageRating}
-            description={`${mockPractitionerStats.completedSessions} reviews`}
-            icon={Star}
-            iconColor="text-yellow-500"
+            title="Completed Sessions"
+            value={bookingsLoading ? '-' : stats.completedSessions}
+            description="All time"
+            icon={TrendingUp}
+            iconColor="text-green-500"
           />
         </div>
 
@@ -230,15 +277,85 @@ export default function PractitionerDashboard() {
           {/* Left Column - Sessions and Actions */}
           <div className="lg:col-span-2 space-y-6">
             <UpcomingSessions
-              sessions={mockUpcomingSessions}
+              sessions={bookingsLoading ? mockUpcomingSessions : upcomingSessions}
               userType="practitioner"
               onSessionAction={handleSessionAction}
             />
-            
+
             <QuickActions
               userType="practitioner"
               onAction={handleQuickAction}
             />
+
+            {/* All Bookings Management */}
+            {!bookingsLoading && (bookings as any[]).length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="font-heading text-forest">
+                    Booking Management
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {(bookings as any[]).slice(0, 10).map((booking: any) => {
+                      const bookingDate = new Date(booking.scheduledDatetime);
+                      const isPast = bookingDate < new Date();
+
+                      return (
+                        <div
+                          key={booking.id}
+                          className={`flex items-center justify-between p-4 rounded-lg border ${
+                            isPast ? 'bg-gray-50 border-gray-200' : 'bg-sage/5 border-sage/20'
+                          } hover:shadow-sm transition-shadow`}
+                        >
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3">
+                              <p className="font-medium text-forest">
+                                {booking.clientName || 'Client'}
+                              </p>
+                              <Badge
+                                variant={booking.status === 'scheduled' ? 'default' : 'secondary'}
+                                className={
+                                  booking.status === 'scheduled' ? 'bg-gold text-white' :
+                                  booking.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                  booking.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                                  ''
+                                }
+                              >
+                                {booking.status}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-forest/60 mt-1">
+                              {bookingDate.toLocaleDateString('en-US', {
+                                month: 'long',
+                                day: 'numeric',
+                                year: 'numeric'
+                              })} at {bookingDate.toLocaleTimeString('en-US', {
+                                hour: 'numeric',
+                                minute: '2-digit'
+                              })} • {booking.duration} min • {booking.isVirtual ? 'Virtual' : 'In-Person'}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-medium text-forest">
+                              ${parseFloat(booking.totalAmount || '0').toFixed(2)}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {(bookings as any[]).length > 10 && (
+                    <Button
+                      variant="ghost"
+                      className="w-full mt-4 text-gold hover:text-gold/80"
+                    >
+                      View All Bookings ({(bookings as any[]).length} total)
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Right Column - Activity Feed */}

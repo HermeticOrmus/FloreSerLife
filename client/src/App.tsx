@@ -20,6 +20,7 @@ import SignUp from "@/pages/SignUp";
 import Survey from "@/pages/survey";
 import Hive from "@/pages/hive";
 import Garden from "@/pages/garden";
+import BookSession from "@/pages/book-session";
 import SimpleAdminLogin from "@/pages/simple-admin-login";
 import SimpleAdminPanel from "@/pages/simple-admin-panel";
 
@@ -70,12 +71,14 @@ function Router() {
           <Route path="/" component={Landing} />
           <Route path="/practitioners" component={Practitioners} />
           <Route path="/practitioners/:id" component={PractitionerProfile} />
+          <Route path="/book/:id" component={BookSession} />
         </>
       ) : (
         <>
           <Route path="/" component={getUserDashboard()} />
           <Route path="/dashboard/client" component={ClientDashboard} />
           <Route path="/dashboard/practitioner" component={PractitionerDashboard} />
+          <Route path="/book/:id" component={BookSession} />
 
           {/* Admin routes - only accessible to admin users */}
           {user?.roles?.includes('admin') && (

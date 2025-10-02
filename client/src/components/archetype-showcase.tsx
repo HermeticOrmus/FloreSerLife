@@ -1,11 +1,13 @@
+import { useLocation } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { archetypeIcons } from "@/assets";
 import { archetypeDefinitions } from "@shared/schema";
-import { Microscope, Users, BookOpen, Award, TrendingUp, Globe } from "lucide-react";
+import { Microscope, Users, BookOpen, Award, TrendingUp, Globe, Star } from "lucide-react";
 
 export default function ArchetypeShowcase() {
+  const [, setLocation] = useLocation();
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -55,15 +57,25 @@ export default function ArchetypeShowcase() {
         <div className="grid md:grid-cols-2 gap-8 mb-16">
           {Object.entries(archetypeDefinitions).map(([key, archetype]) => {
             const iconSrc = archetypeIcons[key as keyof typeof archetypeIcons];
+            const isBee = key === 'bee';
 
             return (
-              <Card key={key} className="archetype-card bg-gradient-to-br from-cream to-white rounded-2xl shadow-lg border border-sage/20 hover:shadow-xl transition-all duration-300 overflow-hidden group">
+              <Card key={key} className={`archetype-card bg-gradient-to-br from-cream to-white rounded-2xl shadow-lg border hover:shadow-xl transition-all duration-300 overflow-hidden group ${
+                isBee ? 'border-gold/40 ring-2 ring-gold/20' : 'border-sage/20'
+              }`}>
                 <CardContent className="p-8">
+                  {isBee && (
+                    <div className="mb-4">
+                      <Badge className="bg-gold text-white mb-2">
+                        ✨ Perfect Starting Point for New Facilitators
+                      </Badge>
+                    </div>
+                  )}
                   <div className="flex items-start space-x-6">
                     <div className="bg-gold/10 w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <img 
-                        src={iconSrc} 
-                        alt={`${archetype.name} archetype icon`} 
+                      <img
+                        src={iconSrc}
+                        alt={`${archetype.name} archetype icon`}
                         className="w-10 h-10 object-contain"
                         data-testid={`img-archetype-${key}`}
                       />
@@ -76,6 +88,11 @@ export default function ArchetypeShowcase() {
                         <Badge variant="outline" className="text-xs text-forest/60">
                           {archetype.scientificName}
                         </Badge>
+                        {!isBee && (
+                          <Badge variant="secondary" className="text-xs bg-sage/20 text-sage">
+                            Experienced Practitioners
+                          </Badge>
+                        )}
                       </div>
                       <p className="text-forest/80 text-sm leading-relaxed mb-4">
                         {archetype.description}
@@ -122,15 +139,33 @@ export default function ArchetypeShowcase() {
                           </div>
                         </div>
 
-                        <div className="mt-4 p-3 bg-cream/50 rounded-lg border border-sage/10">
-                          <div className="flex items-center space-x-2 mb-1">
-                            <TrendingUp className="w-3 h-3 text-forest/60" />
-                            <span className="text-xs font-semibold text-forest/60">Research Insight</span>
+                        {/* Show different info based on archetype */}
+                        {isBee && 'facilitatorBenefits' in archetype ? (
+                          <div className="mt-4 p-3 bg-gold/10 rounded-lg border border-gold/20">
+                            <div className="flex items-center space-x-2 mb-1">
+                              <Star className="w-3 h-3 text-gold" />
+                              <span className="text-xs font-semibold text-gold">Facilitator Benefits</span>
+                            </div>
+                            <ul className="text-xs text-forest/80 leading-relaxed space-y-1">
+                              {(archetype as typeof archetypeDefinitions.bee).facilitatorBenefits.map((benefit: string, index: number) => (
+                                <li key={index} className="flex items-start">
+                                  <span className="w-1 h-1 bg-gold rounded-full mt-2 mr-2 flex-shrink-0"></span>
+                                  {benefit}
+                                </li>
+                              ))}
+                            </ul>
                           </div>
-                          <p className="text-xs text-forest/70 leading-relaxed">
-                            {archetype.researchInsights}
-                          </p>
-                        </div>
+                        ) : (
+                          <div className="mt-4 p-3 bg-cream/50 rounded-lg border border-sage/10">
+                            <div className="flex items-center space-x-2 mb-1">
+                              <TrendingUp className="w-3 h-3 text-forest/60" />
+                              <span className="text-xs font-semibold text-forest/60">Research Insight</span>
+                            </div>
+                            <p className="text-xs text-forest/70 leading-relaxed">
+                              {archetype.researchInsights}
+                            </p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -156,7 +191,7 @@ export default function ArchetypeShowcase() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 className="bg-gold text-white hover:bg-gold/90 rounded-full px-8"
-                onClick={() => (window.location.href = "/practitioners")}
+                onClick={() => setLocation("/practitioners")}
                 data-testid="button-find-practitioners"
               >
                 Find Your Practitioner
@@ -164,7 +199,7 @@ export default function ArchetypeShowcase() {
               <Button
                 variant="outline"
                 className="border-forest text-forest hover:bg-forest/5 rounded-full px-8"
-                onClick={() => (window.location.href = "/auth/signup")}
+                onClick={() => setLocation("/auth/signup")}
                 data-testid="button-get-started"
               >
                 Get Started

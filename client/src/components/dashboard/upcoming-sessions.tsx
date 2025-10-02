@@ -2,11 +2,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
-  Calendar, 
-  Clock, 
-  Video, 
-  MapPin, 
+import { useLocation } from "wouter";
+import {
+  Calendar,
+  Clock,
+  Video,
+  MapPin,
   Phone,
   MessageSquare,
   MoreHorizontal
@@ -39,11 +40,12 @@ interface UpcomingSessionsProps {
   onSessionAction?: (sessionId: string, action: string) => void;
 }
 
-export default function UpcomingSessions({ 
-  sessions, 
-  userType, 
-  onSessionAction 
+export default function UpcomingSessions({
+  sessions,
+  userType,
+  onSessionAction
 }: UpcomingSessionsProps) {
+  const [, setLocation] = useLocation();
   const getStatusColor = (status: Session['status']) => {
     switch (status) {
       case 'confirmed':
@@ -112,9 +114,15 @@ export default function UpcomingSessions({
                 ? 'Book your first session to get started!' 
                 : 'Your upcoming client sessions will appear here.'}
             </p>
-            <Button 
+            <Button
               className="mt-4 bg-gold text-white hover:bg-gold/90"
-              onClick={() => handleAction('', userType === 'client' ? 'book-session' : 'add-availability')}
+              onClick={() => {
+                if (userType === 'client') {
+                  setLocation('/hive');
+                } else {
+                  handleAction('', 'add-availability');
+                }
+              }}
             >
               {userType === 'client' ? 'Book Session' : 'Add Availability'}
             </Button>

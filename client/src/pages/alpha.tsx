@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useLocation } from "wouter";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import ArchetypeShowcase from "@/components/archetype-showcase";
@@ -12,6 +13,8 @@ import { Star, Shield, Lock } from "lucide-react";
 import { characters } from "@/assets";
 
 export default function Alpha() {
+  const [, setLocation] = useLocation();
+
   useEffect(() => {
     document.title = "FloreSer Germination - Shaping the Future of Wellness";
   }, []);
@@ -47,7 +50,7 @@ export default function Alpha() {
                 <Button
                   size="lg"
                   className="bg-gold text-white hover:bg-gold/90 rounded-full px-8 py-4 font-medium shadow-lg"
-                  onClick={() => (window.location.href = "/survey")}
+                  onClick={() => setLocation("/survey")}
                   data-testid="button-start-Germination-survey"
                 >
                   Start Your Germination Journey
@@ -56,7 +59,7 @@ export default function Alpha() {
                   variant="outline"
                   size="lg"
                   className="border-2 border-forest text-forest hover:bg-forest hover:text-white rounded-full px-8 py-4 font-medium"
-                  onClick={() => (window.location.href = "/survey")}
+                  onClick={() => setLocation("/survey")}
                   data-testid="button-help-build-platform"
                 >
                   Help Build the Platform

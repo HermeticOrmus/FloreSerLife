@@ -175,10 +175,9 @@ export class AccessControlService {
       else if (user.subscriptionEndDate && now < user.subscriptionEndDate) {
         switch (user.subscriptionStatus) {
           case "premium":
-            newAccessLevel = "premium";
-            break;
-          case "unlimited":
-            newAccessLevel = "unlimited";
+            // Premium subscribers can have premium or unlimited access level
+            // Keep existing access level if it's unlimited, otherwise set to premium
+            newAccessLevel = user.accessLevel === "unlimited" ? "unlimited" : "premium";
             break;
           default:
             newAccessLevel = "basic";
@@ -245,7 +244,8 @@ export class AccessControlService {
       }
 
       // Check if user is a facilitator (practitioner) for bonus benefits
-      const isFacilitator = user.roles?.includes('practitioner') || false;
+      const userRoles = await storage.getUserRoles(userId);
+      const isFacilitator = userRoles.some(role => role.role === 'practitioner');
 
       return {
         accessLevel,
@@ -262,7 +262,8 @@ export class AccessControlService {
         usage: {
           viewPractitioners: {
             used: 0, // This would come from actual usage tracking
-            limit: currentAccess.permissions.viewPractitioners === true ? null : currentAccess.permissions.viewPractitioners
+            limit: currentAccess.permissions.viewPractitioners === "unlimited" ? null :
+                   typeof currentAccess.permissions.viewPractitioners === 'number' ? currentAccess.permissions.viewPractitioners : null
           }
         }
       };
