@@ -73,7 +73,7 @@ export default function Garden() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const [selectedContentType, setSelectedContentType] = useState<string>("");
+  const [selectedContentType, setSelectedContentType] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -94,7 +94,7 @@ export default function Garden() {
       const params = new URLSearchParams({
         limit: "20",
         offset: String((page - 1) * 20),
-        ...(selectedContentType && { contentType: selectedContentType })
+        ...(selectedContentType && selectedContentType !== "all" && { contentType: selectedContentType })
       });
       const res = await fetch(`/api/garden/content?${params}`, {
         credentials: 'include'
@@ -475,7 +475,7 @@ export default function Garden() {
               <SelectValue placeholder="All Content Types" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Content Types</SelectItem>
+              <SelectItem value="all">All Content Types</SelectItem>
               {contentTypeOptions.map(option => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}

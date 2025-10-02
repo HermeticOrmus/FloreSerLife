@@ -30,13 +30,13 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-gold transition-colors">Book Sessions</a>
+                <Link href="/hive" className="hover:text-gold transition-colors">Book Sessions</Link>
               </li>
               <li>
-                <a href="#" className="hover:text-gold transition-colors">Archetype Quiz</a>
+                <Link href="/quiz" className="hover:text-gold transition-colors">Archetype Quiz</Link>
               </li>
               <li>
-                <a href="#" className="hover:text-gold transition-colors">How It Works</a>
+                <Link href="/alpha" className="hover:text-gold transition-colors">How It Works</Link>
               </li>
             </ul>
           </div>
@@ -48,13 +48,13 @@ export default function Footer() {
                 <Link href="/auth/signup" className="hover:text-gold transition-colors">🐝 Start with Bee Archetype</Link>
               </li>
               <li>
-                <a href="#" className="hover:text-gold transition-colors">Facilitator Resources</a>
+                <Link href="/resources" className="hover:text-gold transition-colors">Facilitator Resources</Link>
               </li>
               <li>
-                <a href="#" className="hover:text-gold transition-colors">Community & Mentorship</a>
+                <Link href="/garden" className="hover:text-gold transition-colors">Community & Mentorship</Link>
               </li>
               <li>
-                <a href="#" className="hover:text-gold transition-colors">Growth Support</a>
+                <Link href="/resources" className="hover:text-gold transition-colors">Growth Support</Link>
               </li>
             </ul>
           </div>
@@ -63,16 +63,16 @@ export default function Footer() {
             <h4 className="font-heading text-lg font-semibold mb-4">Company</h4>
             <ul className="space-y-2 text-sm text-white/70">
               <li>
-                <a href="#" className="hover:text-gold transition-colors">About Us</a>
+                <Link href="/about" className="hover:text-gold transition-colors">About Us</Link>
               </li>
               <li>
-                <a href="#" className="hover:text-gold transition-colors">Contact</a>
+                <Link href="/contact" className="hover:text-gold transition-colors">Contact</Link>
               </li>
               <li>
-                <a href="#" className="hover:text-gold transition-colors">Privacy Policy</a>
+                <Link href="/privacy" className="hover:text-gold transition-colors">Privacy Policy</Link>
               </li>
               <li>
-                <a href="#" className="hover:text-gold transition-colors">Terms of Service</a>
+                <Link href="/terms" className="hover:text-gold transition-colors">Terms of Service</Link>
               </li>
             </ul>
           </div>

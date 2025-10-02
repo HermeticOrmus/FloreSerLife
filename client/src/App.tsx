@@ -23,6 +23,12 @@ import Garden from "@/pages/garden";
 import BookSession from "@/pages/book-session";
 import SimpleAdminLogin from "@/pages/simple-admin-login";
 import SimpleAdminPanel from "@/pages/simple-admin-panel";
+import Quiz from "@/pages/quiz";
+import Resources from "@/pages/resources";
+import About from "@/pages/about";
+import Contact from "@/pages/contact";
+import Privacy from "@/pages/privacy";
+import Terms from "@/pages/terms";
 
 function Router() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -60,6 +66,14 @@ function Router() {
       <Route path="/hive" component={Hive} />
       <Route path="/garden" component={Garden} />
       <Route path="/alpha" component={Alpha} />
+
+      {/* Coming Soon pages - always accessible */}
+      <Route path="/quiz" component={Quiz} />
+      <Route path="/resources" component={Resources} />
+      <Route path="/about" component={About} />
+      <Route path="/contact" component={Contact} />
+      <Route path="/privacy" component={Privacy} />
+      <Route path="/terms" component={Terms} />
 
       {/* Admin routes - always accessible */}
       <Route path="/admin/dashboard" component={AdminDashboard} />

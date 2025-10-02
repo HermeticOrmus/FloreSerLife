@@ -19,7 +19,11 @@
       "Bash(fuser:*)",
       "Bash(netstat:*)",
       "Bash(ss:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(for file in quiz resources about contact privacy terms)",
+      "Bash(do echo \"=== $file.tsx ===\")",
+      "Bash(done)",
+      "Bash(timeout 10 npm run dev:*)"
     ],
     "deny": [],
     "ask": []

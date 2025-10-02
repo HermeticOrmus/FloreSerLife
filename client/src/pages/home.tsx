@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useLocation } from "wouter";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { Calendar, MessageCircle, User, TrendingUp } from "lucide-react";
 
 export default function Home() {
   const { user } = useAuth();
+  const [, setLocation] = useLocation();
 
   useEffect(() => {
     document.title = "Dashboard - FloreSer";
@@ -116,13 +118,33 @@ export default function Home() {
                 <CardTitle className="font-heading">Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button className="w-full bg-gold text-white hover:bg-gold/90">
+                <Button
+                  className="w-full bg-gold text-white hover:bg-gold/90"
+                  onClick={() => setLocation('/hive')}
+                >
                   Book New Session
                 </Button>
-                <Button variant="outline" className="w-full border-forest text-forest hover:bg-forest hover:text-white">
+                <Button
+                  variant="outline"
+                  className="w-full border-forest text-forest hover:bg-forest hover:text-white"
+                  onClick={() => setLocation('/practitioners')}
+                >
                   Browse Practitioners
                 </Button>
-                <Button variant="outline" className="w-full border-sage text-forest hover:bg-sage hover:text-white">
+                <Button
+                  variant="outline"
+                  className="w-full border-sage text-forest hover:bg-sage hover:text-white"
+                  onClick={() => {
+                    // Navigate to dashboard which has messages section
+                    if (user?.roles?.includes('client')) {
+                      setLocation('/dashboard/client');
+                    } else if (user?.roles?.includes('practitioner')) {
+                      setLocation('/dashboard/practitioner');
+                    } else {
+                      setLocation('/');
+                    }
+                  }}
+                >
                   View Messages
                 </Button>
               </CardContent>
