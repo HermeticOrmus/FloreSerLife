@@ -1,38 +1,39 @@
 import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
-import Header from "@/components/layout/header";
-import Footer from "@/components/layout/footer";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
 import {
+  LayoutDashboard,
+  User,
+  Calendar,
+  MessageCircle,
+  CreditCard,
+  BarChart3,
+  TreePine,
+  Settings,
   Star,
   MapPin,
   Video,
-  User,
   Users,
   Hexagon,
   Crown,
   Award,
-  Calendar,
   BookOpen,
   Heart,
-  Clock,
   TrendingUp,
-  Filter,
-  X,
-  Sparkles
+  ArrowRight,
+  Leaf
 } from "lucide-react";
 import { ArchetypeIcons } from "@/components/icons/archetype-icons";
 import { ReviewsSummary } from "@/components/reviews";
 import {
   archetypeDefinitions,
   professionalCategoryDefinitions,
-  categoryGroups
 } from "@shared/schema";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -42,10 +43,8 @@ export default function Hive() {
   const [selectedArchetype, setSelectedArchetype] = useState<string>("");
   const [selectedExperience, setSelectedExperience] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [selectedGroup, setSelectedGroup] = useState<string>("");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 300]);
   const [sortBy, setSortBy] = useState<string>("featured");
-  const [showFilters, setShowFilters] = useState(false);
   const [, setLocation] = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -67,6 +66,30 @@ export default function Hive() {
     }
   });
 
+  const { data: dashboardData } = useQuery<any>({
+    queryKey: ["/api/dashboard/practitioner", user?.id],
+    enabled: !!user?.id && user?.roles?.includes('practitioner'),
+    queryFn: async () => {
+      const res = await fetch(`/api/dashboard/practitioner/${user?.id}`, {
+        credentials: 'include'
+      });
+      if (!res.ok) return null;
+      return res.json();
+    }
+  });
+
+  const { data: seedsData } = useQuery<any>({
+    queryKey: ["/api/seeds/wallet", user?.id],
+    enabled: !!user?.id,
+    queryFn: async () => {
+      const res = await fetch(`/api/seeds/wallet/${user?.id}`, {
+        credentials: 'include'
+      });
+      if (!res.ok) return null;
+      return res.json();
+    }
+  });
+
   const toggleFavoriteMutation = useMutation({
     mutationFn: async (practitionerId: string) => {
       const res = await fetch('/api/favorites', {
@@ -84,7 +107,6 @@ export default function Hive() {
     }
   });
 
-  // Handle both old format (array) and new format (object with access info)
   const practitioners = Array.isArray(practitionersData)
     ? practitionersData
     : (practitionersData as any)?.practitioners || [];
@@ -92,7 +114,7 @@ export default function Hive() {
   const favorites = Array.isArray(favoritesData) ? favoritesData.map((f: any) => f.practitionerId) : [];
 
   useEffect(() => {
-    document.title = "The Hive - Facilitator Community - FloreSer";
+    document.title = "My Hive - FloreSer";
   }, []);
 
   const filteredPractitioners = practitioners.filter((practitioner: any) => {
@@ -114,23 +136,16 @@ export default function Hive() {
     const matchesCategory = selectedCategory === "" ||
       practitioner.professionalCategories?.includes(selectedCategory);
 
-    const matchesGroup = selectedGroup === "" ||
-      practitioner.professionalCategories?.some((cat: string) =>
-        (professionalCategoryDefinitions as any)[cat]?.group === selectedGroup
-      );
-
     const matchesPrice = !practitioner.hourlyRate ||
       (parseFloat(practitioner.hourlyRate) >= priceRange[0] &&
        parseFloat(practitioner.hourlyRate) <= priceRange[1]);
 
-    return matchesSearch && matchesArchetype && matchesExperience && matchesCategory && matchesGroup && matchesPrice;
+    return matchesSearch && matchesArchetype && matchesExperience && matchesCategory && matchesPrice;
   });
 
-  // Sort practitioners
   const sortedPractitioners = [...filteredPractitioners].sort((a: any, b: any) => {
     switch (sortBy) {
       case "featured":
-        // Featured first, then by rating
         if (a.isFeatured && !b.isFeatured) return -1;
         if (!a.isFeatured && b.isFeatured) return 1;
         return parseFloat(b.averageRating || 0) - parseFloat(a.averageRating || 0);
@@ -144,31 +159,10 @@ export default function Hive() {
         const expOrder = { wise: 3, evolving: 2, rising: 1 };
         return (expOrder[b.experienceLevel as keyof typeof expOrder] || 0) -
                (expOrder[a.experienceLevel as keyof typeof expOrder] || 0);
-      case "newest":
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      case "sessions":
-        return (b.totalSessions || 0) - (a.totalSessions || 0);
       default:
         return 0;
     }
   });
-
-  const activeFiltersCount = [
-    selectedArchetype,
-    selectedExperience,
-    selectedCategory,
-    selectedGroup,
-    searchTerm
-  ].filter(Boolean).length + (priceRange[0] > 0 || priceRange[1] < 300 ? 1 : 0);
-
-  const clearFilters = () => {
-    setSearchTerm("");
-    setSelectedArchetype("");
-    setSelectedExperience("");
-    setSelectedCategory("");
-    setSelectedGroup("");
-    setPriceRange([0, 300]);
-  };
 
   const getArchetypeIcon = (archetype: string) => {
     switch (archetype) {
@@ -214,323 +208,353 @@ export default function Hive() {
     toggleFavoriteMutation.mutate(practitionerId);
   };
 
+  const sidebarNavItems = [
+    { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
+    { icon: User, label: "Soul Profile", href: "/profile" },
+    { icon: Calendar, label: "Sessions", href: "/sessions" },
+    { icon: MessageCircle, label: "Messages", href: "/messages" },
+    { icon: CreditCard, label: "Payments", href: "/payments" },
+    { icon: BarChart3, label: "Analytics", href: "/analytics" },
+    { icon: TreePine, label: "Community Garden", href: "/garden" },
+    { icon: Settings, label: "Settings", href: "/settings" },
+  ];
+
+  const getTierName = (seedsBalance: number) => {
+    if (seedsBalance >= 2000) return "Wise Garden";
+    if (seedsBalance >= 500) return "Blooming";
+    if (seedsBalance >= 100) return "Sprout";
+    return "Seedling";
+  };
+
   return (
-    <div className="min-h-screen bg-cream">
-      <Header />
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-gold/20 to-forest/20 text-forest rounded-full text-sm font-medium mb-6">
-            <Hexagon className="mr-2 h-5 w-5 text-gold" />
-            Welcome to The Hive
-          </div>
-          <h1 className="font-heading text-4xl lg:text-5xl font-bold text-forest mb-6">
-            Meet Our <span className="text-gold">Facilitator Community</span>
-          </h1>
-          <p className="text-lg text-forest/70 max-w-4xl mx-auto mb-6">
-            The Hive is where our wellness facilitators come together to share wisdom,
-            collaborate on healing approaches, and support each other's growth. From new
-            facilitators starting their journey in the Bee community to experienced practitioners
-            across all archetypes.
-          </p>
-
-          {/* New Facilitator Encouragement */}
-          <div className="bg-gold/10 rounded-lg p-4 mb-8 border border-gold/20 max-w-4xl mx-auto">
-            <p className="text-sm text-forest text-center">
-              <span className="font-semibold">🐝 Considering facilitation?</span> Browse our Bee facilitators
-              to see your future community - a supportive space where you can learn, grow, and develop
-              your foundational wellness skills alongside mentors and peers.
-            </p>
-          </div>
-
-          {/* Community Values */}
-          <div className="max-w-4xl mx-auto mb-8">
-            <div className="bg-white/30 rounded-lg p-6 text-center">
-              <h3 className="font-heading text-xl font-semibold text-forest mb-4">
-                A Community United by Purpose
-              </h3>
-              <p className="text-forest/70 leading-relaxed">
-                Our facilitators come from diverse backgrounds and healing traditions, yet they share
-                a common commitment: to meet each person where they are with compassion, skill, and
-                authentic presence. Here, you'll find practitioners who honor the sacred nature of
-                healing work and approach each connection with reverence and care.
-              </p>
-            </div>
-          </div>
-
-          {/* Call to Action */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button
-              size="lg"
-              className="bg-gold text-white hover:bg-gold/90 rounded-full px-8 py-4 font-medium"
-              onClick={() => setLocation("/auth/signup")}
-            >
-              <Users className="mr-2 h-5 w-5" />
-              Join The Hive
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="border-2 border-forest text-forest hover:bg-forest hover:text-white rounded-full px-8 py-4 font-medium"
-              onClick={() => setLocation("/practitioners")}
-            >
-              <BookOpen className="mr-2 h-5 w-5" />
-              Book a Session
-            </Button>
-          </div>
-        </div>
-
-        {/* Archetype Overview */}
-        <div className="mb-12">
-          <h2 className="font-heading text-2xl font-bold text-forest mb-6 text-center">
-            Our Four Pollinator Archetypes
+    <div className="flex min-h-screen bg-hive-bg">
+      {/* Sidebar */}
+      <motion.aside
+        initial={{ x: -20, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        className="w-64 bg-hive-card-light border-r border-hive-accent/20 p-6 flex flex-col"
+      >
+        <div className="mb-8">
+          <h2 className="text-page-heading font-heading text-hive-text-primary">
+            My Hive
           </h2>
-          <div className="grid md:grid-cols-4 gap-6">
-            {Object.entries(archetypeDefinitions).map(([key, archetype]) => (
-              <Card key={key} className="border-sage/20 text-center hover:shadow-lg transition-all">
-                <CardContent className="p-6">
-                  <div className="mb-4 flex justify-center">
-                    {getArchetypeIcon(key)}
-                  </div>
-                  <h3 className="font-heading font-semibold text-forest mb-2">
-                    {archetype.name}
-                  </h3>
-                  <p className="text-sm text-forest/60 mb-3">
-                    {archetype.scientificName}
-                  </p>
-                  <p className="text-sm text-forest/70">
-                    {archetype.approach}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
         </div>
 
-        {/* Filters */}
-        <div className="grid md:grid-cols-4 gap-4 mb-8">
-          <Input
-            placeholder="Search by specialization or keyword..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="md:col-span-2"
-          />
+        <nav className="space-y-1 flex-1">
+          {sidebarNavItems.map((item) => (
+            <button
+              key={item.label}
+              onClick={() => setLocation(item.href)}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-button text-body text-hive-text-primary hover:bg-hive-bg transition-colors"
+            >
+              <item.icon className="w-5 h-5" />
+              {item.label}
+            </button>
+          ))}
+        </nav>
 
-          <Select value={selectedArchetype} onValueChange={setSelectedArchetype}>
-            <SelectTrigger>
-              <SelectValue placeholder="All Archetypes" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Archetypes</SelectItem>
-              {Object.entries(archetypeDefinitions).map(([key, archetype]) => (
-                <SelectItem key={key} value={key}>
-                  {archetype.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={selectedExperience} onValueChange={setSelectedExperience}>
-            <SelectTrigger>
-              <SelectValue placeholder="All Experience Levels" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Experience Levels</SelectItem>
-              <SelectItem value="rising">Rising</SelectItem>
-              <SelectItem value="evolving">Evolving</SelectItem>
-              <SelectItem value="wise">Wise</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Facilitators Grid */}
-        {isLoading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Card key={i} className="border-sage/20">
-                <div className="animate-pulse">
-                  <div className="h-48 bg-sage/20 rounded-t-lg"></div>
-                  <CardContent className="p-6">
-                    <div className="h-4 bg-sage/20 rounded mb-2"></div>
-                    <div className="h-4 bg-sage/20 rounded w-3/4"></div>
-                  </CardContent>
-                </div>
-              </Card>
-            ))}
-          </div>
-        ) : filteredPractitioners.length === 0 ? (
-          <Card className="border-sage/20 text-center py-12">
-            <CardContent>
-              <Users className="w-16 h-16 text-sage mx-auto mb-4" />
-              <h3 className="font-heading text-xl font-semibold text-forest mb-2">
-                No facilitators found
-              </h3>
-              <p className="text-forest/70">
-                Try adjusting your search criteria or browse all facilitators
+        {/* User Badge at Bottom */}
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="mt-auto"
+        >
+          <Card className="bg-gradient-to-br from-hive-accent-light to-hive-accent border-0 shadow-card-sm">
+            <CardContent className="p-4 text-center">
+              <div className="bg-white/20 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                <Hexagon className="w-6 h-6 text-white" />
+              </div>
+              <p className="text-caption text-white/90 mb-1">You are an</p>
+              <p className="text-label font-semibold text-white">
+                {seedsData ? getTierName(seedsData.seedsBalance) : "Blooming"} Pollinator
               </p>
             </CardContent>
           </Card>
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPractitioners.map((practitioner: any) => (
-              <Card key={practitioner.id} className="border-sage/20 hover:shadow-lg transition-all duration-300 facilitator-card">
-                <div className="aspect-video bg-gradient-to-br from-cream to-light-green/20 rounded-t-lg flex items-center justify-center relative overflow-hidden">
-                  <User className="w-16 h-16 text-forest/30" />
-                  <div className="absolute top-3 right-3">
-                    <Badge className="bg-gold/90 text-white">
-                      <Hexagon className="w-3 h-3 mr-1" />
-                      Hive Member
-                    </Badge>
-                  </div>
-                </div>
+        </motion.div>
+      </motion.aside>
+
+      {/* Main Content */}
+      <main className="flex-1 p-12 overflow-y-auto">
+        <div className="max-w-6xl">
+          {/* Top Stats Cards */}
+          <div className="grid grid-cols-2 gap-6 mb-8">
+            {/* Calendar Card */}
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.1 }}
+            >
+              <Card className="bg-hive-card-light border-0 rounded-card shadow-card">
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center space-x-2">
-                      {getArchetypeIcon(practitioner.archetype)}
-                      <div className="flex flex-col space-y-1">
-                        <Badge variant="secondary" className="bg-gold/20 text-gold hover:bg-gold/30 text-xs">
-                          {(archetypeDefinitions as any)[practitioner.archetype]?.name}
-                        </Badge>
-                        {getExperienceBadge(practitioner.experienceLevel)}
-                      </div>
+                  <div className="flex items-start gap-4">
+                    <div className="bg-hive-bg rounded-card-sm p-3">
+                      <Calendar className="w-6 h-6 text-hive-accent" />
                     </div>
-                    <ReviewsSummary
-                      averageRating={practitioner.averageRating ? parseFloat(practitioner.averageRating) : undefined}
-                      totalReviews={practitioner.totalSessions || 0}
-                      isVerified={practitioner.isVerified || false}
-                      size="sm"
-                    />
-                  </div>
-
-                  <h3 className="font-heading text-lg font-semibold text-forest mb-2">
-                    Facilitator #{practitioner.id.slice(-6)}
-                  </h3>
-
-                  {practitioner.bio && (
-                    <p className="text-forest/70 text-sm mb-3 line-clamp-2">
-                      {practitioner.bio}
-                    </p>
-                  )}
-
-                  {practitioner.specializations && practitioner.specializations.length > 0 && (
-                    <div className="mb-4">
-                      <div className="flex flex-wrap gap-1">
-                        {practitioner.specializations.slice(0, 3).map((spec: string, index: number) => (
-                          <Badge key={index} variant="outline" className="text-xs">
-                            {spec}
-                          </Badge>
-                        ))}
-                        {practitioner.specializations.length > 3 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{practitioner.specializations.length - 3} more
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="flex items-center justify-between mb-4 text-sm text-forest/60">
-                    <div className="flex items-center">
-                      {practitioner.isVirtual && <Video className="w-4 h-4 mr-1" />}
-                      {practitioner.isInPerson && <MapPin className="w-4 h-4 mr-1" />}
-                      <span>
-                        {practitioner.isVirtual && practitioner.isInPerson
-                          ? "Virtual & In-Person"
-                          : practitioner.isVirtual
-                          ? "Virtual Only"
-                          : "In-Person Only"}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col space-y-3">
-                    {practitioner.hourlyRate && (
-                      <div className="text-center">
-                        <span className="font-semibold text-forest text-lg">
-                          ${practitioner.hourlyRate}/session
-                        </span>
-                      </div>
-                    )}
-                    <div className="flex space-x-2">
-                      <Button
-                        variant="outline"
-                        className="flex-1"
-                        onClick={() => setLocation(`/practitioners/${practitioner.id}`)}
-                      >
-                        View Profile
-                      </Button>
-                      <Button
-                        className="flex-1 bg-gold text-white hover:bg-gold/90"
-                        onClick={() => setLocation(`/book/${practitioner.id}`)}
-                      >
-                        <Calendar className="w-4 h-4 mr-2" />
-                        Book Session
-                      </Button>
+                    <div className="flex-1 space-y-2">
+                      <p className="text-body-sm text-hive-text-secondary">Today at 3:00 PM</p>
+                      <p className="text-card-heading font-heading text-hive-text-primary">
+                        Client: Akiya
+                      </p>
+                      <button className="text-body-sm text-hive-accent hover:text-hive-accent-light font-medium">
+                        Manage Sessions
+                      </button>
                     </div>
                   </div>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-        )}
+            </motion.div>
 
-        {/* Community Benefits Section */}
-        <div className="mt-16 bg-gradient-to-br from-forest/5 to-gold/5 rounded-2xl p-8">
-          <div className="text-center mb-8">
-            <h2 className="font-heading text-3xl font-bold text-forest mb-4">
-              Why Join The Hive?
+            {/* Earnings Card */}
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              <Card className="bg-gradient-to-br from-hive-accent to-hive-accent-light border-0 rounded-card shadow-card-md">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-label text-hive-text-on-accent mb-2">
+                        Earning this week
+                      </p>
+                      <p className="text-stat-xl font-heading text-hive-text-on-accent">
+                        +{dashboardData?.earnings || 420}
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      className="bg-hive-accent-light hover:bg-white/20 text-hive-text-on-accent rounded-button text-label border-0"
+                    >
+                      View Details
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+
+          {/* Analytics Card */}
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="mb-12"
+          >
+            <Card className="bg-hive-card-dark text-white border-0 rounded-card-lg shadow-card-lg relative overflow-hidden">
+              <CardContent className="p-8">
+                <h3 className="text-card-heading-lg font-heading mb-8">
+                  Your Blooming Metrics
+                </h3>
+
+                <div className="grid grid-cols-3 gap-8 mb-6">
+                  <div className="space-y-2">
+                    <p className="text-body-sm text-white/80">Sessions completed</p>
+                    <p className="text-stat-lg font-heading">
+                      {dashboardData?.sessionsCompleted || 18}
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-body-sm text-white/80">Favorite clients</p>
+                    <p className="text-stat-md font-heading">
+                      {dashboardData?.favoriteClientsPercent || 67}%
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-body-sm text-white/80">Question seed bubbles planted</p>
+                    <p className="text-stat-lg font-heading">
+                      {dashboardData?.questionSeeds || 34}
+                    </p>
+                  </div>
+                </div>
+
+                <button className="text-label text-white hover:text-white/80 font-medium flex items-center gap-2">
+                  View Full Analytics
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+
+                {/* Decorative Leaf */}
+                <div className="absolute bottom-4 right-8 opacity-20">
+                  <Leaf className="w-32 h-32 text-white" />
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Archetype Overview */}
+          <div className="mb-8">
+            <h2 className="text-section-heading font-heading text-hive-text-primary mb-6">
+              Pollinator Archetypes
             </h2>
-            <p className="text-forest/70 max-w-2xl mx-auto">
-              Our facilitator community offers exclusive benefits and opportunities
-              for professional growth and meaningful connections.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="bg-gold/20 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Users className="w-8 h-8 text-gold" />
-              </div>
-              <h3 className="font-heading text-lg font-semibold text-forest mb-2">
-                Peer Learning Network
-              </h3>
-              <p className="text-sm text-forest/70">
-                Connect with like-minded facilitators, share best practices, and learn
-                from diverse healing approaches across all archetypes.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="bg-gold/20 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Star className="w-8 h-8 text-gold" />
-              </div>
-              <h3 className="font-heading text-lg font-semibold text-forest mb-2">
-                Professional Recognition
-              </h3>
-              <p className="text-sm text-forest/70">
-                Build your reputation through our verification system, client reviews,
-                and archetype-based matching that highlights your unique strengths.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="bg-gold/20 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Hexagon className="w-8 h-8 text-gold" />
-              </div>
-              <h3 className="font-heading text-lg font-semibold text-forest mb-2">
-                Exclusive Resources
-              </h3>
-              <p className="text-sm text-forest/70">
-                Access facilitator-only content, advanced training materials, and
-                early access to new platform features and opportunities.
-              </p>
+            <div className="grid grid-cols-4 gap-4">
+              {Object.entries(archetypeDefinitions).map(([key, archetype], index) => (
+                <motion.div
+                  key={key}
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.4 + index * 0.1 }}
+                >
+                  <Card className="bg-hive-card-light border-0 text-center rounded-card shadow-card-sm hover:shadow-card-hover transition-shadow cursor-pointer">
+                    <CardContent className="p-6">
+                      <div className="mb-3 flex justify-center">
+                        {getArchetypeIcon(key)}
+                      </div>
+                      <h3 className="text-card-subheading font-heading text-hive-text-primary mb-1">
+                        {archetype.name}
+                      </h3>
+                      <p className="text-caption text-hive-text-secondary">
+                        {archetype.scientificName}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
             </div>
           </div>
+
+          {/* Facilitator Filters */}
+          <div className="mb-6 space-y-4">
+            <h2 className="text-section-heading font-heading text-hive-text-primary">
+              Browse Facilitators
+            </h2>
+            <div className="grid grid-cols-3 gap-4">
+              <Input
+                placeholder="Search facilitators..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="bg-hive-card-light border-hive-accent/20 rounded-input"
+              />
+              <Select value={selectedArchetype} onValueChange={setSelectedArchetype}>
+                <SelectTrigger className="bg-hive-card-light border-hive-accent/20 rounded-input">
+                  <SelectValue placeholder="All Archetypes" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Archetypes</SelectItem>
+                  {Object.entries(archetypeDefinitions).map(([key, archetype]) => (
+                    <SelectItem key={key} value={key}>
+                      {archetype.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={selectedExperience} onValueChange={setSelectedExperience}>
+                <SelectTrigger className="bg-hive-card-light border-hive-accent/20 rounded-input">
+                  <SelectValue placeholder="Experience Level" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Levels</SelectItem>
+                  <SelectItem value="rising">Rising</SelectItem>
+                  <SelectItem value="evolving">Evolving</SelectItem>
+                  <SelectItem value="wise">Wise</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Facilitators Grid */}
+          {isLoading ? (
+            <div className="grid grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Card key={i} className="bg-hive-card-light border-0 rounded-card">
+                  <div className="animate-pulse">
+                    <div className="h-48 bg-hive-bg rounded-t-card"></div>
+                    <CardContent className="p-6">
+                      <div className="h-4 bg-hive-bg rounded mb-2"></div>
+                      <div className="h-4 bg-hive-bg rounded w-3/4"></div>
+                    </CardContent>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          ) : filteredPractitioners.length === 0 ? (
+            <Card className="bg-hive-card-light border-0 rounded-card text-center py-12">
+              <CardContent>
+                <Users className="w-16 h-16 text-hive-text-secondary mx-auto mb-4" />
+                <h3 className="text-card-heading font-heading text-hive-text-primary mb-2">
+                  No facilitators found
+                </h3>
+                <p className="text-body-sm text-hive-text-secondary">
+                  Try adjusting your search criteria
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-3 gap-6">
+              {sortedPractitioners.slice(0, 6).map((practitioner: any, index: number) => (
+                <motion.div
+                  key={practitioner.id}
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.5 + index * 0.05 }}
+                >
+                  <Card className="bg-hive-card-light border-0 rounded-card shadow-card hover:shadow-card-hover transition-all duration-300">
+                    <div className="aspect-video bg-gradient-to-br from-hive-bg to-hive-accent/10 rounded-t-card flex items-center justify-center relative">
+                      <User className="w-16 h-16 text-hive-text-secondary/30" />
+                      <div className="absolute top-3 right-3">
+                        <button
+                          onClick={(e) => handleToggleFavorite(practitioner.id, e)}
+                          className="bg-white/80 rounded-full p-2 hover:bg-white transition-colors"
+                        >
+                          <Heart
+                            className={`w-4 h-4 ${
+                              favorites.includes(practitioner.id)
+                                ? "fill-red-500 text-red-500"
+                                : "text-hive-text-secondary"
+                            }`}
+                          />
+                        </button>
+                      </div>
+                    </div>
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          {getArchetypeIcon(practitioner.archetype)}
+                          {getExperienceBadge(practitioner.experienceLevel)}
+                        </div>
+                        <ReviewsSummary
+                          averageRating={practitioner.averageRating ? parseFloat(practitioner.averageRating) : undefined}
+                          totalReviews={practitioner.totalSessions || 0}
+                          isVerified={practitioner.isVerified || false}
+                          size="sm"
+                        />
+                      </div>
+
+                      <h3 className="text-card-heading font-heading text-hive-text-primary mb-2">
+                        Facilitator #{practitioner.id.slice(-6)}
+                      </h3>
+
+                      {practitioner.bio && (
+                        <p className="text-body-sm text-hive-text-secondary mb-4 line-clamp-2">
+                          {practitioner.bio}
+                        </p>
+                      )}
+
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 rounded-button text-label border-hive-accent/20"
+                          onClick={() => setLocation(`/practitioners/${practitioner.id}`)}
+                        >
+                          View
+                        </Button>
+                        <Button
+                          size="sm"
+                          className="flex-1 bg-hive-accent text-white hover:bg-hive-accent-light rounded-button text-label"
+                          onClick={() => setLocation(`/book/${practitioner.id}`)}
+                        >
+                          <Calendar className="w-3 h-3 mr-1" />
+                          Book
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

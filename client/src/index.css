@@ -14,6 +14,27 @@
   --light-green: hsl(120, 39%, 70%);         /* #8FBC8F - Supporting accent */
   --sage: hsl(82, 15%, 62%);                 /* #9CAF88 - Borders, subtle elements */
 
+  /* HIVE Section Colors (warm, grounded, earthy) */
+  --hive-bg: hsl(30, 45%, 78%);             /* #E8C8A0 - Warm peach/tan background */
+  --hive-card-light: hsl(33, 50%, 92%);     /* #F5E6D3 - Soft cream cards */
+  --hive-card-dark: hsl(25, 28%, 24%);      /* #4A3529 - Rich brown cards */
+  --hive-accent: hsl(28, 55%, 60%);         /* #D4915E - Golden orange primary */
+  --hive-accent-light: hsl(35, 58%, 65%);   /* #E89451 - Lighter golden for buttons */
+  --hive-text-primary: hsl(25, 28%, 24%);   /* #4A3529 - Dark brown text */
+  --hive-text-secondary: hsl(30, 20%, 45%); /* #8B7355 - Muted brown text */
+  --hive-text-on-accent: hsl(0, 0%, 100%);  /* White - Text on orange accent cards */
+
+  /* GARDEN Section Colors (fresh, growing, tranquil) */
+  --garden-bg: hsl(75, 18%, 64%);           /* #A9B08F - Muted sage/olive background */
+  --garden-container: hsl(40, 50%, 94%);    /* #F5EFE7 - Warm cream main area */
+  --garden-card: hsl(45, 60%, 97%);         /* #F9F6F0 - Very light cream sections */
+  --garden-accent: hsl(42, 48%, 60%);       /* #D4A76A - Warm gold buttons */
+  --garden-accent-light: hsl(45, 82%, 77%); /* #F5D791 - Light golden badges */
+  --garden-sidebar: hsl(75, 18%, 58%);      /* #8A9B6F - Muted sage sidebar */
+  --garden-text-primary: hsl(25, 28%, 24%); /* #4A3529 - Dark text for readability */
+  --garden-text-secondary: hsl(30, 15%, 50%); /* #7D7264 - Muted text */
+  --garden-text-on-sage: hsl(25, 28%, 24%); /* #4A3529 - Dark text on sage background */
+
   /* Shadcn UI Variables */
   --background: hsl(60, 56%, 91%);           /* cream */
   --foreground: hsl(180, 25%, 31%);          /* forest */
