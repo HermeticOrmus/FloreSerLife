@@ -75,7 +75,21 @@ export default {
         '30': '7.5rem',      // 120px
       },
       colors: {
-        // FloreSer Brand Colors
+        // Shared Earth Tones
+        earth: {
+          50: '#FAF8F5',
+          100: '#F5F2EC',
+          200: '#E8E4DC',
+          300: '#D4CFC4',
+          400: '#B8B0A0',
+          500: '#9A8F7D',
+          600: '#7D6F5E',
+          700: '#635648',
+          800: '#4A4037',
+          900: '#332D27',
+        },
+
+        // Legacy Brand Colors (keep for backward compatibility)
         'forest': 'var(--primary-forest)',
         'cream': 'var(--background-cream)',
         'gold': 'var(--accent-gold)',
@@ -113,7 +127,6 @@ export default {
             'on-sage': 'var(--garden-text-on-sage)',  // Text on sage bg
           },
         },
-
         // Shadcn UI Colors
         background: "var(--background)",
         foreground: "var(--foreground)",
@@ -150,38 +163,117 @@ export default {
         ring: "var(--ring)",
       },
       fontFamily: {
-        'heading': ['Lora', 'serif'],
-        'body': ['Poppins', 'sans-serif'],
-        sans: ["var(--font-sans)"],
-        serif: ["var(--font-serif)"],
-        mono: ["var(--font-mono)"],
+        // Client-specified fonts
+        'sans': ['Inter', 'system-ui', 'sans-serif'],
+        'serif': ['Playfair Display', 'Georgia', 'serif'],
+
+        // Legacy fonts (backward compatibility)
+        'heading': ['Playfair Display', 'serif'],
+        'body': ['Inter', 'sans-serif'],
+        'mono': ['ui-monospace', 'monospace'],
       },
       keyframes: {
+        // Shadcn UI animations
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+
+        // Nature-inspired animations for My Garden
+        "bloom": {
+          '0%': {
+            transform: 'scale(0) rotate(-180deg)',
+            opacity: '0'
           },
-          to: {
-            height: "0",
+          '100%': {
+            transform: 'scale(1) rotate(0deg)',
+            opacity: '1'
           },
         },
-        float: {
+        "petal-fade": {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(10px)'
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)'
+          },
+        },
+        "vine-grow": {
+          '0%': { strokeDashoffset: '1000' },
+          '100%': { strokeDashoffset: '0' },
+        },
+        "sprout": {
+          '0%': {
+            transform: 'scaleY(0)',
+            transformOrigin: 'bottom',
+            opacity: '0'
+          },
+          '50%': {
+            transform: 'scaleY(1.1)',
+            opacity: '1'
+          },
+          '100%': {
+            transform: 'scaleY(1)'
+          },
+        },
+
+        // Hive-inspired animations for My Hive
+        "honey-drip": {
+          '0%': {
+            transform: 'translateY(-20px)',
+            opacity: '0'
+          },
+          '50%': { opacity: '1' },
+          '100%': {
+            transform: 'translateY(0)',
+            opacity: '1'
+          },
+        },
+        "hexagon-pulse": {
+          '0%, 100%': {
+            transform: 'scale(1)',
+            opacity: '1'
+          },
+          '50%': {
+            transform: 'scale(1.05)',
+            opacity: '0.9'
+          },
+        },
+
+        // General utility animations
+        "float": {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-10px)' },
         },
+        "shimmer": {
+          '0%': { backgroundPosition: '-1000px 0' },
+          '100%': { backgroundPosition: '1000px 0' },
+        },
       },
       animation: {
+        // Shadcn UI
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+
+        // Garden animations
+        "bloom": "bloom 1.5s ease-out",
+        "petal-fade": "petal-fade 0.8s ease-in-out",
+        "vine-grow": "vine-grow 2s ease-out",
+        "sprout": "sprout 1.2s ease-out",
+
+        // Hive animations
+        "honey-drip": "honey-drip 1.2s ease-in",
+        "hexagon-pulse": "hexagon-pulse 2s ease-in-out infinite",
+
+        // Utility
         "float": "float 6s ease-in-out infinite",
+        "shimmer": "shimmer 2s linear infinite",
       },
     },
   },

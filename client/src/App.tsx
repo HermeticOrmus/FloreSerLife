@@ -30,6 +30,7 @@ import About from "@/pages/about";
 import Contact from "@/pages/contact";
 import Privacy from "@/pages/privacy";
 import Terms from "@/pages/terms";
+import DesignSystemTest from "@/pages/design-system-test";
 
 function Router() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -68,6 +69,9 @@ function Router() {
       <Route path="/garden" component={Garden} />
       <Route path="/join-the-hive" component={JoinTheHive} />
       <Route path="/alpha" component={Alpha} />
+
+      {/* Design System Test - Development only */}
+      <Route path="/design-system-test" component={DesignSystemTest} />
 
       {/* Coming Soon pages - always accessible */}
       <Route path="/quiz" component={Quiz} />
