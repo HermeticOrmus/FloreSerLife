@@ -29,7 +29,7 @@ FloreSer is a wellness practitioners marketplace that connects clients with veri
 - **Styling**: Tailwind CSS + shadcn/ui components
 - **Routing**: Wouter (lightweight React router)
 - **State Management**: TanStack Query (React Query)
-- **Deployment**: Replit hosting
+- **Deployment**: Platform-agnostic (ready for Vercel, Railway, or Docker)
 
 ### Project Structure
 ```
