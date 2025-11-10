@@ -326,7 +326,7 @@ export default function JoinTheHive() {
             <Button
               size="lg"
               className="bg-hive-accent hover:bg-hive-accent-light text-white rounded-button text-label"
-              onClick={() => setLocation('/application')} // TODO: Create application form
+              onClick={() => setLocation('/auth/signup')}
             >
               Start Your Application
             </Button>

@@ -296,7 +296,10 @@ export default function Hive() {
                       <p className="text-card-heading font-heading text-hive-text-primary">
                         Client: Akiya
                       </p>
-                      <button className="text-body-sm text-hive-accent hover:text-hive-accent-light font-medium">
+                      <button
+                        className="text-body-sm text-hive-accent hover:text-hive-accent-light font-medium cursor-pointer"
+                        onClick={() => setLocation('/sessions')}
+                      >
                         Manage Sessions
                       </button>
                     </div>
@@ -325,6 +328,7 @@ export default function Hive() {
                     <Button
                       size="sm"
                       className="bg-hive-accent-light hover:bg-white/20 text-hive-text-on-accent rounded-button text-label border-0"
+                      onClick={() => setLocation('/payments')}
                     >
                       View Details
                     </Button>
@@ -368,7 +372,10 @@ export default function Hive() {
                   </div>
                 </div>
 
-                <button className="text-label text-white hover:text-white/80 font-medium flex items-center gap-2">
+                <button
+                  className="text-label text-white hover:text-white/80 font-medium flex items-center gap-2 cursor-pointer"
+                  onClick={() => setLocation('/analytics')}
+                >
                   View Full Analytics
                   <ArrowRight className="w-4 h-4" />
                 </button>

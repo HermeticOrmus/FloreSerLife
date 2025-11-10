@@ -31,6 +31,12 @@ import Contact from "@/pages/contact";
 import Privacy from "@/pages/privacy";
 import Terms from "@/pages/terms";
 import DesignSystemTest from "@/pages/design-system-test";
+import Journal from "@/pages/journal";
+import Sessions from "@/pages/sessions";
+import Payments from "@/pages/payments";
+import Analytics from "@/pages/analytics";
+import Application from "@/pages/application";
+import Favorites from "@/pages/favorites";
 
 function Router() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -80,6 +86,14 @@ function Router() {
       <Route path="/contact" component={Contact} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/terms" component={Terms} />
+
+      {/* Placeholder pages - always accessible */}
+      <Route path="/journal" component={Journal} />
+      <Route path="/sessions" component={Sessions} />
+      <Route path="/payments" component={Payments} />
+      <Route path="/analytics" component={Analytics} />
+      <Route path="/application" component={Application} />
+      <Route path="/favorites" component={Favorites} />
 
       {/* Admin routes - always accessible */}
       <Route path="/admin/dashboard" component={AdminDashboard} />

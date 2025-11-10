@@ -831,3 +831,77 @@ export const seedsEarningRates = {
   survey_completion: 30,
   milestone_achievement: 75
 } as const;
+
+// ============================================
+// STRIPE PAYMENT INTEGRATION TABLES
+// ============================================
+
+// Stripe Customers - Maps FloreSer users to Stripe customer IDs
+export const stripeCustomers = pgTable("stripe_customers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().unique().references(() => users.id),
+  stripeCustomerId: varchar("stripe_customer_id").notNull().unique(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Payment Status enum
+export const paymentStatusEnum = pgEnum("payment_status", [
+  "pending",
+  "succeeded",
+  "failed",
+  "refunded",
+  "cancelled"
+]);
+
+// Stripe Subscription Status enum (for Stripe subscriptions table)
+export const stripeSubscriptionStatusEnum = pgEnum("stripe_subscription_status", [
+  "active",
+  "past_due",
+  "unpaid",
+  "cancelled",
+  "incomplete",
+  "incomplete_expired",
+  "trialing",
+  "paused"
+]);
+
+// Subscriptions table - Tracks user subscription lifecycle
+export const subscriptions = pgTable("subscriptions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  stripeSubscriptionId: varchar("stripe_subscription_id").notNull().unique(),
+  stripeCustomerId: varchar("stripe_customer_id").notNull(),
+  stripePriceId: varchar("stripe_price_id").notNull(),
+  status: stripeSubscriptionStatusEnum("status").notNull(),
+  accessLevel: accessLevelEnum("access_level").notNull(),
+  currentPeriodStart: timestamp("current_period_start").notNull(),
+  currentPeriodEnd: timestamp("current_period_end").notNull(),
+  cancelAtPeriodEnd: boolean("cancel_at_period_end").default(false),
+  canceledAt: timestamp("canceled_at"),
+  endedAt: timestamp("ended_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Payments table - Complete payment history
+export const payments = pgTable("payments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  stripePaymentIntentId: varchar("stripe_payment_intent_id").notNull().unique(),
+  stripeCustomerId: varchar("stripe_customer_id").notNull(),
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+  currency: varchar("currency").notNull().default("usd"),
+  status: paymentStatusEnum("status").notNull(),
+  paymentType: varchar("payment_type").notNull(), // "subscription" | "session_booking" | "one_time"
+  description: text("description"),
+
+  // Optional reference to session booking (if payment is for a session)
+  sessionBookingId: varchar("session_booking_id").references(() => sessions_table.id),
+
+  // Metadata from Stripe
+  metadata: text("metadata"), // JSON string
+
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});

@@ -11,6 +11,14 @@ import {
   pollinatorTierDefinitions,
   insertSurveyResponseSchema
 } from "@shared/schema";
+import {
+  createSubscriptionCheckout,
+  createPaymentIntent,
+  cancelSubscription,
+  getSubscription,
+  constructWebhookEvent,
+  STRIPE_PRICES
+} from "./stripe";
 
 // AI Guardian response generation
 async function generateAIResponse(userMessage: string, context: any) {
@@ -1054,6 +1062,364 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching access info:", error);
       res.status(500).json({ message: "Failed to fetch access info" });
+    }
+  });
+
+  // ============================================
+  // STRIPE PAYMENT INTEGRATION ROUTES
+  // ============================================
+
+  /**
+   * Create Stripe Checkout Session for subscription upgrade
+   * POST /api/stripe/create-checkout-session
+   * Body: { tier: 'basic' | 'premium' | 'unlimited' }
+   */
+  app.post('/api/stripe/create-checkout-session', requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const { tier } = req.body;
+
+      if (!tier || !['basic', 'premium', 'unlimited'].includes(tier)) {
+        return res.status(400).json({
+          message: "Invalid tier. Must be 'basic', 'premium', or 'unlimited'"
+        });
+      }
+
+      const user = await storage.getUserById(userId);
+      if (!user || !user.email) {
+        return res.status(400).json({ message: "User email not found" });
+      }
+
+      const priceId = STRIPE_PRICES[tier as keyof typeof STRIPE_PRICES];
+      if (!priceId) {
+        return res.status(500).json({
+          message: `Price ID not configured for ${tier} tier`
+        });
+      }
+
+      const session = await createSubscriptionCheckout({
+        userId,
+        email: user.email,
+        priceId,
+        successUrl: `${process.env.CLIENT_URL || 'http://localhost:5000'}/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancelUrl: `${process.env.CLIENT_URL || 'http://localhost:5000'}/subscription/cancelled`,
+        storage
+      });
+
+      res.json({
+        sessionId: session.id,
+        url: session.url
+      });
+    } catch (error) {
+      console.error("Error creating checkout session:", error);
+      res.status(500).json({ message: "Failed to create checkout session" });
+    }
+  });
+
+  /**
+   * Get user's current Stripe subscription
+   * GET /api/stripe/subscription/:userId
+   */
+  app.get('/api/stripe/subscription/:userId', requireAuth, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      const authenticatedUserId = req.user.id;
+
+      // Ensure user can only access their own subscription
+      if (userId !== authenticatedUserId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const subscription = await storage.getActiveSubscription(userId);
+
+      if (!subscription) {
+        return res.json({
+          hasSubscription: false,
+          message: "No active subscription found"
+        });
+      }
+
+      // Get full Stripe subscription details
+      const stripeSubscription = await getSubscription(subscription.stripeSubscriptionId);
+
+      res.json({
+        hasSubscription: true,
+        subscription: {
+          id: subscription.id,
+          status: subscription.status,
+          accessLevel: subscription.accessLevel,
+          currentPeriodStart: subscription.currentPeriodStart,
+          currentPeriodEnd: subscription.currentPeriodEnd,
+          cancelAtPeriodEnd: subscription.cancelAtPeriodEnd,
+          stripeDetails: {
+            status: stripeSubscription.status,
+            currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
+            canceledAt: stripeSubscription.canceled_at
+              ? new Date(stripeSubscription.canceled_at * 1000)
+              : null
+          }
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching subscription:", error);
+      res.status(500).json({ message: "Failed to fetch subscription" });
+    }
+  });
+
+  /**
+   * Cancel subscription at period end
+   * POST /api/stripe/cancel-subscription
+   * Body: { subscriptionId: string }
+   */
+  app.post('/api/stripe/cancel-subscription', requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const { subscriptionId } = req.body;
+
+      if (!subscriptionId) {
+        return res.status(400).json({ message: "Subscription ID required" });
+      }
+
+      // Verify user owns this subscription
+      const subscription = await storage.getSubscriptionById(subscriptionId);
+      if (!subscription || subscription.userId !== userId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      // Cancel at period end in Stripe
+      const canceledSubscription = await cancelSubscription(subscription.stripeSubscriptionId);
+
+      // Update our database
+      await storage.updateSubscriptionStatus(
+        subscriptionId,
+        'active',
+        true,
+        new Date()
+      );
+
+      res.json({
+        message: "Subscription will be canceled at period end",
+        cancelAtPeriodEnd: true,
+        currentPeriodEnd: new Date(canceledSubscription.current_period_end * 1000)
+      });
+    } catch (error) {
+      console.error("Error canceling subscription:", error);
+      res.status(500).json({ message: "Failed to cancel subscription" });
+    }
+  });
+
+  /**
+   * Create Payment Intent for one-time session booking
+   * POST /api/stripe/create-payment-intent
+   * Body: { sessionBookingId: string, amount: number }
+   */
+  app.post('/api/stripe/create-payment-intent', requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const { sessionBookingId, amount } = req.body;
+
+      if (!sessionBookingId || !amount || amount <= 0) {
+        return res.status(400).json({
+          message: "Session booking ID and valid amount required"
+        });
+      }
+
+      const user = await storage.getUserById(userId);
+      if (!user || !user.email) {
+        return res.status(400).json({ message: "User email not found" });
+      }
+
+      // Verify session booking exists and belongs to user
+      const booking = await storage.getBookingById(sessionBookingId);
+      if (!booking) {
+        return res.status(404).json({ message: "Session booking not found" });
+      }
+
+      // Get client profile to verify ownership
+      const client = await storage.getClientByUserId(userId);
+      if (!client || booking.clientId !== client.id) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const paymentIntent = await createPaymentIntent({
+        userId,
+        email: user.email,
+        amount,
+        currency: 'usd',
+        metadata: {
+          sessionBookingId,
+          practitionerId: booking.practitionerId,
+          userId
+        },
+        storage
+      });
+
+      res.json({
+        clientSecret: paymentIntent.client_secret,
+        paymentIntentId: paymentIntent.id
+      });
+    } catch (error) {
+      console.error("Error creating payment intent:", error);
+      res.status(500).json({ message: "Failed to create payment intent" });
+    }
+  });
+
+  /**
+   * Stripe Webhook Handler
+   * POST /api/webhooks/stripe
+   * CRITICAL: This route requires raw body parsing
+   */
+  app.post('/api/webhooks/stripe', async (req, res) => {
+    const signature = req.headers['stripe-signature'];
+
+    if (!signature) {
+      return res.status(400).json({ message: "Missing stripe-signature header" });
+    }
+
+    try {
+      // Construct and verify webhook event
+      const event = constructWebhookEvent(req.body, signature as string);
+
+      // Handle different event types
+      switch (event.type) {
+        case 'checkout.session.completed': {
+          const session = event.data.object as any;
+          const userId = session.metadata?.userId;
+          const subscriptionId = session.subscription;
+
+          if (userId && subscriptionId) {
+            // Get Stripe customer ID
+            const customer = await storage.getStripeCustomerByUserId(userId);
+            if (!customer) {
+              console.error(`No Stripe customer found for user ${userId}`);
+              break;
+            }
+
+            // Get subscription details from Stripe
+            const stripeSubscription = await getSubscription(subscriptionId);
+
+            // Create subscription record in our database
+            await storage.createSubscription({
+              userId,
+              stripeSubscriptionId: subscriptionId,
+              stripeCustomerId: customer.stripeCustomerId,
+              stripePriceId: stripeSubscription.items.data[0].price.id,
+              status: 'active',
+              accessLevel: 'basic', // Will be updated based on price
+              currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
+              currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000)
+            });
+
+            // Update user's access level
+            await storage.updateUserAccessLevel(userId, 'basic');
+          }
+          break;
+        }
+
+        case 'customer.subscription.updated': {
+          const subscription = event.data.object as any;
+
+          // Find subscription in our database
+          const dbSubscription = await storage.getSubscriptionByStripeId(subscription.id);
+          if (dbSubscription) {
+            await storage.updateSubscriptionStatus(
+              dbSubscription.id,
+              subscription.status,
+              subscription.cancel_at_period_end,
+              subscription.canceled_at ? new Date(subscription.canceled_at * 1000) : undefined
+            );
+          }
+          break;
+        }
+
+        case 'customer.subscription.deleted': {
+          const subscription = event.data.object as any;
+
+          // Find subscription in our database
+          const dbSubscription = await storage.getSubscriptionByStripeId(subscription.id);
+          if (dbSubscription) {
+            await storage.updateSubscriptionStatus(
+              dbSubscription.id,
+              'cancelled',
+              false,
+              new Date(),
+              new Date()
+            );
+
+            // Downgrade user access
+            await storage.updateUserAccessLevel(dbSubscription.userId, 'preview');
+          }
+          break;
+        }
+
+        case 'payment_intent.succeeded': {
+          const paymentIntent = event.data.object as any;
+          const userId = paymentIntent.metadata?.userId;
+          const sessionBookingId = paymentIntent.metadata?.sessionBookingId;
+
+          if (userId) {
+            // Get Stripe customer ID
+            const customer = await storage.getStripeCustomerByUserId(userId);
+            if (!customer) {
+              console.error(`No Stripe customer found for user ${userId}`);
+              break;
+            }
+
+            // Create payment record
+            await storage.createPayment({
+              userId,
+              stripePaymentIntentId: paymentIntent.id,
+              stripeCustomerId: customer.stripeCustomerId,
+              amount: (paymentIntent.amount / 100).toString(), // Convert cents to dollars
+              currency: paymentIntent.currency,
+              status: 'succeeded',
+              paymentType: sessionBookingId ? 'session_booking' : 'one_time',
+              sessionBookingId: sessionBookingId || null,
+              description: `Payment for ${sessionBookingId ? 'session booking' : 'service'}`,
+              metadata: JSON.stringify(paymentIntent.metadata)
+            });
+
+            // If this was for a session booking, update booking status
+            if (sessionBookingId) {
+              await storage.updateBookingStatus(sessionBookingId, 'confirmed');
+            }
+          }
+          break;
+        }
+
+        case 'payment_intent.payment_failed': {
+          const paymentIntent = event.data.object as any;
+          const userId = paymentIntent.metadata?.userId;
+
+          if (userId) {
+            const customer = await storage.getStripeCustomerByUserId(userId);
+            if (customer) {
+              await storage.createPayment({
+                userId,
+                stripePaymentIntentId: paymentIntent.id,
+                stripeCustomerId: customer.stripeCustomerId,
+                amount: (paymentIntent.amount / 100).toString(),
+                currency: paymentIntent.currency,
+                status: 'failed',
+                paymentType: paymentIntent.metadata?.sessionBookingId ? 'session_booking' : 'one_time',
+                sessionBookingId: paymentIntent.metadata?.sessionBookingId || null,
+                description: `Failed payment for ${paymentIntent.metadata?.sessionBookingId ? 'session' : 'service'}`,
+                metadata: JSON.stringify(paymentIntent.metadata)
+              });
+            }
+          }
+          break;
+        }
+
+        default:
+          console.log(`Unhandled webhook event type: ${event.type}`);
+      }
+
+      // Return 200 to acknowledge receipt
+      res.json({ received: true });
+    } catch (error) {
+      console.error("Webhook error:", error);
+      res.status(400).json({ message: "Webhook handler failed" });
     }
   });
 

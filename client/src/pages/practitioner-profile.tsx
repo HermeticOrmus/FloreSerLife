@@ -297,11 +297,18 @@ export default function PractitionerProfile() {
                 <CardTitle className="text-forest">Book a Session</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <Button className="w-full bg-gold hover:bg-gold/90">
+                <Button
+                  className="w-full bg-gold hover:bg-gold/90"
+                  onClick={() => setLocation(`/book/${practitionerId}`)}
+                >
                   <Calendar className="w-4 h-4 mr-2" />
                   Schedule Session
                 </Button>
-                <Button variant="outline" className="w-full">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => setLocation('/messages')}
+                >
                   Send Message
                 </Button>
 

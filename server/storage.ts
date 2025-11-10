@@ -12,6 +12,9 @@ import {
   gardenContent,
   gardenInteractions,
   favoritePractitioners,
+  stripeCustomers,
+  subscriptions,
+  payments,
   type User,
   type UpsertUser,
   type Practitioner,
@@ -1199,6 +1202,149 @@ export class DatabaseStorage implements IStorage {
     await db.update(sessions_table)
       .set({ status: status as any })
       .where(eq(sessions_table.id, id));
+  }
+
+  // ============================================
+  // STRIPE PAYMENT INTEGRATION METHODS
+  // ============================================
+
+  /**
+   * Get Stripe customer by user ID
+   */
+  async getStripeCustomerByUserId(userId: string): Promise<any> {
+    const result = await db.select()
+      .from(stripeCustomers)
+      .where(eq(stripeCustomers.userId, userId))
+      .limit(1);
+    return result[0];
+  }
+
+  /**
+   * Create Stripe customer mapping
+   */
+  async createStripeCustomer(userId: string, stripeCustomerId: string): Promise<any> {
+    const result = await db.insert(stripeCustomers)
+      .values({
+        userId,
+        stripeCustomerId,
+      })
+      .returning();
+    return result[0];
+  }
+
+  /**
+   * Get active subscription for user
+   */
+  async getActiveSubscription(userId: string): Promise<any> {
+    const result = await db.select()
+      .from(subscriptions)
+      .where(
+        and(
+          eq(subscriptions.userId, userId),
+          inArray(subscriptions.status, ['active', 'trialing', 'past_due'])
+        )
+      )
+      .orderBy(desc(subscriptions.createdAt))
+      .limit(1);
+    return result[0];
+  }
+
+  /**
+   * Get subscription by database ID
+   */
+  async getSubscriptionById(subscriptionId: string): Promise<any> {
+    const result = await db.select()
+      .from(subscriptions)
+      .where(eq(subscriptions.id, subscriptionId))
+      .limit(1);
+    return result[0];
+  }
+
+  /**
+   * Get subscription by Stripe subscription ID
+   */
+  async getSubscriptionByStripeId(stripeSubscriptionId: string): Promise<any> {
+    const result = await db.select()
+      .from(subscriptions)
+      .where(eq(subscriptions.stripeSubscriptionId, stripeSubscriptionId))
+      .limit(1);
+    return result[0];
+  }
+
+  /**
+   * Create subscription record
+   */
+  async createSubscription(subscriptionData: any): Promise<any> {
+    const result = await db.insert(subscriptions)
+      .values(subscriptionData)
+      .returning();
+    return result[0];
+  }
+
+  /**
+   * Update subscription status
+   */
+  async updateSubscriptionStatus(
+    subscriptionId: string,
+    status: string,
+    cancelAtPeriodEnd: boolean = false,
+    canceledAt?: Date,
+    endedAt?: Date
+  ): Promise<void> {
+    await db.update(subscriptions)
+      .set({
+        status: status as any,
+        cancelAtPeriodEnd,
+        canceledAt,
+        endedAt,
+        updatedAt: new Date()
+      })
+      .where(eq(subscriptions.id, subscriptionId));
+  }
+
+  /**
+   * Create payment record
+   */
+  async createPayment(paymentData: any): Promise<any> {
+    const result = await db.insert(payments)
+      .values(paymentData)
+      .returning();
+    return result[0];
+  }
+
+  /**
+   * Get user's payment history
+   */
+  async getUserPayments(userId: string, limit: number = 50): Promise<any[]> {
+    return await db.select()
+      .from(payments)
+      .where(eq(payments.userId, userId))
+      .orderBy(desc(payments.createdAt))
+      .limit(limit);
+  }
+
+  /**
+   * Get payment by Stripe Payment Intent ID
+   */
+  async getPaymentByStripeId(stripePaymentIntentId: string): Promise<any> {
+    const result = await db.select()
+      .from(payments)
+      .where(eq(payments.stripePaymentIntentId, stripePaymentIntentId))
+      .limit(1);
+    return result[0];
+  }
+
+  /**
+   * Update user's access level based on subscription
+   * This method is called after subscription changes
+   */
+  async updateUserAccessLevel(userId: string, accessLevel: string): Promise<void> {
+    await db.update(users)
+      .set({
+        accessLevel: accessLevel as any,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, userId));
   }
 }
 

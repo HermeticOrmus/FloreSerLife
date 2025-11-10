@@ -352,26 +352,52 @@ export default function Garden() {
                 <h2 className="text-section-heading font-heading text-garden-text-primary">
                   Your Session
                 </h2>
-                <Card className="bg-garden-card border-0 rounded-card-lg shadow-card">
-                  <CardHeader>
-                    <CardTitle className="text-card-subheading font-heading text-garden-text-primary">
-                      Your Next Session
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <h3 className="text-card-heading font-heading text-garden-text-primary">
-                        {nextSession?.practitionerName || "Angelica"}
-                      </h3>
-                      <p className="text-body-sm text-garden-text-secondary">
-                        Apr 26 1st, 10:00 AM
+                {nextSession ? (
+                  <Card className="bg-garden-card border-0 rounded-card-lg shadow-card">
+                    <CardHeader>
+                      <CardTitle className="text-card-subheading font-heading text-garden-text-primary">
+                        Your Next Session
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <h3 className="text-card-heading font-heading text-garden-text-primary">
+                          {nextSession.practitionerName}
+                        </h3>
+                        <p className="text-body-sm text-garden-text-secondary">
+                          {new Date(nextSession.scheduledDatetime).toLocaleDateString('en-US', {
+                            weekday: 'short',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: 'numeric',
+                            minute: '2-digit'
+                          })}
+                        </p>
+                      </div>
+                      <Button
+                        className="w-full bg-garden-accent hover:bg-garden-accent/90 rounded-button text-label"
+                        onClick={() => setLocation(`/sessions`)}
+                      >
+                        View Session Details
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <Card className="bg-garden-card border-0 rounded-card-lg shadow-card">
+                    <CardContent className="py-8 text-center space-y-4">
+                      <p className="text-body text-garden-text-secondary">
+                        No upcoming sessions yet
                       </p>
-                    </div>
-                    <Button className="w-full bg-garden-accent hover:bg-garden-accent/90 rounded-button text-label">
-                      Enter Session
-                    </Button>
-                  </CardContent>
-                </Card>
+                      <Button
+                        variant="outline"
+                        className="border-garden-accent/30 hover:bg-garden-accent hover:text-white rounded-button text-label"
+                        onClick={() => setLocation('/practitioners')}
+                      >
+                        Browse Practitioners
+                      </Button>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             </motion.div>
 
@@ -441,13 +467,17 @@ export default function Garden() {
                   <Button
                     variant="outline"
                     className="w-full rounded-button text-label border-garden-accent/30 hover:bg-garden-accent hover:text-white"
+                    onClick={() => setLocation('/hive')}
                   >
                     Browse Pollinators
                   </Button>
                 </CardContent>
               </Card>
 
-              <Card className="bg-garden-accent-light border-0 rounded-card shadow-card">
+              <Card
+                className="bg-garden-accent-light border-0 rounded-card shadow-card hover:shadow-card-hover transition-shadow cursor-pointer"
+                onClick={() => setLocation('/favorites')}
+              >
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -471,8 +501,8 @@ export default function Garden() {
                   </p>
                   <Button
                     variant="outline"
-                    className="w-full rounded-button text-label border-garden-accent/30"
-                    onClick={() => setLocation("/garden")}
+                    className="w-full rounded-button text-label border-garden-accent/30 hover:bg-garden-accent hover:text-white"
+                    onClick={() => setLocation("/journal")}
                   >
                     View Timeline
                   </Button>
