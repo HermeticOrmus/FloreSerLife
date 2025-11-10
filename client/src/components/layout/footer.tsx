@@ -45,6 +45,9 @@ export default function Footer() {
             <h4 className="font-heading text-lg font-semibold mb-4">For Facilitators</h4>
             <ul className="space-y-2 text-sm text-white/70">
               <li>
+                <Link href="/join-the-hive" className="hover:text-gold transition-colors">Join the Hive</Link>
+              </li>
+              <li>
                 <Link href="/auth/signup" className="hover:text-gold transition-colors">🐝 Start with Bee Archetype</Link>
               </li>
               <li>
@@ -52,9 +55,6 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/garden" className="hover:text-gold transition-colors">Community & Mentorship</Link>
-              </li>
-              <li>
-                <Link href="/resources" className="hover:text-gold transition-colors">Growth Support</Link>
               </li>
             </ul>
           </div>
@@ -80,7 +80,7 @@ export default function Footer() {
         
         <div className="border-t border-white/20 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-white/60 text-sm">
-            © 2024 FloreSer. All rights reserved.
+            © {new Date().getFullYear()} FloreSer.Life — Where growth is sacred and flourishing is your birthright.
           </p>
           <div className="flex space-x-4 mt-4 md:mt-0">
             <a href="#" className="text-white/60 hover:text-gold transition-colors">

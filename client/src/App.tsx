@@ -20,6 +20,7 @@ import SignUp from "@/pages/SignUp";
 import Survey from "@/pages/survey";
 import Hive from "@/pages/hive";
 import Garden from "@/pages/garden";
+import JoinTheHive from "@/pages/JoinTheHive";
 import BookSession from "@/pages/book-session";
 import SimpleAdminLogin from "@/pages/simple-admin-login";
 import SimpleAdminPanel from "@/pages/simple-admin-panel";
@@ -61,10 +62,11 @@ function Router() {
       <Route path="/auth/signin" component={SignIn} />
       <Route path="/auth/signup" component={SignUp} />
 
-      {/* Survey, Hive, Garden and Alpha routes - always accessible */}
+      {/* Survey, Hive, Garden, Join the Hive and Alpha routes - always accessible */}
       <Route path="/survey" component={Survey} />
       <Route path="/hive" component={Hive} />
       <Route path="/garden" component={Garden} />
+      <Route path="/join-the-hive" component={JoinTheHive} />
       <Route path="/alpha" component={Alpha} />
 
       {/* Coming Soon pages - always accessible */}

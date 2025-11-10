@@ -3,14 +3,18 @@ import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
-import ArchetypeShowcase from "@/components/archetype-showcase";
+import WhatAwaitsInside from "@/components/landing/WhatAwaitsInside";
+import ArchetypeCardsSection from "@/components/landing/ArchetypeCardsSection";
+import SeasonsOfPractice from "@/components/landing/SeasonsOfPractice";
+import MaiaSection from "@/components/landing/MaiaSection";
+import ForFacilitatorsCTA from "@/components/landing/ForFacilitatorsCTA";
 import CharacterShowcase from "@/components/character-showcase";
 import HowItWorks from "@/components/how-it-works";
 import FeaturedPractitioners from "@/components/featured-practitioners";
 import StatsSection from "@/components/stats-section";
 import CTASection from "@/components/cta-section";
 import { Button } from "@/components/ui/button";
-import { Star, Shield, Search, Calendar, UserCheck } from "lucide-react";
+import { Search, UserCheck, Shield, Star, Calendar } from "lucide-react";
 import { characters } from "@/assets";
 
 export default function Landing() {
@@ -18,7 +22,26 @@ export default function Landing() {
   const [, setLocation] = useLocation();
 
   useEffect(() => {
-    document.title = "FloreSer - Find Your Ideal Wellness Practitioner";
+    // Set page title and meta tags from Master_site.md
+    document.title = "FloreSer.Life — Nature-Inspired Guidance for Your Becoming";
+
+    // Update meta description
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute(
+        "content",
+        "Discover FloreSer.Life, a nature-inspired wellness ecosystem connecting seekers with trusted holistic facilitators. Find your perfect match with our Pollinator archetypes and begin your next season of growth."
+      );
+    }
+
+    // Update meta keywords
+    const metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (metaKeywords) {
+      metaKeywords.setAttribute(
+        "content",
+        "online wellness platform, holistic facilitators, personal growth, conscious living, embodiment, mindfulness, spiritual coaching, energy healing, nature-inspired guidance"
+      );
+    }
   }, []);
 
   const handleFindYourMatch = () => {
@@ -59,17 +82,18 @@ export default function Landing() {
               {/* Trust Badge */}
               <div className="inline-flex items-center px-4 py-2 bg-gold/20 text-gold rounded-full text-sm font-medium mb-6">
                 <UserCheck className="mr-2 h-4 w-4" />
-                Verified Wellness Practitioners
+                Verified Wellness Facilitators • Conscious & Ethical Practice
               </div>
 
               <h1 className="font-heading text-4xl lg:text-6xl font-bold text-forest mb-6 leading-tight">
                 Beyond Traditional Therapy:<br />
-                <span className="text-gold">Nature-Inspired</span> Wellness Matching
+                <span className="text-gold">Nature-Inspired Guidance</span> for Your Becoming
               </h1>
+              <p className="text-lg text-forest/80 mb-4 leading-relaxed">
+                Welcome, Dear One — this is fertile ground for your unfolding. FloreSer.Life is more than an online wellness platform. It's a <strong>living ecosystem</strong> where verified holistic facilitators—our Pollinators—offer presence, wisdom, and embodied practices to support your personal growth.
+              </p>
               <p className="text-lg text-forest/80 mb-8 leading-relaxed">
-                Stop settling for mismatched practitioners. Our revolutionary pollinator archetype system
-                connects you with wellness professionals who truly understand your healing journey.
-                Experience the difference when practitioner and seeker are perfectly aligned.
+                Whether you're taking first steps into self-discovery or deepening your practice, this is where <strong>healing becomes flourishing</strong> and your next season of becoming begins.
               </p>
 
               {/* Main CTA Buttons */}
@@ -81,7 +105,7 @@ export default function Landing() {
                   data-testid="button-find-practitioners"
                 >
                   <Search className="mr-2 h-5 w-5" />
-                  Find Your Match
+                  Find Your Pollinator
                 </Button>
                 <Button
                   variant="outline"
@@ -90,7 +114,7 @@ export default function Landing() {
                   onClick={handleJoinAsPractitioner}
                   data-testid="button-become-practitioner"
                 >
-                  Start as Facilitator
+                  For Facilitators
                 </Button>
               </div>
 
@@ -184,12 +208,12 @@ export default function Landing() {
         </div>
       </section>
 
-      <ArchetypeShowcase />
-      <CharacterShowcase />
-      <HowItWorks />
+      <WhatAwaitsInside />
+      <ArchetypeCardsSection />
+      <SeasonsOfPractice />
+      <MaiaSection />
       <FeaturedPractitioners />
-      <StatsSection />
-      <CTASection />
+      <ForFacilitatorsCTA />
       <Footer />
     </div>
   );

@@ -1,0 +1,45 @@
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { useLocation } from "wouter";
+import { Heart } from "lucide-react";
+
+export default function ForFacilitatorsCTA() {
+  const [, setLocation] = useLocation();
+
+  return (
+    <section className="py-20 bg-gradient-to-br from-cream to-sage/10">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="inline-flex items-center px-4 py-2 bg-gold/20 text-gold rounded-full text-sm font-medium mb-6">
+            <Heart className="mr-2 h-4 w-4" />
+            For Healers & Guides
+          </div>
+
+          <h2 className="font-heading text-3xl lg:text-4xl font-bold text-forest mb-6">
+            For Facilitators
+          </h2>
+
+          <p className="text-lg text-forest/80 leading-relaxed mb-8 max-w-3xl mx-auto">
+            Are you a guide, healer, or catalyst? You carry a spark. A wisdom
+            shaped by earth, time, and your own journey of becoming. Join the
+            Hive and become a Pollinator in our living ecosystem of co-creation
+            and conscious flourishing.
+          </p>
+
+          <Button
+            size="lg"
+            className="bg-gold text-white hover:bg-gold/90 rounded-full px-8 shadow-lg transform hover:scale-105 transition-all"
+            onClick={() => setLocation("/join-the-hive")}
+          >
+            Join the Hive
+          </Button>
+        </motion.div>
+      </div>
+    </section>
+  );
+}

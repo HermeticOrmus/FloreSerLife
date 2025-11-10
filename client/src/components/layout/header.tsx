@@ -61,6 +61,11 @@ export default function Header() {
           Community Garden
         </Button>
       </Link>
+      <Link href="/join-the-hive">
+        <Button variant="ghost" className="w-full justify-start" data-testid="button-mobile-join-hive">
+          Join the Hive
+        </Button>
+      </Link>
       <Link href="/survey">
         <Button variant="ghost" className="w-full justify-start" data-testid="button-mobile-survey">
           Platform Survey
@@ -149,6 +154,15 @@ export default function Header() {
                 data-testid="button-garden-desktop"
               >
                 Garden
+              </Button>
+            </Link>
+            <Link href="/join-the-hive">
+              <Button
+                variant="ghost"
+                className="text-forest hover:text-gold"
+                data-testid="button-join-hive-desktop"
+              >
+                Join the Hive
               </Button>
             </Link>
             <Link href="/survey">

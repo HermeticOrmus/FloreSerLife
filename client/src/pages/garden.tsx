@@ -39,6 +39,9 @@ import {
 import { AccessLevelBadge, FeaturePreview, UpgradeModal, useAccessControl } from "@/components/access-control";
 import { GardenGuardian } from "@/components/garden-guardian";
 import { useAuth } from "@/hooks/useAuth";
+import GrowthMandala from "@/components/garden/GrowthMandala";
+import BloomPathTimeline from "@/components/garden/BloomPathTimeline";
+import MaiaMessage from "@/components/garden/MaiaMessage";
 
 type GardenContentType = "article" | "video" | "audio" | "exercise" | "meditation";
 
@@ -379,31 +382,18 @@ export default function Garden() {
               transition={{ delay: 0.2 }}
               className="flex flex-col items-center justify-center"
             >
-              {/* Flower Visualization */}
-              <div className="relative w-48 h-48 mb-6">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  {/* Center circle */}
-                  <div className="w-16 h-16 bg-garden-accent rounded-full flex items-center justify-center shadow-card-md z-10">
-                    <Flower2 className="w-8 h-8 text-white" />
-                  </div>
-                </div>
-                {/* Petals */}
-                {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: 0.3 + i * 0.05 }}
-                    className="absolute"
-                    style={{
-                      top: `${50 + 40 * Math.sin((i * Math.PI) / 4)}%`,
-                      left: `${50 + 40 * Math.cos((i * Math.PI) / 4)}%`,
-                      transform: 'translate(-50%, -50%)'
-                    }}
-                  >
-                    <div className="w-12 h-12 bg-garden-sidebar rounded-full opacity-80 shadow-card"></div>
-                  </motion.div>
-                ))}
+              {/* 6-Petal Growth Mandala */}
+              <div className="mb-6">
+                <GrowthMandala
+                  progress={{
+                    body: 65,
+                    emotion: 45,
+                    mind: 80,
+                    spirit: 50,
+                    creativity: 30,
+                    connection: 70
+                  }}
+                />
               </div>
 
               {/* Stats */}
@@ -525,6 +515,47 @@ export default function Garden() {
                   </div>
                 </CardContent>
               </Card>
+            </motion.div>
+          )}
+
+          {/* Maia Welcome Message */}
+          {isAuthenticated && (
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="mb-8"
+            >
+              <MaiaMessage
+                type={sessionsData && sessionsData.length > 0 ? "encouragement" : "welcome"}
+                context={{
+                  sessionsCompleted: sessionsData?.length || 0,
+                  currentMilestone: sessionsData?.length >= 3 ? "Rising Flower" : undefined
+                }}
+              />
+            </motion.div>
+          )}
+
+          {/* Bloom Path Timeline */}
+          {isAuthenticated && sessionsData && sessionsData.length > 0 && (
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="mb-12"
+            >
+              <BloomPathTimeline
+                sessions={sessionsData.map((session: any) => ({
+                  id: session.id,
+                  date: session.sessionDate || session.createdAt,
+                  facilitatorName: session.practitionerName,
+                  practitionerName: session.practitionerName,
+                  theme: session.sessionType || "Wellness Session",
+                  notes: session.notes,
+                  reflection: session.clientReflection
+                }))}
+                pollinationPoints={sessionsData.length * 10}
+              />
             </motion.div>
           )}
 
