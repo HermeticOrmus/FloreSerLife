@@ -45,6 +45,17 @@ export default function SignUp() {
       return;
     }
 
+    // Validate password strength
+    const hasUpperCase = /[A-Z]/.test(formData.password);
+    const hasLowerCase = /[a-z]/.test(formData.password);
+    const hasNumber = /[0-9]/.test(formData.password);
+
+    if (!hasUpperCase || !hasLowerCase || !hasNumber) {
+      setError("Password must contain at least one uppercase letter, one lowercase letter, and one number");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch("/api/auth/signup", {
         method: "POST",
@@ -65,8 +76,9 @@ export default function SignUp() {
         throw new Error(data.message || "Failed to create account");
       }
 
-      // Redirect to email verification or dashboard
-      setLocation("/auth/verify-email");
+      // Redirect to home/dashboard after successful signup
+      // User is automatically logged in after signup
+      setLocation("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create account");
     } finally {

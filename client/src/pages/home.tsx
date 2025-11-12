@@ -120,9 +120,9 @@ export default function Home() {
               <CardContent className="space-y-3">
                 <Button
                   className="w-full bg-gold text-white hover:bg-gold/90"
-                  onClick={() => setLocation('/hive')}
+                  onClick={() => setLocation('/practitioners')}
                 >
-                  Book New Session
+                  Find Practitioners
                 </Button>
                 <Button
                   variant="outline"

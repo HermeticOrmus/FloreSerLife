@@ -137,7 +137,7 @@ export default function ClientDashboard() {
     // Handle navigation or actions
     switch (actionType) {
       case 'book-session':
-        setLocation('/hive');
+        setLocation('/practitioners');
         break;
       case 'browse-practitioners':
         setLocation('/practitioners');

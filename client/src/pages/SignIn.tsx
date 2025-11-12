@@ -163,11 +163,12 @@ export default function SignIn() {
               </div>
 
               <div className="flex items-center justify-end">
-                <Link href="/auth/forgot-password">
-                  <span className="text-sm text-gold hover:text-gold/80 cursor-pointer">
-                    Forgot password?
-                  </span>
-                </Link>
+                <span
+                  className="text-sm text-gold hover:text-gold/80 cursor-pointer"
+                  onClick={() => setError("Password reset feature coming soon. Please contact support if you need assistance.")}
+                >
+                  Forgot password?
+                </span>
               </div>
 
               <Button
