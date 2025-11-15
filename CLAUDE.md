@@ -26,6 +26,7 @@ FloreSer is a wellness practitioners marketplace that connects clients with veri
 - **Backend**: Express.js + TypeScript
 - **Database**: PostgreSQL (Neon) + Drizzle ORM
 - **Auth**: Passport.js (Local + Google OAuth)
+- **Payments**: Checkout.com (checkout-sdk-node + frames-react)
 - **Styling**: Tailwind CSS + shadcn/ui components
 - **Routing**: Wouter (lightweight React router)
 - **State Management**: TanStack Query (React Query)
@@ -465,7 +466,7 @@ Located in `attached_assets/` and referenced via `@assets/` alias:
 - Responsive design across all pages
 
 ### Active Development 🚧
-- Payment integration (Stripe dependencies installed)
+- Payment integration (Checkout.com SDKs installed)
 - Session booking completion
 - Real-time messaging between users
 - Advanced practitioner matching algorithm

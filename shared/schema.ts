@@ -49,8 +49,8 @@ export const users = pgTable("users", {
   subscriptionStartDate: timestamp("subscription_start_date"),
   subscriptionEndDate: timestamp("subscription_end_date"),
   trialEndDate: timestamp("trial_end_date"),
-  stripeCustomerId: varchar("stripe_customer_id"),
-  stripeSubscriptionId: varchar("stripe_subscription_id"),
+  checkoutCustomerId: varchar("checkout_customer_id"),
+  checkoutSubscriptionId: varchar("checkout_subscription_id"),
 
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
