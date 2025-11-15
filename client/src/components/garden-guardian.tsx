@@ -112,7 +112,7 @@ export function GardenGuardian() {
 
     // Anxiety/stress related
     if (lowerMessage.includes('anxiety') || lowerMessage.includes('stress') || lowerMessage.includes('calm')) {
-      const beeContent = gardenContent.filter((c: GardenContent) => c.authorArchetype === 'bee');
+      const beeContent = gardenContent.filter((c: GardenContent) => c.authorArchetype && c.authorArchetype === 'bee');
       return {
         response: "🐝 I sense you're seeking peace and grounding. The Bee archetype facilitators in our Garden have shared wonderful wisdom about creating calm and stability. Bee energy is all about steady, nurturing support - perfect for anxiety relief.\n\nLet me share some content that might resonate with your need for tranquility:",
         relatedContent: beeContent.slice(0, 2).concat(relevantContent.slice(0, 1)),
@@ -122,7 +122,7 @@ export function GardenGuardian() {
 
     // Transformation/change related
     if (lowerMessage.includes('transform') || lowerMessage.includes('change') || lowerMessage.includes('transition')) {
-      const butterflyContent = gardenContent.filter((c: GardenContent) => c.authorArchetype === 'butterfly');
+      const butterflyContent = gardenContent.filter((c: GardenContent) => c.authorArchetype && c.authorArchetype === 'butterfly');
       return {
         response: "🦋 Beautiful! You're in a season of transformation. Our Butterfly archetype facilitators specialize in guiding people through life transitions and metamorphosis. Their wisdom in the Garden can illuminate your path forward.\n\nHere's some transformational content I've curated for you:",
         relatedContent: butterflyContent.slice(0, 2).concat(relevantContent.slice(0, 1)),
@@ -132,7 +132,7 @@ export function GardenGuardian() {
 
     // Spiritual/intuitive seeking
     if (lowerMessage.includes('spiritual') || lowerMessage.includes('intuition') || lowerMessage.includes('guidance')) {
-      const hummingbirdContent = gardenContent.filter((c: GardenContent) => c.authorArchetype === 'hummingbird');
+      const hummingbirdContent = gardenContent.filter((c: GardenContent) => c.authorArchetype && c.authorArchetype === 'hummingbird');
       return {
         response: "🦜 I feel your call for deeper spiritual connection. The Hummingbird archetype facilitators are masters of precision and spiritual insight. They've shared profound wisdom about accessing intuition and divine guidance.\n\nLet me guide you to their most illuminating content:",
         relatedContent: hummingbirdContent.slice(0, 2).concat(relevantContent.slice(0, 1)),
@@ -142,7 +142,7 @@ export function GardenGuardian() {
 
     // Deep work/healing
     if (lowerMessage.includes('heal') || lowerMessage.includes('deep') || lowerMessage.includes('shadow')) {
-      const beetleContent = gardenContent.filter((c: GardenContent) => c.authorArchetype === 'beetle');
+      const beetleContent = gardenContent.filter((c: GardenContent) => c.authorArchetype && c.authorArchetype === 'beetle');
       return {
         response: "🪲 You're ready for deep, transformative work. The Beetle archetype facilitators excel at shadow work and profound integration. They've shared powerful content about diving deep into healing work.\n\nHere's some profound content for your deep healing journey:",
         relatedContent: beetleContent.slice(0, 2).concat(relevantContent.slice(0, 1)),
@@ -196,24 +196,25 @@ export function GardenGuardian() {
 
   if (!isOpen) {
     return (
-      <div className="fixed bottom-20 right-6 z-40">
+      <div className="fixed bottom-6 md:bottom-20 right-4 md:right-6 z-40">
         <Button
           size="lg"
-          className="rounded-full bg-gradient-to-r from-green-600 to-forest text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all p-4"
+          className="rounded-full bg-gradient-to-r from-green-600 to-forest text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all p-3 md:p-4"
           onClick={() => setIsOpen(true)}
         >
-          <TreePine className="w-6 h-6 mr-2" />
-          Garden Guardian
-          <Leaf className="w-4 h-4 ml-2" />
+          <TreePine className="w-5 h-5 md:w-6 md:h-6 mr-2" />
+          <span className="hidden sm:inline">Garden Guardian</span>
+          <span className="sm:hidden">Guardian</span>
+          <Leaf className="w-3 h-3 md:w-4 md:h-4 ml-2" />
         </Button>
       </div>
     );
   }
 
   return (
-    <div className="fixed bottom-20 right-6 z-40">
-      <Card className={`w-96 shadow-2xl border-green-200 transition-all duration-300 ${
-        isMinimized ? 'h-16' : 'h-[500px]'
+    <div className="fixed bottom-6 md:bottom-20 right-4 md:right-6 left-4 md:left-auto z-40">
+      <Card className={`w-full md:w-96 shadow-2xl border-green-200 transition-all duration-300 ${
+        isMinimized ? 'h-16' : 'h-[500px] max-h-[80vh]'
       }`}>
         <CardHeader className="flex flex-row items-center justify-between p-4 bg-gradient-to-r from-green-600 to-forest text-white rounded-t-lg">
           <div className="flex items-center space-x-2">

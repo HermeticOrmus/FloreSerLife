@@ -286,12 +286,12 @@ export default function Garden() {
   };
 
   return (
-    <div className="flex min-h-screen bg-garden-bg">
-      {/* Sidebar */}
+    <div className="flex min-h-screen bg-garden-bg flex-col lg:flex-row">
+      {/* Sidebar - Hidden on mobile, visible on lg+ */}
       <motion.aside
         initial={{ x: -20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        className="w-64 bg-garden-sidebar border-r border-garden-accent/20 p-6 flex flex-col"
+        className="hidden lg:flex w-64 bg-garden-sidebar border-r border-garden-accent/20 p-6 flex-col"
       >
         <div className="mb-8">
           <h2 className="text-page-heading font-heading text-garden-text-on-sage">
@@ -338,10 +338,16 @@ export default function Garden() {
       </motion.aside>
 
       {/* Main Content */}
-      <main className="flex-1 bg-garden-container p-12 overflow-y-auto">
+      <main className="flex-1 bg-garden-container p-4 md:p-8 lg:p-12 overflow-y-auto">
         <div className="max-w-6xl mx-auto">
+          {/* Mobile Header */}
+          <div className="lg:hidden mb-6">
+            <h1 className="text-page-heading font-heading text-garden-text-primary">
+              My Garden
+            </h1>
+          </div>
           {/* Top Section - Session and Growth */}
-          <div className="grid grid-cols-3 gap-8 mb-12">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 mb-12">
             {/* Left: Session Card */}
             <motion.div
               initial={{ y: 20, opacity: 0 }}
@@ -427,7 +433,9 @@ export default function Garden() {
               transition={{ delay: 0.3 }}
               className="space-y-4"
             >
-              <Card className="bg-garden-card border-0 rounded-card shadow-card hover:shadow-card-hover transition-shadow cursor-pointer">
+              <Card className="bg-garden-card border-0 rounded-card shadow-card hover:shadow-card-hover transition-shadow cursor-pointer"
+                onClick={() => setLocation("/practitioners")}
+              >
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-card-heading font-heading text-garden-text-primary">
@@ -575,12 +583,12 @@ export default function Garden() {
             </div>
 
             {/* Filters */}
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Input
                 placeholder="Search content..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="col-span-2 bg-garden-card border-garden-accent/20 rounded-input"
+                className="md:col-span-2 bg-garden-card border-garden-accent/20 rounded-input"
               />
               <Select value={selectedContentType} onValueChange={setSelectedContentType}>
                 <SelectTrigger className="bg-garden-card border-garden-accent/20 rounded-input">
@@ -631,9 +639,21 @@ export default function Garden() {
               feature="Community Garden access"
             >
               {isLoading ? (
-                <div className="text-center py-12">
-                  <TreePine className="w-12 h-12 text-garden-accent animate-pulse mx-auto mb-4" />
-                  <p className="text-garden-text-secondary">Loading Garden content...</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <Card key={i} className="bg-garden-card border-0 rounded-card">
+                      <div className="animate-pulse">
+                        <CardHeader className="pb-3">
+                          <div className="h-4 bg-garden-bg rounded w-1/3 mb-3"></div>
+                          <div className="h-6 bg-garden-bg rounded mb-2"></div>
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                          <div className="h-4 bg-garden-bg rounded mb-2"></div>
+                          <div className="h-4 bg-garden-bg rounded w-3/4"></div>
+                        </CardContent>
+                      </div>
+                    </Card>
+                  ))}
                 </div>
               ) : filteredContent.length === 0 ? (
                 <div className="text-center py-12">
@@ -650,7 +670,7 @@ export default function Garden() {
                   )}
                 </div>
               ) : (
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                   {filteredContent.map((content: GardenContent, index: number) => (
                     <motion.div
                       key={content.id}
@@ -689,7 +709,7 @@ export default function Garden() {
                           <div className="flex items-center justify-between text-xs text-garden-text-secondary">
                             <div className="flex items-center gap-2">
                               {content.practitioner?.archetype && (
-                                <span>{getArchetypeIcon(content.practitioner.archetype)}</span>
+                                <span title={content.practitioner.archetype}>{getArchetypeIcon(content.practitioner.archetype)}</span>
                               )}
                               <span className="line-clamp-1">{getAuthorName(content)}</span>
                             </div>

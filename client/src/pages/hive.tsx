@@ -227,12 +227,12 @@ export default function Hive() {
   };
 
   return (
-    <div className="flex min-h-screen bg-hive-bg">
-      {/* Sidebar */}
+    <div className="flex min-h-screen bg-hive-bg flex-col lg:flex-row">
+      {/* Sidebar - Hidden on mobile, visible on lg+ */}
       <motion.aside
         initial={{ x: -20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        className="w-64 bg-hive-card-light border-r border-hive-accent/20 p-6 flex flex-col"
+        className="hidden lg:flex w-64 bg-hive-card-light border-r border-hive-accent/20 p-6 flex-col"
       >
         <div className="mb-8">
           <h2 className="text-page-heading font-heading text-hive-text-primary">
@@ -275,10 +275,16 @@ export default function Hive() {
       </motion.aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-12 overflow-y-auto">
-        <div className="max-w-6xl">
+      <main className="flex-1 p-4 md:p-8 lg:p-12 overflow-y-auto">
+        <div className="max-w-6xl mx-auto">
+          {/* Mobile Header */}
+          <div className="lg:hidden mb-6">
+            <h1 className="text-page-heading font-heading text-hive-text-primary">
+              My Hive
+            </h1>
+          </div>
           {/* Top Stats Cards */}
-          <div className="grid grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-8">
             {/* Calendar Card */}
             <motion.div
               initial={{ y: 20, opacity: 0 }}
@@ -347,7 +353,7 @@ export default function Hive() {
                   Your Blooming Metrics
                 </h3>
 
-                <div className="grid grid-cols-3 gap-8 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-6">
                   <div className="space-y-2">
                     <p className="text-body-sm text-white/80">Sessions completed</p>
                     <p className="text-stat-lg font-heading">
@@ -386,7 +392,7 @@ export default function Hive() {
             <h2 className="text-section-heading font-heading text-hive-text-primary mb-6">
               Pollinator Archetypes
             </h2>
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {Object.entries(archetypeDefinitions).map(([key, archetype], index) => (
                 <motion.div
                   key={key}
@@ -417,7 +423,7 @@ export default function Hive() {
             <h2 className="text-section-heading font-heading text-hive-text-primary">
               Browse Facilitators
             </h2>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <Input
                 placeholder="Search facilitators..."
                 value={searchTerm}
@@ -453,7 +459,7 @@ export default function Hive() {
 
           {/* Facilitators Grid */}
           {isLoading ? (
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {Array.from({ length: 6 }).map((_, i) => (
                 <Card key={i} className="bg-hive-card-light border-0 rounded-card">
                   <div className="animate-pulse">
@@ -479,7 +485,7 @@ export default function Hive() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {sortedPractitioners.slice(0, 6).map((practitioner: any, index: number) => (
                 <motion.div
                   key={practitioner.id}
