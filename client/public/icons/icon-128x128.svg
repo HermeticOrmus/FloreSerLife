@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="128" height="128" fill="#2F4F4F"/>
+
+  <!-- Leaf/Nature Icon -->
+  <g transform="translate(64, 64)">
+    <path d="M-32,0 Q-19.2,-38.4 0,-44.8 Q19.2,-38.4 32,0 Q19.2,19.2 0,25.6 Q-19.2,19.2 -32,0"
+          fill="#D4AF37"
+          opacity="0.9"/>
+    <path d="M0,-44.8 Q0,-12.8 0,25.6"
+          stroke="#8FBC8F"
+          stroke-width="2.56"
+          fill="none"/>
+  </g>
+
+  <!-- Brand Text (for larger sizes) -->
+  
+</svg>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#2F4F4F"/>
+
+  <!-- Leaf/Nature Icon -->
+  <g transform="translate(256, 256)">
+    <path d="M-128,0 Q-76.8,-153.6 0,-179.2 Q76.8,-153.6 128,0 Q76.8,76.8 0,102.4 Q-76.8,76.8 -128,0"
+          fill="#D4AF37"
+          opacity="0.9"/>
+    <path d="M0,-179.2 Q0,-51.2 0,102.4"
+          stroke="#8FBC8F"
+          stroke-width="10.24"
+          fill="none"/>
+  </g>
+
+  <!-- Brand Text (for larger sizes) -->
+  
+  <text x="50%" y="85%"
+        text-anchor="middle"
+        font-family="serif"
+        font-size="61.44"
+        font-weight="bold"
+        fill="#D4AF37">
+    FloreSer
+  </text>
+</svg>
