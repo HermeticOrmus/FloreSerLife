@@ -1,0 +1,32 @@
+[
+  {
+    "name": "depth-card-garden",
+    "prompt": "dimensional paper cut texture, subtle layered organic pattern with faint leaf shapes, multiple stacked paper layers with visible depth, soft shadows, beveled edges, soft sage green #AFC8A8 with lighter #C9DCC9 variations, matte paper grain, card background texture, 3D paper sculpture effect --v 7 --ar 1:1 --s 200 --tile",
+    "upscale": false,
+    "category": "cards"
+  },
+  {
+    "name": "depth-card-hive",
+    "prompt": "dimensional paper cut texture, subtle layered hexagon honeycomb pattern, multiple stacked paper layers with visible depth, soft shadows, beveled edges, warm amber #D9B77F with gold #F5D29A variations, matte paper grain, card background texture, 3D paper sculpture effect --v 7 --ar 1:1 --s 200 --tile",
+    "upscale": false,
+    "category": "cards"
+  },
+  {
+    "name": "depth-progress-vine",
+    "prompt": "dimensional paper cut art, horizontal growing vine with small leaves at various growth stages from bud to full leaf, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, sage green #7FA889 with darker #6E7B60 stems, growth progress indicator, 3D paper sculpture effect, white background --v 7 --ar 8:1 --s 300",
+    "upscale": true,
+    "category": "ui"
+  },
+  {
+    "name": "depth-achievement-bloom",
+    "prompt": "dimensional paper cut icon, small blooming flower opening with sparkle accents, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, gold #F5D29A petals with crimson #A23C40 center, achievement celebration, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-empty-state",
+    "prompt": "dimensional paper cut art, small wilted plant in pot looking sad but hopeful with one small green bud, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, muted sage #AFC8A8 with earth #BA9A82 pot, gentle empty state not depressing, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "ui"
+  }
+]

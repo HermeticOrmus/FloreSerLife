@@ -1,10 +1,22 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
-import { Heart } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { Heart, Sparkles } from "lucide-react";
+import { papercut } from "@/assets";
 
 export default function ForFacilitatorsCTA() {
   const [, setLocation] = useLocation();
+  const { user, isAuthenticated } = useAuth();
+
+  const handleBecomeFacilitator = () => {
+    if (isAuthenticated) {
+      // If already a practitioner, go to dashboard; otherwise go to onboarding
+      setLocation(user?.roles?.includes('practitioner') ? "/dashboard/practitioner" : "/become-facilitator");
+    } else {
+      setLocation("/auth/signup");
+    }
+  };
 
   return (
     <section className="py-20 bg-gradient-to-br from-cream to-sage/10">
@@ -31,13 +43,34 @@ export default function ForFacilitatorsCTA() {
             and conscious flourishing.
           </p>
 
-          <Button
-            size="lg"
-            className="bg-gold text-white hover:bg-gold/90 rounded-full px-8 shadow-lg transform hover:scale-105 transition-all"
-            onClick={() => setLocation("/join-the-hive")}
-          >
-            Join the Hive
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              size="lg"
+              className="text-white hover:opacity-90 rounded-full px-8 shadow-lg transform hover:scale-105 transition-all"
+              onClick={handleBecomeFacilitator}
+              style={{
+                backgroundImage: `url(${papercut.textures.paperGold})`,
+                backgroundSize: '200px 200px',
+                backgroundRepeat: 'repeat',
+              }}
+            >
+              <Sparkles className="mr-2 h-4 w-4" />
+              Become a Facilitator
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="rounded-full px-8 hover:opacity-90"
+              onClick={() => setLocation("/join-the-hive")}
+              style={{
+                backgroundImage: `url(${papercut.textures.paperUI})`,
+                backgroundSize: '200px 200px',
+                backgroundRepeat: 'repeat',
+              }}
+            >
+              Learn More
+            </Button>
+          </div>
         </motion.div>
       </div>
     </section>

@@ -1,0 +1,38 @@
+[
+  {
+    "name": "depth-icon-calendar",
+    "prompt": "dimensional paper cut icon, rectangular calendar frame with grid of small seeds as days, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, sage green #6F8E72 frame with earth #564B3A seed dots, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-messages",
+    "prompt": "dimensional paper cut icon, speech bubble made of curved leaf shape, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, sage green #7FA889 outer with cream #F2E5CA center, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-sessions",
+    "prompt": "dimensional paper cut icon, two overlapping circles with leaf decorations like yin-yang, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, sage #7FA889 and gold #D9B77F, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-garden-ui",
+    "prompt": "dimensional paper cut icon, small potted plant with three leaves, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, sage green #7FA889 leaves with earth #BA9A82 terracotta pot, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-hive-ui",
+    "prompt": "dimensional paper cut icon, honeycomb hexagon cluster of 3 cells, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, gold #D9B77F with amber #BA9A82 depth, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-seeds",
+    "prompt": "dimensional paper cut icon, three seeds in triangular cluster, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, earth brown #564B3A with one gold #D9B77F highlighted seed, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  }
+]

@@ -94,12 +94,41 @@
   }
 
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased bg-background;
     font-family: var(--font-body);
+    color: #4a5d4a;
+    text-shadow: 0.5px 0.5px 0px rgba(255,255,255,0.6), -0.3px -0.3px 0px rgba(0,0,0,0.1);
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
+    color: #3d4f3d;
+    text-shadow: 1px 1px 0px rgba(255,255,255,0.7), -0.5px -0.5px 0px rgba(0,0,0,0.15);
+  }
+
+  /* Stronger emboss for larger headings */
+  h1, h2 {
+    text-shadow: 1.5px 1.5px 0px rgba(255,255,255,0.7), -1px -1px 0px rgba(0,0,0,0.2);
+  }
+
+  /* Links inherit emboss but with accent color on hover */
+  a {
+    color: #4a5d4a;
+    text-shadow: 0.5px 0.5px 0px rgba(255,255,255,0.6), -0.3px -0.3px 0px rgba(0,0,0,0.1);
+  }
+
+  a:hover {
+    color: #3d4f3d;
+  }
+
+  /* Reset emboss for elements that shouldn't have it */
+  button, input, textarea, select {
+    text-shadow: none;
+  }
+
+  /* Re-apply emboss to button text specifically */
+  button span, .btn-emboss {
+    text-shadow: 0.5px 0.5px 0px rgba(255,255,255,0.6), -0.3px -0.3px 0px rgba(0,0,0,0.1);
   }
 }
 
@@ -125,4 +154,100 @@
 
 .gradient-overlay {
   background: linear-gradient(135deg, rgba(47, 79, 79, 0.1) 0%, rgba(212, 175, 55, 0.1) 100%);
+}
+
+/* Paper-Cut Landing Page Animations */
+@keyframes orbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes gentle-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+/* Paper-Cut Landing Page Utilities */
+@layer utilities {
+  /* Global paper texture overlay */
+  .paper-texture {
+    position: relative;
+  }
+
+  .paper-texture::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/src/assets/images/papercut/generated/depth/depth-texture-paper-ui.png');
+    background-size: 256px 256px;
+    background-repeat: repeat;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .paper-texture > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Paper texture backgrounds */
+  .bg-paper-cream {
+    background-image: url('/src/assets/images/papercut/paper-cream.png');
+    background-size: cover;
+    background-position: center;
+  }
+
+  .bg-paper-sage {
+    background-image: url('/src/assets/images/papercut/paper-sage.png');
+    background-size: cover;
+    background-position: center;
+  }
+
+  .bg-paper-clay {
+    background-image: url('/src/assets/images/papercut/paper-clay.png');
+    background-size: cover;
+    background-position: center;
+  }
+
+  .bg-paper-earth-dark {
+    background-image: url('/src/assets/images/papercut/paper-earth-dark.png');
+    background-size: cover;
+    background-position: center;
+  }
+
+  /* Pattern overlays */
+  .bg-pattern-leaves {
+    background-image: url('/src/assets/images/papercut/pattern-leaves.png');
+    background-size: 400px 400px;
+    background-repeat: repeat;
+  }
+
+  .bg-pattern-roots {
+    background-image: url('/src/assets/images/papercut/pattern-roots.png');
+    background-size: 400px 400px;
+    background-repeat: repeat;
+  }
+
+  /* Paper-cut depth utilities */
+  .paper-layer {
+    position: relative;
+  }
+
+  .paper-layer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-orbit-slow,
+    .animate-orbit-medium,
+    .animate-orbit-fast,
+    .animate-gentle-pulse {
+      animation: none;
+    }
+  }
 }

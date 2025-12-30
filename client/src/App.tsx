@@ -18,8 +18,8 @@ import AdminDashboard from "@/pages/admin-dashboard";
 import SignIn from "@/pages/SignIn";
 import SignUp from "@/pages/SignUp";
 import Survey from "@/pages/survey";
-import Hive from "@/pages/hive";
-import Garden from "@/pages/garden";
+import Hive from "@/pages/Hive";
+import Garden from "@/pages/Garden";
 import JoinTheHive from "@/pages/JoinTheHive";
 import BookSession from "@/pages/book-session";
 import SimpleAdminLogin from "@/pages/simple-admin-login";
@@ -37,6 +37,7 @@ import Payments from "@/pages/payments";
 import Analytics from "@/pages/analytics";
 import Application from "@/pages/application";
 import Favorites from "@/pages/favorites";
+import PractitionerOnboarding from "@/pages/practitioner-onboarding";
 
 function Router() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -95,6 +96,9 @@ function Router() {
       <Route path="/application" component={Application} />
       <Route path="/favorites" component={Favorites} />
 
+      {/* Practitioner Onboarding */}
+      <Route path="/become-facilitator" component={PractitionerOnboarding} />
+
       {/* Admin routes - always accessible */}
       <Route path="/admin/dashboard" component={AdminDashboard} />
       <Route path="/simple-admin/login" component={SimpleAdminLogin} />
@@ -133,8 +137,10 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <AIGuardianProvider>
-          <Toaster />
-          <Router />
+          <div className="min-h-screen paper-texture">
+            <Toaster />
+            <Router />
+          </div>
         </AIGuardianProvider>
       </TooltipProvider>
     </QueryClientProvider>

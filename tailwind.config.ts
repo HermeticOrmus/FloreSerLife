@@ -56,6 +56,13 @@ export default {
 
         // Inner shadows for inset elements
         'inner-soft': 'inset 0 2px 4px 0 rgba(74, 53, 41, 0.05)',
+
+        // Paper-Cut shadows (earth-toned for layered depth)
+        'paper-1': '0 1px 2px rgba(86,75,58,0.06), 0 2px 4px rgba(86,75,58,0.04)',
+        'paper-2': '0 4px 6px rgba(86,75,58,0.08), 2px 4px 8px rgba(86,75,58,0.06)',
+        'paper-3': '0 6px 10px rgba(86,75,58,0.08), 3px 8px 16px rgba(86,75,58,0.06)',
+        'paper-4': '0 8px 12px rgba(86,75,58,0.08), 4px 12px 20px rgba(86,75,58,0.06)',
+        'hex-emboss': 'inset 0 3px 6px rgba(255,255,255,0.6), inset 0 -3px 6px rgba(86,75,58,0.1), 0 6px 12px rgba(86,75,58,0.12)',
       },
       spacing: {
         // Generous spacing matching the references
@@ -74,7 +81,20 @@ export default {
         '26': '6.5rem',      // 104px
         '30': '7.5rem',      // 120px
       },
+      // Embossed Typewriter Text Effect
+      textShadow: {
+        'emboss': '1px 1px 0px rgba(255,255,255,0.7), -0.5px -0.5px 0px rgba(0,0,0,0.15)',
+        'emboss-sm': '0.5px 0.5px 0px rgba(255,255,255,0.6), -0.3px -0.3px 0px rgba(0,0,0,0.1)',
+        'emboss-lg': '1.5px 1.5px 0px rgba(255,255,255,0.7), -1px -1px 0px rgba(0,0,0,0.2)',
+        'none': 'none',
+      },
       colors: {
+        // Embossed Text Colors (typewriter feel)
+        'typewriter': {
+          'dark': '#3d4f3d',    // Logo text
+          'medium': '#4a5d4a',  // Nav links
+          'light': '#5a6d5a',   // Secondary text
+        },
         // Shared Earth Tones
         earth: {
           50: '#FAF8F5',
@@ -87,6 +107,37 @@ export default {
           700: '#635648',
           800: '#4A4037',
           900: '#332D27',
+        },
+
+        // Paper-Cut Landing Page Colors
+        papercut: {
+          green: {
+            50: '#C9DCC9',
+            100: '#AFC8A8',
+            200: '#9CB69A',
+            300: '#7FA889',
+            400: '#6F8E72',
+            500: '#6E7B60',
+          },
+          earth: {
+            50: '#F2E5CA',
+            100: '#F5D29A',
+            200: '#D9B77F',
+            300: '#BA9A82',
+            400: '#564B3A',
+          },
+          accent: {
+            crimson: '#A23C40',
+            deep: '#7C0015',
+          },
+          neutral: {
+            light: '#F6F0E6',
+            dark: '#2C2C24',
+          },
+          hero: {
+            clay: '#D7C3A8',
+            sage: '#6F8E72',
+          },
         },
 
         // Legacy Brand Colors (keep for backward compatibility)
@@ -255,6 +306,84 @@ export default {
           '0%': { backgroundPosition: '-1000px 0' },
           '100%': { backgroundPosition: '1000px 0' },
         },
+
+        // Page transition animations
+        "page-enter": {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(20px) scale(0.98)'
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0) scale(1)'
+          },
+        },
+        "page-exit": {
+          '0%': {
+            opacity: '1',
+            transform: 'translateY(0) scale(1)'
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'translateY(-20px) scale(0.98)'
+          },
+        },
+
+        // Error/alert animations
+        "shake": {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '10%, 30%, 50%, 70%, 90%': { transform: 'translateX(-4px)' },
+          '20%, 40%, 60%, 80%': { transform: 'translateX(4px)' },
+        },
+
+        // Butterfly wing flutter
+        "flutter": {
+          '0%, 100%': { transform: 'rotate(-5deg) scale(1)' },
+          '50%': { transform: 'rotate(5deg) scale(1.02)' },
+        },
+
+        // Gentle breathing/pulsing
+        "breathe": {
+          '0%, 100%': {
+            transform: 'scale(1)',
+            opacity: '0.8'
+          },
+          '50%': {
+            transform: 'scale(1.03)',
+            opacity: '1'
+          },
+        },
+
+        // Staggered fade in for lists
+        "stagger-in": {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(10px)'
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)'
+          },
+        },
+
+        // Paper-Cut landing page animations
+        "paper-unfold": {
+          '0%': {
+            transform: 'rotateX(-90deg)',
+            opacity: '0'
+          },
+          '100%': {
+            transform: 'rotateX(0)',
+            opacity: '1'
+          },
+        },
+        "orbit": {
+          'to': { transform: 'rotate(360deg)' },
+        },
+        "gentle-pulse": {
+          '0%, 100%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.02)' },
+        },
       },
       animation: {
         // Shadcn UI
@@ -263,7 +392,7 @@ export default {
 
         // Garden animations
         "bloom": "bloom 1.5s ease-out",
-        "petal-fade": "petal-fade 0.8s ease-in-out",
+        "petal-fade": "petal-fade 0.8s ease-in-out forwards",
         "vine-grow": "vine-grow 2s ease-out",
         "sprout": "sprout 1.2s ease-out",
 
@@ -274,8 +403,41 @@ export default {
         // Utility
         "float": "float 6s ease-in-out infinite",
         "shimmer": "shimmer 2s linear infinite",
+
+        // Page transitions
+        "page-enter": "page-enter 0.4s ease-out forwards",
+        "page-exit": "page-exit 0.3s ease-in forwards",
+
+        // Feedback animations
+        "shake": "shake 0.5s ease-in-out",
+
+        // Nature-inspired
+        "flutter": "flutter 3s ease-in-out infinite",
+        "breathe": "breathe 4s ease-in-out infinite",
+        "stagger-in": "stagger-in 0.5s ease-out forwards",
+
+        // Paper-Cut landing page
+        "paper-unfold": "paper-unfold 0.6s ease-out forwards",
+        "orbit-slow": "orbit 15s linear infinite",
+        "orbit-medium": "orbit 10s linear infinite",
+        "orbit-fast": "orbit 6s linear infinite",
+        "gentle-pulse": "gentle-pulse 3s ease-in-out infinite",
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require("@tailwindcss/typography"),
+    // Custom text-shadow plugin for emboss effect
+    function({ matchUtilities, theme }: any) {
+      matchUtilities(
+        {
+          'text-shadow': (value: string) => ({
+            textShadow: value,
+          }),
+        },
+        { values: theme('textShadow') }
+      );
+    },
+  ],
 } satisfies Config;

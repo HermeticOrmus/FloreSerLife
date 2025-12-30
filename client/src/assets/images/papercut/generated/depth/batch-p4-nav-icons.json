@@ -1,0 +1,38 @@
+[
+  {
+    "name": "depth-icon-home",
+    "prompt": "dimensional paper cut icon, small house shape with leaf roof, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, sage green #6F8E72 with earth #564B3A base, 3D paper sculpture effect, 64px icon scale, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-search",
+    "prompt": "dimensional paper cut icon, magnifying glass with leaf handle, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, sage green #6F8E72, 3D paper sculpture effect, 64px icon scale, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-profile",
+    "prompt": "dimensional paper cut icon, simple person silhouette with leaf crown, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, earth #564B3A with sage #7FA889 leaf accent, 3D paper sculpture effect, 64px icon scale, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-menu",
+    "prompt": "dimensional paper cut icon, three horizontal lines made of small leaves, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, sage green #6F8E72, botanical hamburger menu, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-settings",
+    "prompt": "dimensional paper cut icon, flower shape with 6 petals suggesting gear, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, sage green #6F8E72 with gold #D9B77F center, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-notifications",
+    "prompt": "dimensional paper cut icon, bell flower shape drooping down, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, gold #D9B77F flower with sage #7FA889 stem, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "name": "depth-icon-success",
+    "prompt": "dimensional paper cut icon, blooming flower fully open with 5 petals, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, sage green #7FA889 petals with gold #F5D29A center, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-warning",
+    "prompt": "dimensional paper cut icon, autumn leaf with curled edges, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, amber gold #D9B77F with orange undertones, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-error",
+    "prompt": "dimensional paper cut icon, wilted drooping flower with bent stem, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, crimson #A23C40 petals with brown #564B3A stem, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-info",
+    "prompt": "dimensional paper cut icon, unfurling fern spiral fiddlehead, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, sage green #6F8E72, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-heart",
+    "prompt": "dimensional paper cut icon, heart shape made of two overlapping curved leaves, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, crimson #A23C40, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-star",
+    "prompt": "dimensional paper cut icon, five-pointed star flower shape, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, gold #F5D29A with amber accents, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  }
+]

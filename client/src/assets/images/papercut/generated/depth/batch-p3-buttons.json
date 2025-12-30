@@ -1,0 +1,32 @@
+[
+  {
+    "name": "depth-btn-primary",
+    "prompt": "dimensional paper cut art, horizontal pill-shaped button, multiple stacked paper layers with visible depth, strong drop shadows between 3 layers, beveled torn edges, crimson red #A23C40 top layer with darker #7C0015 shadow layer, 3D paper sculpture effect, no text, cream background --v 7 --ar 4:1 --s 300",
+    "upscale": true,
+    "category": "buttons"
+  },
+  {
+    "name": "depth-btn-secondary",
+    "prompt": "dimensional paper cut art, horizontal pill-shaped button outline frame, multiple stacked paper layers creating frame with visible depth, strong drop shadows, beveled torn edges, sage green #6F8E72 border with cream #F2E5CA center hollow, 3D paper sculpture effect, no text, white background --v 7 --ar 4:1 --s 300",
+    "upscale": true,
+    "category": "buttons"
+  },
+  {
+    "name": "depth-btn-tertiary",
+    "prompt": "dimensional paper cut art, horizontal pill-shaped button, multiple stacked paper layers with visible depth, strong drop shadows between 3 layers, beveled torn edges, warm gold #D9B77F top layer with amber #BA9A82 shadow, 3D paper sculpture effect, no text, cream background --v 7 --ar 4:1 --s 300",
+    "upscale": true,
+    "category": "buttons"
+  },
+  {
+    "name": "depth-btn-leaf",
+    "prompt": "dimensional paper cut art, horizontal leaf-shaped button natural organic oval with pointed ends, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges with subtle vein texture, sage green #7FA889, 3D paper sculpture effect, no text, cream background --v 7 --ar 4:1 --s 350",
+    "upscale": true,
+    "category": "buttons"
+  },
+  {
+    "name": "depth-btn-icon-circle",
+    "prompt": "dimensional paper cut art, small circular button, multiple stacked paper layers with visible depth, strong drop shadows between 2 layers, beveled torn edges, sage green #7FA889, 3D paper sculpture effect, cream background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "buttons"
+  }
+]

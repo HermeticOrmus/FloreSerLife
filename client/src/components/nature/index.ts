@@ -11,3 +11,4 @@ export { BloomAnimation } from './bloom-animation';
 export { PollinatorIcon } from './pollinator-icon';
 export { NatureLoader } from './nature-loader';
 export { HoneyLoader } from './honey-loader';
+export { OrganicBackground, FloatingBlob, DecorativeVine } from './organic-background';

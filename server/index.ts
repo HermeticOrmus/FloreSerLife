@@ -1,8 +1,52 @@
+import 'dotenv/config';
 import express, { type Request, Response, NextFunction } from "express";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
+
+// Track if routes have been registered (for serverless)
+let routesRegistered = false;
+
+// Security headers with Helmet
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'"], // Required for Vite HMR in dev
+      imgSrc: ["'self'", "data:", "https:", "blob:"],
+      connectSrc: ["'self'", "https:", "wss:"],
+    },
+  },
+  crossOriginEmbedderPolicy: false, // Required for some embeds
+}));
+
+// Global rate limiter - 100 requests per 15 minutes per IP
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: { message: "Too many requests, please try again later" },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Strict rate limiter for auth endpoints - 5 attempts per 15 minutes
+export const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: { message: "Too many authentication attempts, please try again later" },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true, // Don't count successful logins
+});
+
+// Apply global rate limiter to all API routes
+app.use("/api", globalLimiter);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -36,7 +80,11 @@ app.use((req, res, next) => {
   next();
 });
 
-(async () => {
+// Initialize routes (called once, handles both serverless and standalone)
+async function initializeRoutes() {
+  if (routesRegistered) return;
+  routesRegistered = true;
+
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -56,16 +104,45 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || '5000', 10);
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
-  });
-})();
+  return server;
+}
+
+// For Vercel serverless: export the app after routes are registered
+const isVercel = process.env.VERCEL === '1';
+
+// Promise that resolves when routes are ready
+let routesReady: Promise<void> | null = null;
+
+if (isVercel) {
+  // Vercel serverless - register routes and wait for them
+  routesReady = initializeRoutes().then(() => {});
+} else {
+  // Standalone server - start listening
+  (async () => {
+    const server = await initializeRoutes();
+
+    // ALWAYS serve the app on the port specified in the environment variable PORT
+    // Other ports are firewalled. Default to 5000 if not specified.
+    // this serves both the API and the client.
+    // It is the only port that is not firewalled.
+    const port = parseInt(process.env.PORT || '5000', 10);
+    server!.listen({
+      port,
+      host: "0.0.0.0",
+      reusePort: true,
+    }, () => {
+      log(`serving on port ${port}`);
+    });
+  })();
+}
+
+// Export a handler that waits for routes to be ready (for Vercel)
+const handler = async (req: Request, res: Response) => {
+  if (routesReady) {
+    await routesReady;
+  }
+  return app(req, res);
+};
+
+// Export app for Vercel serverless function
+export default isVercel ? handler : app;

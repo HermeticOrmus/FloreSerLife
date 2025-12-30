@@ -1,0 +1,26 @@
+[
+  {
+    "name": "depth-hero-garden-768",
+    "prompt": "dimensional paper cut art, lush flourishing garden with blooming flowers and ferns, multiple stacked paper layers with visible depth, strong drop shadows between each layer, beveled torn edges, sage green #7FA889 and cream #F2E5CA with gold #F5D29A, 3D paper sculpture effect, cream background --v 7 --ar 3:2 --s 400",
+    "upscale": true,
+    "category": "hero"
+  },
+  {
+    "name": "depth-hero-hive-768",
+    "prompt": "dimensional paper cut art, honeycomb hexagon structure with bee silhouettes and honey drips, multiple stacked paper layers with visible depth, strong drop shadows between layers, beveled torn edges, amber gold #D9B77F with dark earth #564B3A, 3D paper sculpture effect, cream background --v 7 --ar 3:2 --s 400",
+    "upscale": true,
+    "category": "hero"
+  },
+  {
+    "name": "depth-hero-practitioners-768",
+    "prompt": "dimensional paper cut art, four pollinators bee butterfly hummingbird beetle in circle formation, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, earth tones #D9B77F with sage #7FA889, 3D paper sculpture effect, cream background --v 7 --ar 2:1 --s 400",
+    "upscale": true,
+    "category": "hero"
+  },
+  {
+    "name": "depth-hero-profile-512",
+    "prompt": "dimensional paper cut art, botanical arch frame with leaves and vines, multiple stacked paper layers with visible depth, strong drop shadows between layers, beveled torn edges, sage green #6F8E72 with cream #F2E5CA, 3D paper sculpture effect, cream background --v 7 --ar 3:2 --s 400",
+    "upscale": true,
+    "category": "hero"
+  }
+]

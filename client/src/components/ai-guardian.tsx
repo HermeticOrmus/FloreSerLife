@@ -23,6 +23,7 @@ import {
   Zap
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { papercut } from "@/assets";
 
 interface Message {
   id: string;
@@ -271,11 +272,16 @@ export function AIGuardian() {
       <div className="fixed bottom-6 right-6 z-50">
         <Button
           size="lg"
-          className="rounded-full bg-gradient-to-r from-forest to-green-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all p-4"
+          className="rounded-full text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all px-6 py-4"
           onClick={() => setIsOpen(true)}
+          style={{
+            backgroundImage: `url(${papercut.textures.paperSage})`,
+            backgroundSize: '200px 200px',
+            backgroundRepeat: 'repeat',
+          }}
         >
-          <Bot className="w-6 h-6 mr-2" />
-          Chat with mAIa
+          <Bot className="w-5 h-5 mr-2" />
+          <span className="font-medium">Chat with mAIa</span>
           <Sparkles className="w-4 h-4 ml-2" />
         </Button>
       </div>

@@ -1,0 +1,80 @@
+[
+  {
+    "name": "depth-icon-profile-v2",
+    "prompt": "dimensional paper cut icon, simple person silhouette with leaf crown, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, earth #564B3A with sage #7FA889 leaf accent, 3D paper sculpture effect, 64px icon scale, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-menu-v2",
+    "prompt": "dimensional paper cut icon, three horizontal lines made of small leaves, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, sage green #6F8E72, botanical hamburger menu, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-settings-v2",
+    "prompt": "dimensional paper cut icon, flower shape with 6 petals suggesting gear, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, sage green #6F8E72 with gold #D9B77F center, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-notifications-v2",
+    "prompt": "dimensional paper cut icon, bell flower shape drooping down, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, gold #D9B77F flower with sage #7FA889 stem, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-add-v2",
+    "prompt": "dimensional paper cut icon, plus sign made of two crossed leaves, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, sage green #7FA889, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-edit-v2",
+    "prompt": "dimensional paper cut icon, twig shaped like pencil with leaf tip, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, earth brown #564B3A with sage #7FA889 leaf tip, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-delete-v2",
+    "prompt": "dimensional paper cut icon, wilting flower drooping down, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, muted sage #AFC8A8, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-save-v2",
+    "prompt": "dimensional paper cut icon, checkmark made of curved leaf, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, vibrant sage green #7FA889, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-close-v2",
+    "prompt": "dimensional paper cut icon, two crossed twigs forming X, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, earth brown #564B3A, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-download-v2",
+    "prompt": "dimensional paper cut icon, seed falling down with small leaf, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, sage green #6F8E72, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-upload-v2",
+    "prompt": "dimensional paper cut icon, sprout growing upward with arrow suggestion, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, sage green #7FA889, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-icon-share-v2",
+    "prompt": "dimensional paper cut icon, dandelion seed head with seeds floating, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, cream #F2E5CA seeds with sage #7FA889 stem, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "icons"
+  },
+  {
+    "name": "depth-auth-secure-v2",
+    "prompt": "dimensional paper cut art, shield shape made of overlapping leaves creating protective symbol, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, deep sage #6E7B60 with gold #D9B77F center, 3D paper sculpture effect, cream background --v 7 --ar 1:1 --s 350",
+    "upscale": true,
+    "category": "auth"
+  }
+]

@@ -6,8 +6,19 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
 import type { Express, RequestHandler } from "express";
+import rateLimit from "express-rate-limit";
 import { storage } from "./storage";
 import { emailService } from "./email";
+
+// Auth-specific rate limiter - 5 attempts per 15 minutes per IP
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: { message: "Too many authentication attempts, please try again in 15 minutes" },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+});
 
 if (!process.env.SESSION_SECRET) {
   throw new Error("Environment variable SESSION_SECRET not provided");
@@ -32,6 +43,7 @@ export function getSession() {
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax', // CSRF protection - prevents cross-origin cookie sending
       maxAge: sessionTtl,
     },
   });
@@ -153,8 +165,8 @@ export async function setupAuth(app: Express) {
     }
   });
 
-  // Auth Routes
-  app.post("/api/auth/signup", async (req, res) => {
+  // Auth Routes - Protected by rate limiting
+  app.post("/api/auth/signup", authLimiter, async (req, res) => {
     try {
       const { email, password, firstName, lastName } = req.body;
 
@@ -204,7 +216,7 @@ export async function setupAuth(app: Express) {
     }
   });
 
-  app.post("/api/auth/signin", (req, res, next) => {
+  app.post("/api/auth/signin", authLimiter, (req, res, next) => {
     passport.authenticate('local', (err: any, user: any, info: any) => {
       if (err) {
         return res.status(500).json({ message: "Authentication error" });

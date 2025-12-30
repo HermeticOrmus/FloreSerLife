@@ -1,0 +1,14 @@
+[
+  {
+    "name": "depth-icon-calendar-v2",
+    "prompt": "dimensional paper cut icon, simple iconic calendar silhouette, single square with minimal grid lines, clean readable shape, multiple stacked paper layers with visible depth, subtle drop shadow, beveled edges, sage green #6F8E72, functional UI icon minimal detail, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "functional-icon"
+  },
+  {
+    "name": "depth-icon-seeds-v2",
+    "prompt": "dimensional paper cut icon, three simple oval seed shapes in loose cluster, clean iconic silhouette, minimal detail, multiple stacked paper layers with visible depth, subtle drop shadow, beveled edges, earth brown #564B3A with one gold #D9B77F seed, functional UI icon, 3D paper sculpture effect, white background --v 7 --ar 1:1 --s 300",
+    "upscale": true,
+    "category": "functional-icon"
+  }
+]

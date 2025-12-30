@@ -1,0 +1,20 @@
+[
+  {
+    "name": "depth-auth-frame-768",
+    "prompt": "dimensional paper cut art, decorative rectangular frame with botanical corner ornaments of leaves and flowers, multiple stacked paper layers with visible depth, strong drop shadows between layers, beveled torn edges, cream #F2E5CA frame with sage #7FA889 leaf accents, 3D paper sculpture effect, frame only no center fill, white background --v 7 --ar 3:4 --s 400",
+    "upscale": true,
+    "category": "auth"
+  },
+  {
+    "name": "depth-auth-welcome-256",
+    "prompt": "dimensional paper cut art, friendly small sprout seedling with two leaves in greeting pose, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, fresh green #9CB69A with earth #BA9A82 soil base, 3D paper sculpture effect, cream background --v 7 --ar 1:1 --s 350",
+    "upscale": true,
+    "category": "auth"
+  },
+  {
+    "name": "depth-auth-secure-128",
+    "prompt": "dimensional paper cut art, shield shape made of overlapping leaves creating protective symbol, multiple stacked paper layers with visible depth, strong drop shadows, beveled torn edges, deep sage #6E7B60 with gold #D9B77F center, 3D paper sculpture effect, cream background --v 7 --ar 1:1 --s 350",
+    "upscale": false,
+    "category": "auth"
+  }
+]
