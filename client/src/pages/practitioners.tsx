@@ -17,8 +17,8 @@ import { archetypeDefinitions, type Practitioner } from "@shared/schema";
 
 export default function Practitioners() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedArchetype, setSelectedArchetype] = useState<string>("");
-  const [selectedExperience, setSelectedExperience] = useState<string>("");
+  const [selectedArchetype, setSelectedArchetype] = useState<string>("all");
+  const [selectedExperience, setSelectedExperience] = useState<string>("all");
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [, setLocation] = useLocation();
 
@@ -44,10 +44,10 @@ export default function Practitioners() {
         spec.toLowerCase().includes(searchTerm.toLowerCase())
       );
     
-    const matchesArchetype = selectedArchetype === "" || 
+    const matchesArchetype = selectedArchetype === "all" ||
       practitioner.archetype === selectedArchetype;
-    
-    const matchesExperience = selectedExperience === "" || 
+
+    const matchesExperience = selectedExperience === "all" ||
       practitioner.experienceLevel === selectedExperience;
 
     return matchesSearch && matchesArchetype && matchesExperience;
@@ -153,7 +153,7 @@ export default function Practitioners() {
               <SelectValue placeholder="All Archetypes" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Archetypes</SelectItem>
+              <SelectItem value="all">All Archetypes</SelectItem>
               <SelectItem value="bee">
                 🐝 Bee (Perfect for New Facilitators)
               </SelectItem>
@@ -172,7 +172,7 @@ export default function Practitioners() {
               <SelectValue placeholder="All Experience Levels" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Experience Levels</SelectItem>
+              <SelectItem value="all">All Experience Levels</SelectItem>
               <SelectItem value="rising">Rising</SelectItem>
               <SelectItem value="evolving">Evolving</SelectItem>
               <SelectItem value="wise">Wise</SelectItem>

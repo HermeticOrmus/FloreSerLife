@@ -1,10 +1,13 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, requireAuth, requireAdmin, requireDevAdmin } from "./auth";
 import { requirePermission, addAccessInfo } from "./accessControl";
 import { emailService } from "./email";
+import { stripeService, stripe } from "./stripe";
+import { claudeService } from "./ai/claude";
 import { format } from "date-fns";
+import express from "express";
 import {
   archetypeDefinitions,
   experienceLevelDefinitions,
@@ -254,17 +257,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const requestedDate = new Date(date as string);
       const durationMinutes = parseInt(duration as string);
 
+      // Get existing bookings for this practitioner on this date
+      const bookedSlots = await storage.getPractitionerBookingsByDate(practitionerId, requestedDate);
+
+      // Helper to check if a slot overlaps with any booking
+      const isSlotBooked = (slotHour: number, slotMinute: number): boolean => {
+        const slotStart = new Date(requestedDate);
+        slotStart.setHours(slotHour, slotMinute, 0, 0);
+        const slotEnd = new Date(slotStart.getTime() + durationMinutes * 60000);
+
+        return bookedSlots.some((booking: any) => {
+          const bookingStart = new Date(booking.scheduledDatetime);
+          const bookingEnd = new Date(bookingStart.getTime() + (booking.duration || 60) * 60000);
+
+          // Check for any overlap
+          return (
+            (slotStart >= bookingStart && slotStart < bookingEnd) ||
+            (slotEnd > bookingStart && slotEnd <= bookingEnd) ||
+            (slotStart <= bookingStart && slotEnd >= bookingEnd)
+          );
+        });
+      };
+
       // Generate time slots (9 AM to 5 PM in 30-minute intervals)
       const slots = [];
       for (let hour = 9; hour < 17; hour++) {
-        for (let minute of [0, 30]) {
+        for (const minute of [0, 30]) {
+          // Check if slot would extend past 5 PM
+          const slotEndMinutes = hour * 60 + minute + durationMinutes;
+          if (slotEndMinutes > 17 * 60) {
+            continue; // Skip slots that would run past end of day
+          }
+
           const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-          slots.push({ time, available: true }); // TODO: Check against existing bookings
+          const available = !isSlotBooked(hour, minute);
+          slots.push({ time, available });
         }
       }
-
-      // TODO: Filter out booked slots based on actual bookings from database
-      const bookedSlots = await storage.getPractitionerBookingsByDate(practitionerId, requestedDate);
 
       res.json(slots);
     } catch (error) {
@@ -1273,6 +1302,664 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error sending alpha invitation:", error);
       res.status(500).json({ message: "Failed to send alpha invitation" });
+    }
+  });
+
+  // ==========================================
+  // Facilitator Application (mAIa) Endpoints
+  // ==========================================
+
+  // Start or continue a facilitator application conversation
+  app.post('/api/facilitator-application/chat', async (req: any, res) => {
+    try {
+      const { message, applicationId, email } = req.body;
+      const userId = req.user?.id || null;
+
+      if (!message) {
+        return res.status(400).json({ message: "Message is required" });
+      }
+
+      // Get or create application
+      let application;
+
+      if (applicationId) {
+        application = await storage.getFacilitatorApplication(applicationId);
+        if (!application) {
+          return res.status(404).json({ message: "Application not found" });
+        }
+      } else if (userId) {
+        application = await storage.getFacilitatorApplicationByUserId(userId);
+      } else if (email) {
+        application = await storage.getFacilitatorApplicationByEmail(email);
+      }
+
+      // Create new application if none exists
+      if (!application) {
+        if (!email && !userId) {
+          return res.status(400).json({ message: "Email is required for new applications" });
+        }
+
+        application = await storage.createFacilitatorApplication({
+          userId: userId || undefined,
+          email: email || req.user?.email || "",
+          conversationHistory: []
+        });
+
+        // Send welcome message
+        const welcomeMessage = claudeService.getWelcomeMessage();
+        const history = [{ role: "assistant" as const, content: welcomeMessage }];
+
+        await storage.updateFacilitatorApplicationConversation(application.id, history);
+
+        return res.json({
+          applicationId: application.id,
+          response: welcomeMessage,
+          isNew: true
+        });
+      }
+
+      // Get conversation history
+      const history = (application.conversationHistory as any[]) || [];
+
+      // Get AI response
+      const aiResponse = await claudeService.chat(history, message);
+
+      // Update conversation history
+      const updatedHistory = [
+        ...history,
+        { role: "user" as const, content: message },
+        { role: "assistant" as const, content: aiResponse }
+      ];
+
+      await storage.updateFacilitatorApplicationConversation(application.id, updatedHistory);
+
+      res.json({
+        applicationId: application.id,
+        response: aiResponse,
+        isNew: false
+      });
+    } catch (error) {
+      console.error("Error in facilitator application chat:", error);
+      res.status(500).json({ message: "Failed to process message" });
+    }
+  });
+
+  // Get current application status
+  app.get('/api/facilitator-application', requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const application = await storage.getFacilitatorApplicationByUserId(userId);
+
+      if (!application) {
+        return res.status(404).json({ message: "No application found" });
+      }
+
+      res.json(application);
+    } catch (error) {
+      console.error("Error fetching application:", error);
+      res.status(500).json({ message: "Failed to fetch application" });
+    }
+  });
+
+  // Get application by ID
+  app.get('/api/facilitator-application/:id', requireAuth, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+
+      const application = await storage.getFacilitatorApplication(id);
+
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+
+      // Only allow user to see their own application unless admin
+      if (application.userId !== userId && !req.user.roles?.includes('admin')) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      res.json(application);
+    } catch (error) {
+      console.error("Error fetching application:", error);
+      res.status(500).json({ message: "Failed to fetch application" });
+    }
+  });
+
+  // Submit application for review
+  app.post('/api/facilitator-application/:id/submit', requireAuth, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+
+      const application = await storage.getFacilitatorApplication(id);
+
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+
+      if (application.userId !== userId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      if (application.status !== "in_progress") {
+        return res.status(400).json({ message: "Application already submitted" });
+      }
+
+      // Extract application data from conversation
+      const conversationHistory = (application.conversationHistory as any[]) || [];
+      const extractedData = await claudeService.extractApplicationData(conversationHistory);
+
+      // Update application with extracted data and submit
+      const updatedApplication = await storage.updateFacilitatorApplication(id, {
+        ...extractedData,
+        status: "submitted"
+      });
+
+      res.json({
+        message: "Application submitted successfully",
+        application: updatedApplication
+      });
+    } catch (error) {
+      console.error("Error submitting application:", error);
+      res.status(500).json({ message: "Failed to submit application" });
+    }
+  });
+
+  // Admin: Get all applications
+  app.get('/api/admin/facilitator-applications', requireDevAdmin, async (req, res) => {
+    try {
+      const { status } = req.query;
+      const applications = await storage.getAllFacilitatorApplications(status as string);
+      res.json(applications);
+    } catch (error) {
+      console.error("Error fetching applications:", error);
+      res.status(500).json({ message: "Failed to fetch applications" });
+    }
+  });
+
+  // Admin: Approve application
+  app.put('/api/admin/facilitator-applications/:id/approve', requireDevAdmin, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { notes } = req.body;
+      const reviewedBy = req.user?.id || "admin";
+
+      const application = await storage.approveFacilitatorApplication(id, reviewedBy, notes);
+
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+
+      res.json({
+        message: "Application approved",
+        application
+      });
+    } catch (error) {
+      console.error("Error approving application:", error);
+      res.status(500).json({ message: "Failed to approve application" });
+    }
+  });
+
+  // Admin: Reject application
+  app.put('/api/admin/facilitator-applications/:id/reject', requireDevAdmin, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { notes } = req.body;
+      const reviewedBy = req.user?.id || "admin";
+
+      const application = await storage.rejectFacilitatorApplication(id, reviewedBy, notes);
+
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+
+      res.json({
+        message: "Application rejected",
+        application
+      });
+    } catch (error) {
+      console.error("Error rejecting application:", error);
+      res.status(500).json({ message: "Failed to reject application" });
+    }
+  });
+
+  // Check mAIa availability
+  app.get('/api/maia/status', (req, res) => {
+    res.json({
+      available: claudeService.isAvailable(),
+      message: claudeService.isAvailable()
+        ? "mAIa is ready to assist"
+        : "mAIa is currently unavailable"
+    });
+  });
+
+  // ==========================================
+  // Payout Endpoints
+  // ==========================================
+
+  // Get practitioner's earnings and payouts
+  app.get('/api/payouts/my-earnings', requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const practitioner = await storage.getPractitionerByUserId(userId);
+
+      if (!practitioner) {
+        return res.status(400).json({ message: "Practitioner profile required" });
+      }
+
+      const earnings = await storage.getPractitionerEarnings(practitioner.id);
+      const payouts = await storage.getPayoutsByPractitionerId(practitioner.id);
+      const connectAccount = await storage.getStripeConnectAccountByPractitionerId(practitioner.id);
+
+      res.json({
+        earnings,
+        payouts,
+        stripeConnected: !!connectAccount?.payoutsEnabled
+      });
+    } catch (error) {
+      console.error("Error fetching earnings:", error);
+      res.status(500).json({ message: "Failed to fetch earnings" });
+    }
+  });
+
+  // Start Stripe Connect onboarding
+  app.post('/api/payouts/connect-stripe', requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+
+      if (!stripe) {
+        return res.status(503).json({ message: "Stripe not configured" });
+      }
+
+      const practitioner = await storage.getPractitionerByUserId(userId);
+      if (!practitioner) {
+        return res.status(400).json({ message: "Practitioner profile required" });
+      }
+
+      // Check for existing account
+      let connectAccount = await storage.getStripeConnectAccountByPractitionerId(practitioner.id);
+
+      if (!connectAccount) {
+        // Create Stripe Connect account
+        const account = await stripe.accounts.create({
+          type: "express",
+          country: "US",
+          email: req.user.email,
+          capabilities: {
+            card_payments: { requested: true },
+            transfers: { requested: true },
+          },
+          metadata: {
+            practitionerId: practitioner.id,
+            userId: userId,
+          },
+        });
+
+        connectAccount = await storage.createStripeConnectAccount({
+          practitionerId: practitioner.id,
+          stripeAccountId: account.id,
+        });
+      }
+
+      // Create onboarding link
+      const accountLink = await stripe.accountLinks.create({
+        account: connectAccount.stripeAccountId,
+        refresh_url: `${process.env.FRONTEND_URL || 'http://localhost:5000'}/dashboard/practitioner?stripe=refresh`,
+        return_url: `${process.env.FRONTEND_URL || 'http://localhost:5000'}/dashboard/practitioner?stripe=success`,
+        type: "account_onboarding",
+      });
+
+      res.json({ url: accountLink.url });
+    } catch (error) {
+      console.error("Error setting up Stripe Connect:", error);
+      res.status(500).json({ message: "Failed to set up Stripe Connect" });
+    }
+  });
+
+  // Check Stripe Connect status
+  app.get('/api/payouts/connect-status', requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+
+      if (!stripe) {
+        return res.status(503).json({ message: "Stripe not configured" });
+      }
+
+      const practitioner = await storage.getPractitionerByUserId(userId);
+      if (!practitioner) {
+        return res.status(400).json({ message: "Practitioner profile required" });
+      }
+
+      const connectAccount = await storage.getStripeConnectAccountByPractitionerId(practitioner.id);
+      if (!connectAccount) {
+        return res.json({ connected: false });
+      }
+
+      // Get latest account status from Stripe
+      const account = await stripe.accounts.retrieve(connectAccount.stripeAccountId);
+
+      // Update local record
+      await storage.updateStripeConnectAccount(practitioner.id, {
+        chargesEnabled: account.charges_enabled,
+        payoutsEnabled: account.payouts_enabled,
+        onboardingComplete: account.details_submitted,
+      });
+
+      res.json({
+        connected: true,
+        chargesEnabled: account.charges_enabled,
+        payoutsEnabled: account.payouts_enabled,
+        onboardingComplete: account.details_submitted,
+      });
+    } catch (error) {
+      console.error("Error checking Stripe Connect status:", error);
+      res.status(500).json({ message: "Failed to check status" });
+    }
+  });
+
+  // Admin: Get all payouts
+  app.get('/api/admin/payouts', requireDevAdmin, async (req, res) => {
+    try {
+      const { status } = req.query;
+      const allPayouts = await storage.getAllPayouts(status as string);
+      res.json(allPayouts);
+    } catch (error) {
+      console.error("Error fetching payouts:", error);
+      res.status(500).json({ message: "Failed to fetch payouts" });
+    }
+  });
+
+  // Admin: Create payout for practitioner
+  app.post('/api/admin/payouts', requireDevAdmin, async (req: any, res) => {
+    try {
+      const { practitionerId, amount, sessionIds, notes } = req.body;
+
+      if (!practitionerId || !amount) {
+        return res.status(400).json({ message: "Practitioner ID and amount required" });
+      }
+
+      const payout = await storage.createPayout({
+        practitionerId,
+        amount: String(amount),
+        sessionIds,
+        notes,
+        periodEnd: new Date(),
+      });
+
+      res.json(payout);
+    } catch (error) {
+      console.error("Error creating payout:", error);
+      res.status(500).json({ message: "Failed to create payout" });
+    }
+  });
+
+  // Admin: Process payout
+  app.post('/api/admin/payouts/:id/process', requireDevAdmin, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const processedBy = req.user?.id || "admin";
+
+      if (!stripe) {
+        return res.status(503).json({ message: "Stripe not configured" });
+      }
+
+      const payout = await storage.getPayout(id);
+      if (!payout) {
+        return res.status(404).json({ message: "Payout not found" });
+      }
+
+      if (payout.status !== "pending") {
+        return res.status(400).json({ message: "Payout already processed" });
+      }
+
+      // Get practitioner's Stripe Connect account
+      const connectAccount = await storage.getStripeConnectAccountByPractitionerId(payout.practitionerId);
+      if (!connectAccount || !connectAccount.payoutsEnabled) {
+        return res.status(400).json({ message: "Practitioner Stripe Connect not ready" });
+      }
+
+      // Create transfer to connected account
+      const transfer = await stripe.transfers.create({
+        amount: Math.round(parseFloat(payout.amount as string) * 100),
+        currency: payout.currency || "usd",
+        destination: connectAccount.stripeAccountId,
+        metadata: {
+          payoutId: payout.id,
+          practitionerId: payout.practitionerId,
+        },
+      });
+
+      // Update payout record
+      const updatedPayout = await storage.processPayout(id, processedBy, transfer.id);
+
+      res.json({
+        message: "Payout processed successfully",
+        payout: updatedPayout,
+        transferId: transfer.id,
+      });
+    } catch (error: any) {
+      console.error("Error processing payout:", error);
+      res.status(500).json({ message: error.message || "Failed to process payout" });
+    }
+  });
+
+  // ==========================================
+  // Stripe Payment Endpoints
+  // ==========================================
+
+  // Create PaymentIntent for booking
+  app.post('/api/bookings/create-payment-intent', requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const { practitionerId, amount, sessionDetails } = req.body;
+
+      if (!practitionerId || !amount) {
+        return res.status(400).json({ message: "Practitioner ID and amount required" });
+      }
+
+      if (!stripe) {
+        return res.status(503).json({ message: "Payment service unavailable" });
+      }
+
+      // Get or create Stripe customer
+      const customerId = await stripeService.getOrCreateCustomer(userId);
+
+      // Create PaymentIntent
+      const paymentIntent = await stripeService.createPaymentIntent(
+        parseFloat(amount),
+        "usd",
+        customerId,
+        {
+          userId,
+          practitionerId,
+          sessionDetails: sessionDetails ? JSON.stringify(sessionDetails) : "",
+        }
+      );
+
+      if (!paymentIntent) {
+        return res.status(500).json({ message: "Failed to create payment intent" });
+      }
+
+      res.json({
+        clientSecret: paymentIntent.client_secret,
+        paymentIntentId: paymentIntent.id,
+      });
+    } catch (error) {
+      console.error("Error creating payment intent:", error);
+      res.status(500).json({ message: "Failed to create payment intent" });
+    }
+  });
+
+  // Get Stripe publishable key
+  app.get('/api/stripe/config', (req, res) => {
+    const publishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
+    if (!publishableKey) {
+      return res.status(503).json({ message: "Stripe not configured" });
+    }
+    res.json({ publishableKey });
+  });
+
+  // Stripe webhook endpoint (raw body required)
+  app.post(
+    '/api/webhooks/stripe',
+    express.raw({ type: 'application/json' }),
+    async (req: Request, res: Response) => {
+      const signature = req.headers['stripe-signature'];
+
+      if (!signature || typeof signature !== 'string') {
+        return res.status(400).json({ message: "Missing Stripe signature" });
+      }
+
+      try {
+        const result = await stripeService.handleWebhook(req.body, signature);
+        if (result.received) {
+          res.json({ received: true });
+        } else {
+          res.status(400).json({ received: false });
+        }
+      } catch (error: any) {
+        console.error("Stripe webhook error:", error.message);
+        res.status(400).json({ message: error.message });
+      }
+    }
+  );
+
+  // ==========================================
+  // Messaging API Endpoints
+  // ==========================================
+
+  // Get user's conversations
+  app.get('/api/messages/conversations', requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const conversations = await storage.getUserConversations(userId);
+      res.json(conversations);
+    } catch (error) {
+      console.error("Error fetching conversations:", error);
+      res.status(500).json({ message: "Failed to fetch conversations" });
+    }
+  });
+
+  // Start or get existing conversation with another user
+  app.post('/api/messages/conversations', requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const { participantId } = req.body;
+
+      if (!participantId) {
+        return res.status(400).json({ message: "Participant ID is required" });
+      }
+
+      if (participantId === userId) {
+        return res.status(400).json({ message: "Cannot start conversation with yourself" });
+      }
+
+      // Verify the participant exists
+      const participant = await storage.getUserById(participantId);
+      if (!participant) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const conversation = await storage.getOrCreateConversation(userId, participantId);
+      res.json(conversation);
+    } catch (error) {
+      console.error("Error creating conversation:", error);
+      res.status(500).json({ message: "Failed to create conversation" });
+    }
+  });
+
+  // Get messages in a conversation
+  app.get('/api/messages/conversations/:id', requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const { id: conversationId } = req.params;
+      const { limit = '50', offset = '0' } = req.query;
+
+      // Verify user is a participant in this conversation
+      const conversation = await storage.getConversationById(conversationId, userId);
+      if (!conversation) {
+        return res.status(404).json({ message: "Conversation not found" });
+      }
+
+      const messages = await storage.getConversationMessages(
+        conversationId,
+        parseInt(limit as string),
+        parseInt(offset as string)
+      );
+
+      // Mark messages as read
+      await storage.markConversationAsRead(conversationId, userId);
+
+      res.json({
+        conversation,
+        messages
+      });
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+      res.status(500).json({ message: "Failed to fetch messages" });
+    }
+  });
+
+  // Send a message
+  app.post('/api/messages', requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const { conversationId, content } = req.body;
+
+      if (!conversationId || !content) {
+        return res.status(400).json({ message: "Conversation ID and content are required" });
+      }
+
+      if (content.trim().length === 0) {
+        return res.status(400).json({ message: "Message cannot be empty" });
+      }
+
+      if (content.length > 5000) {
+        return res.status(400).json({ message: "Message too long (max 5000 characters)" });
+      }
+
+      // Verify user is a participant in this conversation
+      const conversation = await storage.getConversationById(conversationId, userId);
+      if (!conversation) {
+        return res.status(404).json({ message: "Conversation not found" });
+      }
+
+      const message = await storage.createMessage({
+        conversationId,
+        senderId: userId,
+        content: content.trim()
+      });
+
+      res.status(201).json(message);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      res.status(500).json({ message: "Failed to send message" });
+    }
+  });
+
+  // Mark a message as read
+  app.put('/api/messages/:id/read', requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const { id: messageId } = req.params;
+
+      await storage.markMessageAsRead(messageId, userId);
+      res.json({ message: "Message marked as read" });
+    } catch (error) {
+      console.error("Error marking message as read:", error);
+      res.status(500).json({ message: "Failed to mark message as read" });
+    }
+  });
+
+  // Get unread message count
+  app.get('/api/messages/unread-count', requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const count = await storage.getUnreadCount(userId);
+      res.json({ count });
+    } catch (error) {
+      console.error("Error fetching unread count:", error);
+      res.status(500).json({ message: "Failed to fetch unread count" });
     }
   });
 

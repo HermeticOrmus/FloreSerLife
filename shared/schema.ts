@@ -49,6 +49,10 @@ export const users = pgTable("users", {
   subscriptionStartDate: timestamp("subscription_start_date"),
   subscriptionEndDate: timestamp("subscription_end_date"),
   trialEndDate: timestamp("trial_end_date"),
+  // Stripe integration
+  stripeCustomerId: varchar("stripe_customer_id"),
+  stripeSubscriptionId: varchar("stripe_subscription_id"),
+  // Legacy Checkout.com fields (deprecated)
   checkoutCustomerId: varchar("checkout_customer_id"),
   checkoutSubscriptionId: varchar("checkout_subscription_id"),
 
@@ -199,6 +203,9 @@ export const clients = pgTable("clients", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Payment status enum
+export const paymentStatusEnum = pgEnum("payment_status", ["pending", "processing", "succeeded", "failed", "refunded", "cancelled"]);
+
 // Sessions table
 export const sessions_table = pgTable("sessions_booking", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -211,6 +218,10 @@ export const sessions_table = pgTable("sessions_booking", {
   isVirtual: boolean("is_virtual").notNull(),
   meetingLink: varchar("meeting_link"),
   notes: text("notes"),
+  // Stripe payment fields
+  stripePaymentIntentId: varchar("stripe_payment_intent_id"),
+  paymentStatus: paymentStatusEnum("payment_status").default("pending"),
+  paidAt: timestamp("paid_at"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -230,20 +241,20 @@ export const reviews = pgTable("reviews", {
 export const surveyResponses = pgTable("survey_responses", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").references(() => users.id), // null for anonymous responses
-  
+
   // Demographics
   identityType: surveyIdentityEnum("identity_type").notNull(),
   ageRange: varchar("age_range"),
   countryOfResidence: varchar("country_of_residence"),
   currency: varchar("currency"),
-  
+
   // Facilitator questions
   facilitatorSessionPrice: varchar("facilitator_session_price"),
   openToFreeSession: varchar("open_to_free_session"), // yes/no/maybe
   contributionInterests: text("contribution_interests").array(), // creating content, mentoring, hosting groups
   reciprocityPreferences: text("reciprocity_preferences").array(), // visibility, reduced fees, payment, etc.
   reciprocityOther: text("reciprocity_other"),
-  
+
   // Client questions
   clientComfortablePrice: varchar("client_comfortable_price"),
   clientMaxPrice: varchar("client_max_price"),
@@ -252,15 +263,15 @@ export const surveyResponses = pgTable("survey_responses", {
   bookingEncouragements: text("booking_encouragements").array(), // discounted packs, monthly guidance, etc.
   trustFactors: text("trust_factors").array(), // clear profiles, transparent pricing, etc.
   trustFactorsOther: text("trust_factors_other"),
-  
+
   // Community Garden
   gardenInterestLevel: surveyInterestEnum("garden_interest_level"),
   gardenContentIdeas: text("garden_content_ideas"),
   gardenMonthlyPrice: varchar("garden_monthly_price"),
-  
+
   // Final thoughts
   finalThoughts: text("final_thoughts"),
-  
+
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -345,6 +356,133 @@ export const favoritePractitioners = pgTable("favorite_practitioners", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// ============================================
+// MESSAGING SYSTEM
+// ============================================
+
+// Conversations table - represents a message thread between two users
+export const conversations = pgTable("conversations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  participant1Id: varchar("participant1_id").notNull().references(() => users.id),
+  participant2Id: varchar("participant2_id").notNull().references(() => users.id),
+  lastMessageAt: timestamp("last_message_at").defaultNow(),
+  lastMessagePreview: varchar("last_message_preview", { length: 255 }),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => [
+  index("idx_conversations_participant1").on(table.participant1Id),
+  index("idx_conversations_participant2").on(table.participant2Id),
+]);
+
+// Messages table
+export const messages = pgTable("messages", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  conversationId: varchar("conversation_id").notNull().references(() => conversations.id),
+  senderId: varchar("sender_id").notNull().references(() => users.id),
+  content: text("content").notNull(),
+  isRead: boolean("is_read").default(false),
+  readAt: timestamp("read_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => [
+  index("idx_messages_conversation").on(table.conversationId),
+  index("idx_messages_sender").on(table.senderId),
+  index("idx_messages_created").on(table.createdAt),
+]);
+
+// Facilitator application status enum
+export const applicationStatusEnum = pgEnum("application_status", [
+  "in_progress",
+  "submitted",
+  "reviewed",
+  "approved",
+  "rejected"
+]);
+
+// Facilitator Applications table (mAIa onboarding)
+export const facilitatorApplications = pgTable("facilitator_applications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id),
+  email: varchar("email").notNull(),
+  firstName: varchar("first_name"),
+  lastName: varchar("last_name"),
+  yearsExperience: integer("years_experience"),
+  modalities: text("modalities").array(),
+  suggestedArchetype: archetypeEnum("suggested_archetype"),
+  isVirtual: boolean("is_virtual"),
+  isInPerson: boolean("is_in_person"),
+  location: varchar("location"),
+  hourlyRateMin: decimal("hourly_rate_min", { precision: 10, scale: 2 }),
+  hourlyRateMax: decimal("hourly_rate_max", { precision: 10, scale: 2 }),
+  motivation: text("motivation"),
+  conversationHistory: jsonb("conversation_history").default([]),
+  status: applicationStatusEnum("status").default("in_progress"),
+  reviewedBy: varchar("reviewed_by").references(() => users.id),
+  reviewedAt: timestamp("reviewed_at"),
+  reviewNotes: text("review_notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => [
+  index("idx_facilitator_applications_user").on(table.userId),
+  index("idx_facilitator_applications_email").on(table.email),
+  index("idx_facilitator_applications_status").on(table.status),
+]);
+
+export const insertFacilitatorApplicationSchema = createInsertSchema(facilitatorApplications);
+export type FacilitatorApplication = typeof facilitatorApplications.$inferSelect;
+export type InsertFacilitatorApplication = typeof facilitatorApplications.$inferInsert;
+
+// Payout status enum
+export const payoutStatusEnum = pgEnum("payout_status", [
+  "pending",
+  "processing",
+  "completed",
+  "failed"
+]);
+
+// Stripe Connect Accounts table
+export const stripeConnectAccounts = pgTable("stripe_connect_accounts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  practitionerId: varchar("practitioner_id").notNull().references(() => practitioners.id),
+  stripeAccountId: varchar("stripe_account_id").notNull(),
+  onboardingComplete: boolean("onboarding_complete").default(false),
+  chargesEnabled: boolean("charges_enabled").default(false),
+  payoutsEnabled: boolean("payouts_enabled").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => [
+  index("idx_stripe_connect_practitioner").on(table.practitionerId),
+]);
+
+export const insertStripeConnectAccountSchema = createInsertSchema(stripeConnectAccounts);
+export type StripeConnectAccount = typeof stripeConnectAccounts.$inferSelect;
+export type InsertStripeConnectAccount = typeof stripeConnectAccounts.$inferInsert;
+
+// Payouts table
+export const payouts = pgTable("payouts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  practitionerId: varchar("practitioner_id").notNull().references(() => practitioners.id),
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+  currency: varchar("currency", { length: 3 }).default("usd"),
+  status: payoutStatusEnum("status").default("pending"),
+  sessionIds: text("session_ids").array(),
+  stripeTransferId: varchar("stripe_transfer_id"),
+  stripeConnectAccountId: varchar("stripe_connect_account_id"),
+  processedBy: varchar("processed_by").references(() => users.id),
+  processedAt: timestamp("processed_at"),
+  notes: text("notes"),
+  periodStart: timestamp("period_start"),
+  periodEnd: timestamp("period_end"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => [
+  index("idx_payouts_practitioner").on(table.practitionerId),
+  index("idx_payouts_status").on(table.status),
+]);
+
+export const insertPayoutSchema = createInsertSchema(payouts);
+export type Payout = typeof payouts.$inferSelect;
+export type InsertPayout = typeof payouts.$inferInsert;
+
 // Relations
 export const usersRelations = relations(users, ({ many, one }) => ({
   userRoles: many(userRoles),
@@ -355,6 +493,9 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   seedsTransactions: many(seedsTransactions),
   gardenContent: many(gardenContent),
   gardenInteractions: many(gardenInteractions),
+  sentMessages: many(messages),
+  conversationsAsParticipant1: many(conversations, { relationName: "conversationParticipant1" }),
+  conversationsAsParticipant2: many(conversations, { relationName: "conversationParticipant2" }),
 }));
 
 export const userRolesRelations = relations(userRoles, ({ one }) => ({
@@ -456,6 +597,32 @@ export const gardenInteractionsRelations = relations(gardenInteractions, ({ one 
   }),
 }));
 
+// Messaging Relations
+export const conversationsRelations = relations(conversations, ({ one, many }) => ({
+  participant1: one(users, {
+    fields: [conversations.participant1Id],
+    references: [users.id],
+    relationName: "conversationParticipant1",
+  }),
+  participant2: one(users, {
+    fields: [conversations.participant2Id],
+    references: [users.id],
+    relationName: "conversationParticipant2",
+  }),
+  messages: many(messages),
+}));
+
+export const messagesRelations = relations(messages, ({ one }) => ({
+  conversation: one(conversations, {
+    fields: [messages.conversationId],
+    references: [conversations.id],
+  }),
+  sender: one(users, {
+    fields: [messages.senderId],
+    references: [users.id],
+  }),
+}));
+
 // Zod schemas
 export const upsertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -525,6 +692,22 @@ export const insertGardenInteractionSchema = createInsertSchema(gardenInteractio
   createdAt: true,
 });
 
+// Messaging Schemas
+export const insertConversationSchema = createInsertSchema(conversations).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  lastMessageAt: true,
+  lastMessagePreview: true,
+});
+
+export const insertMessageSchema = createInsertSchema(messages).omit({
+  id: true,
+  createdAt: true,
+  isRead: true,
+  readAt: true,
+});
+
 // Types
 export type UpsertUser = z.infer<typeof upsertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -554,6 +737,12 @@ export type GardenContent = typeof gardenContent.$inferSelect;
 export type GardenInteraction = typeof gardenInteractions.$inferSelect;
 export type InsertGardenContent = z.infer<typeof insertGardenContentSchema>;
 export type InsertGardenInteraction = z.infer<typeof insertGardenInteractionSchema>;
+
+// Messaging Types
+export type Conversation = typeof conversations.$inferSelect;
+export type Message = typeof messages.$inferSelect;
+export type InsertConversation = z.infer<typeof insertConversationSchema>;
+export type InsertMessage = z.infer<typeof insertMessageSchema>;
 
 // Pollinator Archetype System - Innovative Wellness Practitioner Categorization
 // An alpha concept for practitioner classification inspired by nature's pollinator patterns
@@ -831,77 +1020,3 @@ export const seedsEarningRates = {
   survey_completion: 30,
   milestone_achievement: 75
 } as const;
-
-// ============================================
-// STRIPE PAYMENT INTEGRATION TABLES
-// ============================================
-
-// Stripe Customers - Maps FloreSer users to Stripe customer IDs
-export const stripeCustomers = pgTable("stripe_customers", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().unique().references(() => users.id),
-  stripeCustomerId: varchar("stripe_customer_id").notNull().unique(),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-// Payment Status enum
-export const paymentStatusEnum = pgEnum("payment_status", [
-  "pending",
-  "succeeded",
-  "failed",
-  "refunded",
-  "cancelled"
-]);
-
-// Stripe Subscription Status enum (for Stripe subscriptions table)
-export const stripeSubscriptionStatusEnum = pgEnum("stripe_subscription_status", [
-  "active",
-  "past_due",
-  "unpaid",
-  "cancelled",
-  "incomplete",
-  "incomplete_expired",
-  "trialing",
-  "paused"
-]);
-
-// Subscriptions table - Tracks user subscription lifecycle
-export const subscriptions = pgTable("subscriptions", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().references(() => users.id),
-  stripeSubscriptionId: varchar("stripe_subscription_id").notNull().unique(),
-  stripeCustomerId: varchar("stripe_customer_id").notNull(),
-  stripePriceId: varchar("stripe_price_id").notNull(),
-  status: stripeSubscriptionStatusEnum("status").notNull(),
-  accessLevel: accessLevelEnum("access_level").notNull(),
-  currentPeriodStart: timestamp("current_period_start").notNull(),
-  currentPeriodEnd: timestamp("current_period_end").notNull(),
-  cancelAtPeriodEnd: boolean("cancel_at_period_end").default(false),
-  canceledAt: timestamp("canceled_at"),
-  endedAt: timestamp("ended_at"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-// Payments table - Complete payment history
-export const payments = pgTable("payments", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().references(() => users.id),
-  stripePaymentIntentId: varchar("stripe_payment_intent_id").notNull().unique(),
-  stripeCustomerId: varchar("stripe_customer_id").notNull(),
-  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
-  currency: varchar("currency").notNull().default("usd"),
-  status: paymentStatusEnum("status").notNull(),
-  paymentType: varchar("payment_type").notNull(), // "subscription" | "session_booking" | "one_time"
-  description: text("description"),
-
-  // Optional reference to session booking (if payment is for a session)
-  sessionBookingId: varchar("session_booking_id").references(() => sessions_table.id),
-
-  // Metadata from Stripe
-  metadata: text("metadata"), // JSON string
-
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});

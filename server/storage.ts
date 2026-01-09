@@ -12,6 +12,11 @@ import {
   gardenContent,
   gardenInteractions,
   favoritePractitioners,
+  conversations,
+  messages,
+  facilitatorApplications,
+  stripeConnectAccounts,
+  payouts,
   type User,
   type UpsertUser,
   type Practitioner,
@@ -25,6 +30,11 @@ import {
   type PollinatorTier,
   type GardenContent,
   type GardenInteraction,
+  type Conversation,
+  type Message,
+  type FacilitatorApplication,
+  type StripeConnectAccount,
+  type Payout,
   type InsertPractitioner,
   type InsertClient,
   type InsertSurveyResponse,
@@ -32,11 +42,16 @@ import {
   type InsertSeedsTransaction,
   type InsertGardenContent,
   type InsertGardenInteraction,
+  type InsertConversation,
+  type InsertMessage,
+  type InsertFacilitatorApplication,
+  type InsertStripeConnectAccount,
+  type InsertPayout,
   pollinatorTierDefinitions,
   seedsEarningRates,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, desc, sql, gte, lt, count, inArray } from "drizzle-orm";
+import { eq, and, or, desc, asc, sql, gte, lt, count, inArray } from "drizzle-orm";
 
 // Interface for storage operations
 export interface IStorage {
@@ -106,6 +121,16 @@ export interface IStorage {
   // Garden interaction methods
   createGardenInteraction(interactionData: any): Promise<any>;
   incrementGardenContentViews(contentId: string): Promise<void>;
+
+  // Messaging methods
+  getOrCreateConversation(userId1: string, userId2: string): Promise<Conversation>;
+  getUserConversations(userId: string): Promise<any[]>;
+  getConversationById(id: string, userId: string): Promise<Conversation | null>;
+  createMessage(data: InsertMessage): Promise<Message>;
+  getConversationMessages(conversationId: string, limit?: number, offset?: number): Promise<Message[]>;
+  markMessageAsRead(messageId: string, userId: string): Promise<void>;
+  markConversationAsRead(conversationId: string, userId: string): Promise<void>;
+  getUnreadCount(userId: string): Promise<number>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -229,67 +254,18 @@ export class DatabaseStorage implements IStorage {
     return practitioner;
   }
 
-  async getAllPractitioners(): Promise<(Practitioner & { firstName: string | null; lastName: string | null; profileImageUrl: string | null })[]> {
-    const results = await db
-      .select({
-        id: practitioners.id,
-        userId: practitioners.userId,
-        archetype: practitioners.archetype,
-        experienceLevel: practitioners.experienceLevel,
-        bio: practitioners.bio,
-        specializations: practitioners.specializations,
-        professionalCategories: practitioners.professionalCategories,
-        hourlyRate: practitioners.hourlyRate,
-        location: practitioners.location,
-        isVirtual: practitioners.isVirtual,
-        isInPerson: practitioners.isInPerson,
-        isVerified: practitioners.isVerified,
-        isFeatured: practitioners.isFeatured,
-        totalSessions: practitioners.totalSessions,
-        averageRating: practitioners.averageRating,
-        responseTimeHours: practitioners.responseTimeHours,
-        yearsActive: practitioners.yearsActive,
-        createdAt: practitioners.createdAt,
-        updatedAt: practitioners.updatedAt,
-        firstName: users.firstName,
-        lastName: users.lastName,
-        profileImageUrl: users.profileImageUrl,
-      })
+  async getAllPractitioners(): Promise<Practitioner[]> {
+    return await db
+      .select()
       .from(practitioners)
-      .innerJoin(users, eq(practitioners.userId, users.id))
       .where(eq(practitioners.isVerified, true))
       .orderBy(desc(practitioners.averageRating));
-    return results;
   }
 
-  async getFeaturedPractitioners(limit: number = 6): Promise<(Practitioner & { firstName: string | null; lastName: string | null; profileImageUrl: string | null })[]> {
-    const results = await db
-      .select({
-        id: practitioners.id,
-        userId: practitioners.userId,
-        archetype: practitioners.archetype,
-        experienceLevel: practitioners.experienceLevel,
-        bio: practitioners.bio,
-        specializations: practitioners.specializations,
-        professionalCategories: practitioners.professionalCategories,
-        hourlyRate: practitioners.hourlyRate,
-        location: practitioners.location,
-        isVirtual: practitioners.isVirtual,
-        isInPerson: practitioners.isInPerson,
-        isVerified: practitioners.isVerified,
-        isFeatured: practitioners.isFeatured,
-        totalSessions: practitioners.totalSessions,
-        averageRating: practitioners.averageRating,
-        responseTimeHours: practitioners.responseTimeHours,
-        yearsActive: practitioners.yearsActive,
-        createdAt: practitioners.createdAt,
-        updatedAt: practitioners.updatedAt,
-        firstName: users.firstName,
-        lastName: users.lastName,
-        profileImageUrl: users.profileImageUrl,
-      })
+  async getFeaturedPractitioners(limit: number = 6): Promise<Practitioner[]> {
+    return await db
+      .select()
       .from(practitioners)
-      .innerJoin(users, eq(practitioners.userId, users.id))
       .where(
         and(
           eq(practitioners.isVerified, true),
@@ -298,7 +274,6 @@ export class DatabaseStorage implements IStorage {
       )
       .orderBy(desc(practitioners.averageRating))
       .limit(limit);
-    return results;
   }
 
   // Client operations
@@ -1251,16 +1226,455 @@ export class DatabaseStorage implements IStorage {
       .where(eq(sessions_table.id, id));
   }
 
-  /**
-   * Update user's access level
-   */
-  async updateUserAccessLevel(userId: string, accessLevel: string): Promise<void> {
-    await db.update(users)
+  // ============================================
+  // MESSAGING METHODS
+  // ============================================
+
+  async getOrCreateConversation(userId1: string, userId2: string): Promise<Conversation> {
+    // Check if conversation already exists (in either direction)
+    const existingConversation = await db.select()
+      .from(conversations)
+      .where(
+        or(
+          and(
+            eq(conversations.participant1Id, userId1),
+            eq(conversations.participant2Id, userId2)
+          ),
+          and(
+            eq(conversations.participant1Id, userId2),
+            eq(conversations.participant2Id, userId1)
+          )
+        )
+      )
+      .limit(1);
+
+    if (existingConversation.length > 0) {
+      return existingConversation[0];
+    }
+
+    // Create new conversation
+    const [newConversation] = await db.insert(conversations)
+      .values({
+        participant1Id: userId1,
+        participant2Id: userId2,
+      })
+      .returning();
+
+    return newConversation;
+  }
+
+  async getUserConversations(userId: string): Promise<any[]> {
+    // Get all conversations where user is a participant
+    const userConversations = await db.select()
+      .from(conversations)
+      .where(
+        or(
+          eq(conversations.participant1Id, userId),
+          eq(conversations.participant2Id, userId)
+        )
+      )
+      .orderBy(desc(conversations.lastMessageAt));
+
+    // Enrich with participant info and unread count
+    const enrichedConversations = await Promise.all(
+      userConversations.map(async (conv) => {
+        const otherUserId = conv.participant1Id === userId
+          ? conv.participant2Id
+          : conv.participant1Id;
+
+        const [otherUser] = await db.select({
+          id: users.id,
+          firstName: users.firstName,
+          lastName: users.lastName,
+          email: users.email,
+          profileImageUrl: users.profileImageUrl,
+        })
+          .from(users)
+          .where(eq(users.id, otherUserId));
+
+        // Get unread count for this conversation
+        const [unreadResult] = await db.select({ count: count() })
+          .from(messages)
+          .where(
+            and(
+              eq(messages.conversationId, conv.id),
+              eq(messages.isRead, false),
+              sql`${messages.senderId} != ${userId}`
+            )
+          );
+
+        return {
+          ...conv,
+          otherParticipant: otherUser,
+          unreadCount: unreadResult?.count || 0,
+        };
+      })
+    );
+
+    return enrichedConversations;
+  }
+
+  async getConversationById(id: string, userId: string): Promise<Conversation | null> {
+    const [conversation] = await db.select()
+      .from(conversations)
+      .where(
+        and(
+          eq(conversations.id, id),
+          or(
+            eq(conversations.participant1Id, userId),
+            eq(conversations.participant2Id, userId)
+          )
+        )
+      );
+
+    return conversation || null;
+  }
+
+  async createMessage(data: InsertMessage): Promise<Message> {
+    const [message] = await db.insert(messages)
+      .values(data)
+      .returning();
+
+    // Update conversation's lastMessageAt and preview
+    const preview = data.content.length > 100
+      ? data.content.substring(0, 100) + '...'
+      : data.content;
+
+    await db.update(conversations)
       .set({
-        accessLevel: accessLevel as any,
+        lastMessageAt: new Date(),
+        lastMessagePreview: preview,
+        updatedAt: new Date(),
+      })
+      .where(eq(conversations.id, data.conversationId));
+
+    return message;
+  }
+
+  async getConversationMessages(
+    conversationId: string,
+    limit: number = 50,
+    offset: number = 0
+  ): Promise<Message[]> {
+    const messageList = await db.select()
+      .from(messages)
+      .where(eq(messages.conversationId, conversationId))
+      .orderBy(asc(messages.createdAt))
+      .limit(limit)
+      .offset(offset);
+
+    return messageList;
+  }
+
+  async markMessageAsRead(messageId: string, userId: string): Promise<void> {
+    // Only mark as read if the user is not the sender
+    await db.update(messages)
+      .set({
+        isRead: true,
+        readAt: new Date(),
+      })
+      .where(
+        and(
+          eq(messages.id, messageId),
+          sql`${messages.senderId} != ${userId}`
+        )
+      );
+  }
+
+  async markConversationAsRead(conversationId: string, userId: string): Promise<void> {
+    // Mark all messages in the conversation as read (except ones sent by the user)
+    await db.update(messages)
+      .set({
+        isRead: true,
+        readAt: new Date(),
+      })
+      .where(
+        and(
+          eq(messages.conversationId, conversationId),
+          eq(messages.isRead, false),
+          sql`${messages.senderId} != ${userId}`
+        )
+      );
+  }
+
+  async getUnreadCount(userId: string): Promise<number> {
+    // Get all conversations where user is a participant
+    const userConversations = await db.select({ id: conversations.id })
+      .from(conversations)
+      .where(
+        or(
+          eq(conversations.participant1Id, userId),
+          eq(conversations.participant2Id, userId)
+        )
+      );
+
+    if (userConversations.length === 0) {
+      return 0;
+    }
+
+    const conversationIds = userConversations.map(c => c.id);
+
+    // Count unread messages in those conversations (not sent by user)
+    const [result] = await db.select({ count: count() })
+      .from(messages)
+      .where(
+        and(
+          inArray(messages.conversationId, conversationIds),
+          eq(messages.isRead, false),
+          sql`${messages.senderId} != ${userId}`
+        )
+      );
+
+    return result?.count || 0;
+  }
+
+  // ==========================================
+  // Facilitator Application Methods
+  // ==========================================
+
+  async createFacilitatorApplication(data: InsertFacilitatorApplication): Promise<FacilitatorApplication> {
+    const [application] = await db.insert(facilitatorApplications)
+      .values(data)
+      .returning();
+    return application;
+  }
+
+  async getFacilitatorApplication(id: string): Promise<FacilitatorApplication | null> {
+    const [application] = await db.select()
+      .from(facilitatorApplications)
+      .where(eq(facilitatorApplications.id, id));
+    return application || null;
+  }
+
+  async getFacilitatorApplicationByUserId(userId: string): Promise<FacilitatorApplication | null> {
+    const [application] = await db.select()
+      .from(facilitatorApplications)
+      .where(eq(facilitatorApplications.userId, userId))
+      .orderBy(desc(facilitatorApplications.createdAt));
+    return application || null;
+  }
+
+  async getFacilitatorApplicationByEmail(email: string): Promise<FacilitatorApplication | null> {
+    const [application] = await db.select()
+      .from(facilitatorApplications)
+      .where(
+        and(
+          eq(facilitatorApplications.email, email),
+          eq(facilitatorApplications.status, "in_progress")
+        )
+      )
+      .orderBy(desc(facilitatorApplications.createdAt));
+    return application || null;
+  }
+
+  async updateFacilitatorApplication(
+    id: string,
+    data: Partial<InsertFacilitatorApplication>
+  ): Promise<FacilitatorApplication | null> {
+    const [application] = await db.update(facilitatorApplications)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(facilitatorApplications.id, id))
+      .returning();
+    return application || null;
+  }
+
+  async updateFacilitatorApplicationConversation(
+    id: string,
+    conversationHistory: any[]
+  ): Promise<void> {
+    await db.update(facilitatorApplications)
+      .set({
+        conversationHistory,
         updatedAt: new Date()
       })
-      .where(eq(users.id, userId));
+      .where(eq(facilitatorApplications.id, id));
+  }
+
+  async submitFacilitatorApplication(id: string): Promise<FacilitatorApplication | null> {
+    const [application] = await db.update(facilitatorApplications)
+      .set({
+        status: "submitted",
+        updatedAt: new Date()
+      })
+      .where(eq(facilitatorApplications.id, id))
+      .returning();
+    return application || null;
+  }
+
+  async getAllFacilitatorApplications(status?: string): Promise<FacilitatorApplication[]> {
+    if (status) {
+      return db.select()
+        .from(facilitatorApplications)
+        .where(eq(facilitatorApplications.status, status as any))
+        .orderBy(desc(facilitatorApplications.createdAt));
+    }
+    return db.select()
+      .from(facilitatorApplications)
+      .orderBy(desc(facilitatorApplications.createdAt));
+  }
+
+  async approveFacilitatorApplication(
+    id: string,
+    reviewedBy: string,
+    notes?: string
+  ): Promise<FacilitatorApplication | null> {
+    const [application] = await db.update(facilitatorApplications)
+      .set({
+        status: "approved",
+        reviewedBy,
+        reviewedAt: new Date(),
+        reviewNotes: notes,
+        updatedAt: new Date()
+      })
+      .where(eq(facilitatorApplications.id, id))
+      .returning();
+    return application || null;
+  }
+
+  async rejectFacilitatorApplication(
+    id: string,
+    reviewedBy: string,
+    notes?: string
+  ): Promise<FacilitatorApplication | null> {
+    const [application] = await db.update(facilitatorApplications)
+      .set({
+        status: "rejected",
+        reviewedBy,
+        reviewedAt: new Date(),
+        reviewNotes: notes,
+        updatedAt: new Date()
+      })
+      .where(eq(facilitatorApplications.id, id))
+      .returning();
+    return application || null;
+  }
+
+  // ==========================================
+  // Stripe Connect Account Methods
+  // ==========================================
+
+  async createStripeConnectAccount(data: InsertStripeConnectAccount): Promise<StripeConnectAccount> {
+    const [account] = await db.insert(stripeConnectAccounts)
+      .values(data)
+      .returning();
+    return account;
+  }
+
+  async getStripeConnectAccountByPractitionerId(practitionerId: string): Promise<StripeConnectAccount | null> {
+    const [account] = await db.select()
+      .from(stripeConnectAccounts)
+      .where(eq(stripeConnectAccounts.practitionerId, practitionerId));
+    return account || null;
+  }
+
+  async updateStripeConnectAccount(
+    practitionerId: string,
+    data: Partial<InsertStripeConnectAccount>
+  ): Promise<StripeConnectAccount | null> {
+    const [account] = await db.update(stripeConnectAccounts)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(stripeConnectAccounts.practitionerId, practitionerId))
+      .returning();
+    return account || null;
+  }
+
+  // ==========================================
+  // Payout Methods
+  // ==========================================
+
+  async createPayout(data: InsertPayout): Promise<Payout> {
+    const [payout] = await db.insert(payouts)
+      .values(data)
+      .returning();
+    return payout;
+  }
+
+  async getPayout(id: string): Promise<Payout | null> {
+    const [payout] = await db.select()
+      .from(payouts)
+      .where(eq(payouts.id, id));
+    return payout || null;
+  }
+
+  async getPayoutsByPractitionerId(practitionerId: string): Promise<Payout[]> {
+    return db.select()
+      .from(payouts)
+      .where(eq(payouts.practitionerId, practitionerId))
+      .orderBy(desc(payouts.createdAt));
+  }
+
+  async getAllPayouts(status?: string): Promise<Payout[]> {
+    if (status) {
+      return db.select()
+        .from(payouts)
+        .where(eq(payouts.status, status as any))
+        .orderBy(desc(payouts.createdAt));
+    }
+    return db.select()
+      .from(payouts)
+      .orderBy(desc(payouts.createdAt));
+  }
+
+  async updatePayout(id: string, data: Partial<InsertPayout>): Promise<Payout | null> {
+    const [payout] = await db.update(payouts)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(payouts.id, id))
+      .returning();
+    return payout || null;
+  }
+
+  async processPayout(
+    id: string,
+    processedBy: string,
+    stripeTransferId: string
+  ): Promise<Payout | null> {
+    const [payout] = await db.update(payouts)
+      .set({
+        status: "completed",
+        processedBy,
+        processedAt: new Date(),
+        stripeTransferId,
+        updatedAt: new Date()
+      })
+      .where(eq(payouts.id, id))
+      .returning();
+    return payout || null;
+  }
+
+  async getPractitionerEarnings(practitionerId: string): Promise<{
+    totalEarned: number;
+    pendingPayout: number;
+    completedPayouts: number;
+  }> {
+    // Get completed sessions for this practitioner
+    const completedSessions = await db.select()
+      .from(sessions_table)
+      .where(
+        and(
+          eq(sessions_table.practitionerId, practitionerId),
+          eq(sessions_table.status, "completed"),
+          eq(sessions_table.paymentStatus, "succeeded")
+        )
+      );
+
+    const totalEarned = completedSessions.reduce(
+      (sum, s) => sum + (parseFloat(s.totalAmount as string) || 0) * 0.85,
+      0
+    );
+
+    // Get payout totals
+    const allPayouts = await this.getPayoutsByPractitionerId(practitionerId);
+    const completedPayouts = allPayouts
+      .filter(p => p.status === "completed")
+      .reduce((sum, p) => sum + (parseFloat(p.amount as string) || 0), 0);
+
+    const pendingPayout = totalEarned - completedPayouts;
+
+    return {
+      totalEarned,
+      pendingPayout: Math.max(0, pendingPayout),
+      completedPayouts
+    };
   }
 }
 
