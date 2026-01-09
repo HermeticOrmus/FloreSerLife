@@ -8,7 +8,8 @@ import { PaperCutBanner } from "@/components/landing/PaperCutBanner";
 import { HexagonGrid } from "@/components/landing/HexagonGrid";
 import ForFacilitatorsCTA from "@/components/landing/ForFacilitatorsCTA";
 import FeaturedPractitioners from "@/components/featured-practitioners";
-import { papercut } from "@/assets";
+import { Button } from "@/components/ui/button";
+import { papercut, characters } from "@/assets";
 import {
   Sprout,
   Users,
@@ -16,6 +17,7 @@ import {
   Heart,
   Calendar,
   Shield,
+  Bot,
 } from "lucide-react";
 
 // Hexagon grid items for "What Makes FloreSer Different"
@@ -84,12 +86,74 @@ export default function Landing() {
     setLocation("/alpha");
   };
 
+  const handleBeginWithMaia = () => {
+    setLocation("/quiz");
+  };
+
   return (
     <div className="min-h-screen bg-papercut-neutral-light text-papercut-neutral-dark overflow-hidden">
       <Header />
 
       {/* Paper-cut Hero Section */}
       <HeroSection />
+
+      {/* Meet mAIa - Begin Your Journey CTA */}
+      <section
+        className="py-16 relative"
+        style={{
+          backgroundImage: `url(${papercut.textures.paperUI})`,
+          backgroundSize: '256px 256px',
+          backgroundRepeat: 'repeat',
+        }}
+      >
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+            {/* mAIa Character */}
+            <div className="flex-shrink-0">
+              <div className="relative">
+                <img
+                  src={characters.maia}
+                  alt="mAIa, your gentle guide"
+                  className="w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-lg"
+                />
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-papercut-leaf-sage rounded-full animate-pulse" />
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 text-center md:text-left">
+              <div className="inline-flex items-center px-3 py-1.5 bg-papercut-leaf-sage/20 text-papercut-leaf-deep rounded-full text-sm font-medium mb-4">
+                <Bot className="w-4 h-4 mr-2" />
+                Meet Your Guide
+              </div>
+
+              <h2 className="font-heading text-2xl md:text-3xl text-papercut-neutral-dark mb-3">
+                mAIa is here to help you find your way
+              </h2>
+
+              <p className="text-body text-papercut-neutral-dark/70 mb-6 max-w-xl">
+                A gentle, nature-wise guide who helps you discover your unique path to wellness.
+                Through a short, thoughtful journey, mAIa will help match you with practitioners
+                who truly resonate with your needs.
+              </p>
+
+              <Button
+                size="lg"
+                onClick={handleBeginWithMaia}
+                className="text-white hover:opacity-90 rounded-full px-8 py-6 shadow-lg transform hover:scale-105 transition-all text-lg font-medium"
+                style={{
+                  backgroundImage: `url(${papercut.textures.paperSage})`,
+                  backgroundSize: '200px 200px',
+                  backgroundRepeat: 'repeat',
+                }}
+              >
+                <Sparkles className="w-5 h-5 mr-2" />
+                Begin with mAIa
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* What Makes FloreSer Different - Hexagon Grid */}
       <section

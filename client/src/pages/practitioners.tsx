@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useLocation } from "wouter";
+import { useLocation, useSearch } from "wouter";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Star, MapPin, Video, User } from "lucide-react";
+import { Star, MapPin, Video, User, Sparkles, X } from "lucide-react";
 import { ArchetypeIcons } from "@/components/icons/archetype-icons";
 import { ReviewsSummary } from "@/components/reviews";
 import { AccessLevelBadge, FeaturePreview, UpgradeModal, UsageProgress } from "@/components/access-control";
@@ -20,7 +20,9 @@ export default function Practitioners() {
   const [selectedArchetype, setSelectedArchetype] = useState<string>("all");
   const [selectedExperience, setSelectedExperience] = useState<string>("all");
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const [, setLocation] = useLocation();
+  const [quizArchetype, setQuizArchetype] = useState<string | null>(null);
+  const [location, setLocation] = useLocation();
+  const searchString = useSearch();
 
   const { data: practitionersData, isLoading } = useQuery<any>({
     queryKey: ["/api/practitioners/all"],
@@ -33,9 +35,32 @@ export default function Practitioners() {
 
   const accessInfo = !Array.isArray(practitionersData) ? (practitionersData as any)?.accessInfo : null;
 
+  // Check for archetype from URL params or localStorage on mount
+  useEffect(() => {
+    const params = new URLSearchParams(searchString);
+    const urlArchetype = params.get("archetype");
+    const storedArchetype = localStorage.getItem("floerser_archetype_result");
+
+    const archetypeToUse = urlArchetype || storedArchetype;
+
+    if (archetypeToUse && archetypeToUse in archetypeDefinitions) {
+      setSelectedArchetype(archetypeToUse);
+      setQuizArchetype(archetypeToUse);
+    }
+  }, [searchString]);
+
   useEffect(() => {
     document.title = "Find Practitioners - FloreSer";
   }, []);
+
+  // Clear quiz-based filter and localStorage
+  const handleShowAll = () => {
+    setSelectedArchetype("all");
+    setQuizArchetype(null);
+    localStorage.removeItem("floerser_archetype_result");
+    // Update URL to remove archetype param
+    setLocation("/practitioners");
+  };
 
   const filteredPractitioners = practitioners.filter((practitioner: any) => {
     const matchesSearch = searchTerm === "" ||
@@ -134,6 +159,38 @@ export default function Practitioners() {
                 onClick={() => setShowUpgradeModal(true)}
               >
                 Upgrade Access
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Quiz Result Banner */}
+        {quizArchetype && quizArchetype in archetypeDefinitions && (
+          <Alert className="border-sage/30 bg-sage/5 mb-6">
+            <Sparkles className="h-4 w-4 text-gold" />
+            <AlertDescription className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div>
+                  <p className="font-medium text-forest">
+                    Based on your quiz, mAIa suggests these{" "}
+                    <span className="text-gold font-semibold">
+                      {(archetypeDefinitions as any)[quizArchetype]?.name}
+                    </span>{" "}
+                    facilitators
+                  </p>
+                  <p className="text-sm text-forest/70">
+                    These practitioners match your archetype and may resonate with your wellness journey.
+                  </p>
+                </div>
+              </div>
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-forest text-forest hover:bg-forest hover:text-white flex items-center gap-2"
+                onClick={handleShowAll}
+              >
+                <X className="h-3 w-3" />
+                Show All
               </Button>
             </AlertDescription>
           </Alert>

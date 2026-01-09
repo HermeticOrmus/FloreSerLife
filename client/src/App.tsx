@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AIGuardianProvider } from "@/components/ai-guardian";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { useAuth } from "@/hooks/useAuth";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
@@ -108,6 +109,7 @@ function Router() {
         <>
           <Route path="/" component={Landing} />
           <Route path="/practitioners" component={Practitioners} />
+          <Route path="/the-hive" component={Practitioners} />
           <Route path="/practitioners/:id" component={PractitionerProfile} />
           <Route path="/book/:id" component={BookSession} />
         </>
@@ -115,7 +117,9 @@ function Router() {
         <>
           <Route path="/" component={getUserDashboard()} />
           <Route path="/dashboard/client" component={ClientDashboard} />
+          <Route path="/my-garden" component={ClientDashboard} />
           <Route path="/dashboard/practitioner" component={PractitionerDashboard} />
+          <Route path="/my-hive" component={PractitionerDashboard} />
           <Route path="/book/:id" component={BookSession} />
 
           {/* Admin routes - only accessible to admin users */}
@@ -124,6 +128,7 @@ function Router() {
           )}
 
           <Route path="/practitioners" component={Practitioners} />
+          <Route path="/the-hive" component={Practitioners} />
           <Route path="/practitioners/:id" component={PractitionerProfile} />
         </>
       )}
@@ -134,16 +139,18 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <AIGuardianProvider>
-          <div className="min-h-screen paper-texture">
-            <Toaster />
-            <Router />
-          </div>
-        </AIGuardianProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <AIGuardianProvider>
+            <div className="min-h-screen paper-texture">
+              <Toaster />
+              <Router />
+            </div>
+          </AIGuardianProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

@@ -123,36 +123,119 @@ export default function FacilitatorApplyPage() {
     }
   };
 
-  // If application already submitted
+  // If application already submitted - show status card
   if (applicationStatus && applicationStatus !== "in_progress") {
+    const isPending = applicationStatus === "submitted" || applicationStatus === "reviewed";
+    const isApproved = applicationStatus === "approved";
+    const isRejected = applicationStatus === "rejected";
+
+    // Status-specific styling
+    const statusConfig = {
+      pending: {
+        bgColor: "bg-amber-50",
+        borderColor: "border-amber-200",
+        iconBg: "bg-amber-100",
+        iconColor: "text-amber-600",
+        title: "Application Under Review",
+        message: "Your application is being reviewed. We'll notify you soon!",
+        Icon: Loader2,
+        iconAnimate: true,
+      },
+      approved: {
+        bgColor: "bg-emerald-50",
+        borderColor: "border-emerald-200",
+        iconBg: "bg-emerald-100",
+        iconColor: "text-emerald-600",
+        title: "Application Approved!",
+        message: "Congratulations! Your application was approved. Complete your profile to start sharing your gifts with our community.",
+        Icon: CheckCircle,
+        iconAnimate: false,
+      },
+      rejected: {
+        bgColor: "bg-rose-50",
+        borderColor: "border-rose-200",
+        iconBg: "bg-rose-100",
+        iconColor: "text-rose-500",
+        title: "Application Not Approved",
+        message: "Unfortunately, your application wasn't approved at this time. We appreciate your interest in joining FloreSer.",
+        Icon: ArrowLeft,
+        iconAnimate: false,
+      },
+    };
+
+    const config = isApproved
+      ? statusConfig.approved
+      : isRejected
+      ? statusConfig.rejected
+      : statusConfig.pending;
+
     return (
       <div className="min-h-screen bg-cream flex flex-col">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-12">
           <div className="max-w-2xl mx-auto text-center">
-            <div className="bg-white rounded-xl shadow-sm border border-sage/20 p-8">
-              <div className="bg-gold/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="w-8 h-8 text-gold" />
+            <div className={`rounded-xl shadow-sm border p-8 ${config.bgColor} ${config.borderColor}`}>
+              <div className={`${config.iconBg} rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4`}>
+                <config.Icon className={`w-8 h-8 ${config.iconColor} ${config.iconAnimate ? 'animate-spin' : ''}`} />
               </div>
               <h2 className="font-heading text-2xl font-semibold text-forest mb-2">
-                Application {applicationStatus === "submitted" ? "Submitted" : applicationStatus}
+                {config.title}
               </h2>
-              <p className="text-forest/60 mb-6">
-                {applicationStatus === "submitted" &&
-                  "Thank you for applying! Our team will review your application and get back to you soon."}
-                {applicationStatus === "approved" &&
-                  "Congratulations! Your application has been approved. Welcome to the FloreSer community!"}
-                {applicationStatus === "rejected" &&
-                  "We appreciate your interest. Unfortunately, we're unable to approve your application at this time."}
+              <p className="text-forest/70 mb-6">
+                {config.message}
               </p>
-              <Button
-                variant="outline"
-                onClick={() => setLocation("/")}
-                className="border-gold text-gold hover:bg-gold hover:text-white"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Return Home
-              </Button>
+
+              {/* Approved: show onboarding link */}
+              {isApproved && (
+                <div className="space-y-3">
+                  <Button
+                    onClick={() => setLocation("/facilitator/onboarding")}
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+                  >
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Complete Your Profile
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => setLocation("/")}
+                    className="w-full border-emerald-300 text-emerald-700 hover:bg-emerald-100"
+                  >
+                    Return Home
+                  </Button>
+                </div>
+              )}
+
+              {/* Rejected: show support option */}
+              {isRejected && (
+                <div className="space-y-3">
+                  <a
+                    href="mailto:hello@floreser.life?subject=Facilitator Application Inquiry"
+                    className="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium rounded-md border border-rose-300 text-rose-700 hover:bg-rose-100 transition-colors"
+                  >
+                    Contact Support
+                  </a>
+                  <Button
+                    variant="outline"
+                    onClick={() => setLocation("/")}
+                    className="w-full border-forest/30 text-forest hover:bg-forest/10"
+                  >
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Return Home
+                  </Button>
+                </div>
+              )}
+
+              {/* Pending: just return home */}
+              {isPending && (
+                <Button
+                  variant="outline"
+                  onClick={() => setLocation("/")}
+                  className="border-amber-400 text-amber-700 hover:bg-amber-100"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Return Home
+                </Button>
+              )}
             </div>
           </div>
         </main>
