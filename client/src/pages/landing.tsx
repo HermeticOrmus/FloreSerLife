@@ -91,21 +91,22 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-papercut-neutral-light text-papercut-neutral-dark overflow-hidden">
+    <div
+      className="min-h-screen text-papercut-neutral-dark overflow-hidden"
+      style={{
+        backgroundImage: `url(${papercut.textures.paperUI})`,
+        backgroundSize: '256px 256px',
+        backgroundRepeat: 'repeat',
+        backgroundColor: '#f5f3ef',
+      }}
+    >
       <Header />
 
       {/* Paper-cut Hero Section */}
       <HeroSection />
 
       {/* Meet mAIa - Begin Your Journey CTA */}
-      <section
-        className="py-16 relative"
-        style={{
-          backgroundImage: `url(${papercut.textures.paperUI})`,
-          backgroundSize: '256px 256px',
-          backgroundRepeat: 'repeat',
-        }}
-      >
+      <section className="py-16 relative">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
             {/* mAIa Character */}
@@ -188,14 +189,7 @@ export default function Landing() {
       </PaperCutBanner>
 
       {/* Alpha Program Link */}
-      <section
-        className="py-12 text-center"
-        style={{
-          backgroundImage: `url(${papercut.textures.paperUI})`,
-          backgroundSize: '256px 256px',
-          backgroundRepeat: 'repeat',
-        }}
-      >
+      <section className="py-12 text-center">
         <p className="text-caption text-papercut-neutral-dark/60">
           Interested in contributing to our development?{" "}
           <button

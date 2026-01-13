@@ -73,7 +73,7 @@ import depthAccentFlowerbud from './images/papercut/generated/depth/depth-accent
 import depthWavyHorizon from './images/papercut/generated/depth/depth-wavy-horizon-1920_230923.png';
 
 // Full hero background (sky + land combined) - Midjourney with proper depth style (1632x2912)
-import depthHeroBackground from './images/papercut/generated/depth/depth-hero-u4-midjourney.png';
+import depthHeroBackground from './images/papercut/generated/depth/flore-ser-landing-hero-page.png';
 
 // =============================================================================
 // TRANSPARENT VERSIONS (Background removed)
