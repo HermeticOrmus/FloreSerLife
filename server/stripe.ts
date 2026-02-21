@@ -185,11 +185,117 @@ export class StripeService {
         break;
       }
 
+      // Subscription lifecycle events
+      case "customer.subscription.created":
+      case "customer.subscription.updated": {
+        const subscription = event.data.object as Stripe.Subscription;
+        await this.handleSubscriptionUpdate(subscription);
+        break;
+      }
+
+      case "customer.subscription.deleted": {
+        const subscription = event.data.object as Stripe.Subscription;
+        await this.handleSubscriptionCancelled(subscription);
+        break;
+      }
+
       default:
         console.log(`Unhandled event type: ${event.type}`);
     }
 
     return { received: true, event };
+  }
+
+  /**
+   * Create a Stripe Checkout Session for subscription
+   */
+  async createSubscriptionCheckout(
+    userId: string,
+    priceId: string,
+    successUrl: string,
+    cancelUrl: string
+  ): Promise<Stripe.Checkout.Session | null> {
+    if (!stripe) return null;
+
+    const customerId = await this.getOrCreateCustomer(userId);
+    if (!customerId) return null;
+
+    return stripe.checkout.sessions.create({
+      customer: customerId,
+      mode: "subscription",
+      line_items: [{ price: priceId, quantity: 1 }],
+      success_url: successUrl,
+      cancel_url: cancelUrl,
+      metadata: { userId, platform: "floreser" },
+    });
+  }
+
+  /**
+   * Cancel a subscription at period end (non-destructive)
+   */
+  async cancelSubscription(subscriptionId: string): Promise<Stripe.Subscription | null> {
+    if (!stripe) return null;
+    return stripe.subscriptions.update(subscriptionId, {
+      cancel_at_period_end: true,
+    });
+  }
+
+  /**
+   * Handle subscription created/updated webhook
+   */
+  private async handleSubscriptionUpdate(subscription: Stripe.Subscription): Promise<void> {
+    const customerId = subscription.customer as string;
+
+    // Find user by Stripe customer ID
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.stripeCustomerId, customerId));
+
+    if (!user) {
+      console.error(`No user found for Stripe customer ${customerId}`);
+      return;
+    }
+
+    const isActive = subscription.status === "active" || subscription.status === "trialing";
+    const periodEnd = new Date(subscription.current_period_end * 1000);
+
+    await db
+      .update(users)
+      .set({
+        stripeSubscriptionId: subscription.id,
+        subscriptionStatus: isActive ? "premium" : "expired",
+        accessLevel: isActive ? "premium" : "preview",
+        subscriptionStartDate: new Date(subscription.current_period_start * 1000),
+        subscriptionEndDate: periodEnd,
+      })
+      .where(eq(users.id, user.id));
+
+    console.log(`Subscription ${isActive ? "activated" : "updated"} for user ${user.id}`);
+  }
+
+  /**
+   * Handle subscription cancelled webhook
+   */
+  private async handleSubscriptionCancelled(subscription: Stripe.Subscription): Promise<void> {
+    const customerId = subscription.customer as string;
+
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.stripeCustomerId, customerId));
+
+    if (!user) return;
+
+    await db
+      .update(users)
+      .set({
+        subscriptionStatus: "cancelled",
+        accessLevel: "preview",
+      })
+      .where(eq(users.id, user.id));
+
+    console.log(`Subscription cancelled for user ${user.id}`);
   }
 }
 

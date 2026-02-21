@@ -1137,6 +1137,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Subscription management routes
+  app.post('/api/subscription/checkout', requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const { priceId } = req.body;
+
+      if (!priceId) {
+        return res.status(400).json({ message: "priceId is required" });
+      }
+
+      const origin = `${req.protocol}://${req.get('host')}`;
+      const session = await stripeService.createSubscriptionCheckout(
+        userId,
+        priceId,
+        `${origin}/profile?subscription=success`,
+        `${origin}/profile?subscription=cancelled`
+      );
+
+      if (!session) {
+        return res.status(503).json({ message: "Payment service unavailable" });
+      }
+
+      res.json({ url: session.url });
+    } catch (error) {
+      console.error("Error creating subscription checkout:", error);
+      res.status(500).json({ message: "Failed to create checkout session" });
+    }
+  });
+
+  app.get('/api/subscription/status', requireAuth, async (req: any, res) => {
+    try {
+      const user = await storage.getUserById(req.user.id);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json({
+        subscriptionStatus: user.subscriptionStatus || "free",
+        accessLevel: user.accessLevel || "preview",
+        subscriptionEndDate: user.subscriptionEndDate,
+        trialEndDate: user.trialEndDate,
+        canStartTrial: !user.trialEndDate,
+      });
+    } catch (error) {
+      console.error("Error fetching subscription status:", error);
+      res.status(500).json({ message: "Failed to fetch subscription status" });
+    }
+  });
+
+  app.post('/api/subscription/cancel', requireAuth, async (req: any, res) => {
+    try {
+      const user = await storage.getUserById(req.user.id);
+      if (!user?.stripeSubscriptionId) {
+        return res.status(400).json({ message: "No active subscription found" });
+      }
+
+      const result = await stripeService.cancelSubscription(user.stripeSubscriptionId);
+      if (!result) {
+        return res.status(503).json({ message: "Payment service unavailable" });
+      }
+
+      res.json({
+        message: "Subscription will be cancelled at end of billing period",
+        cancelAt: result.cancel_at ? new Date(result.cancel_at * 1000) : null,
+      });
+    } catch (error) {
+      console.error("Error cancelling subscription:", error);
+      res.status(500).json({ message: "Failed to cancel subscription" });
+    }
+  });
+
   // Comprehensive Admin Routes for Development
   app.get('/api/admin/overview', requireDevAdmin, async (req, res) => {
     try {
