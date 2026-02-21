@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AIGuardianProvider } from "@/components/ai-guardian";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { useAuth } from "@/hooks/useAuth";
+import { papercut } from "@/assets";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
 import Alpha from "@/pages/alpha";
@@ -39,6 +40,7 @@ import Analytics from "@/pages/analytics";
 import Application from "@/pages/application";
 import Favorites from "@/pages/favorites";
 import PractitionerOnboarding from "@/pages/practitioner-onboarding";
+import ProfileSettings from "@/pages/profile-settings";
 
 function Router() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -96,6 +98,7 @@ function Router() {
       <Route path="/analytics" component={Analytics} />
       <Route path="/application" component={Application} />
       <Route path="/favorites" component={Favorites} />
+      <Route path="/profile" component={ProfileSettings} />
 
       {/* Practitioner Onboarding */}
       <Route path="/become-facilitator" component={PractitionerOnboarding} />
@@ -143,9 +146,20 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <AIGuardianProvider>
-            <div className="min-h-screen paper-texture">
-              <Toaster />
-              <Router />
+            <div className="min-h-screen relative bg-background">
+              {/* Global paper texture overlay - subtle for legibility */}
+              <div
+                className="fixed inset-0 pointer-events-none z-0 opacity-20"
+                style={{
+                  backgroundImage: `url(${papercut.textures.paperUI})`,
+                  backgroundSize: '256px 256px',
+                  backgroundRepeat: 'repeat',
+                }}
+              />
+              <div className="relative z-10">
+                <Toaster />
+                <Router />
+              </div>
             </div>
           </AIGuardianProvider>
         </TooltipProvider>
