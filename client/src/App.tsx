@@ -41,6 +41,7 @@ import Application from "@/pages/application";
 import Favorites from "@/pages/favorites";
 import PractitionerOnboarding from "@/pages/practitioner-onboarding";
 import ProfileSettings from "@/pages/profile-settings";
+import AdminApplications from "@/pages/admin-applications";
 
 function Router() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -104,6 +105,8 @@ function Router() {
       <Route path="/become-facilitator" component={PractitionerOnboarding} />
 
       {/* Admin routes - always accessible */}
+      <Route path="/admin/applications/:id" component={AdminApplications} />
+      <Route path="/admin/applications" component={AdminApplications} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
       <Route path="/simple-admin/login" component={SimpleAdminLogin} />
       <Route path="/simple-admin/panel" component={SimpleAdminPanel} />
