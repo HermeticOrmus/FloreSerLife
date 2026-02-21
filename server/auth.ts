@@ -225,10 +225,25 @@ export async function setupAuth(app: Express) {
         return res.status(401).json({ message: info?.message || "Invalid credentials" });
       }
       
-      req.login(user, (loginErr) => {
+      req.login(user, async (loginErr) => {
         if (loginErr) {
           return res.status(500).json({ message: "Failed to login" });
         }
+
+        // Award daily login Seeds (once per day)
+        try {
+          const wallet = await storage.getOrCreateSeedsWallet(user.id);
+          const lastActive = wallet.lastActiveDate ? new Date(wallet.lastActiveDate) : null;
+          const now = new Date();
+          const isNewDay = !lastActive ||
+            lastActive.toDateString() !== now.toDateString();
+          if (isNewDay) {
+            await storage.awardSeedsForAction(user.id, "daily_login");
+          }
+        } catch (seedsError) {
+          console.error("Failed to award daily login Seeds:", seedsError);
+        }
+
         res.json({ user, message: "Signed in successfully" });
       });
     })(req, res, next);

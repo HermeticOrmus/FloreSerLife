@@ -177,6 +177,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const surveyResponse = await storage.createSurveyResponse(validationResult.data);
 
+      // Award Seeds for survey completion (authenticated users only)
+      if (validationResult.data.userId) {
+        try {
+          await storage.awardSeedsForAction(
+            validationResult.data.userId,
+            "survey_completion",
+            surveyResponse.id,
+            "survey"
+          );
+        } catch (seedsError) {
+          console.error("Failed to award survey completion Seeds:", seedsError);
+        }
+      }
+
       // Send thank you email if email is provided
       if (validationResult.data.userId) {
         try {
@@ -433,6 +447,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // TODO: Add authorization check
 
       await storage.updateBookingStatus(id, status);
+
+      // Award Seeds when a session is completed
+      if (status === 'completed') {
+        try {
+          // Award to client
+          const clientProfile = await storage.getClient(booking.clientId);
+          if (clientProfile) {
+            await storage.awardSeedsForAction(
+              clientProfile.userId, "session_attendance", id, "booking"
+            );
+          }
+          // Award to practitioner
+          const practitioner = await storage.getPractitioner(booking.practitionerId);
+          if (practitioner) {
+            await storage.awardSeedsForAction(
+              practitioner.userId, "session_attendance", id, "booking"
+            );
+          }
+        } catch (seedsError) {
+          console.error("Failed to award session attendance Seeds:", seedsError);
+        }
+      }
+
       res.json({ message: "Booking status updated" });
     } catch (error) {
       console.error("Error updating booking:", error);
@@ -614,12 +651,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       const practitioner = await storage.createPractitioner(practitionerData);
-      
+
       // Create practitioner role if it doesn't exist
       const roles = await storage.getUserRoles(userId);
       const hasPractitionerRole = roles.some(role => role.role === 'practitioner');
       if (!hasPractitionerRole) {
         await storage.createUserRole(userId, 'practitioner');
+      }
+
+      // Award Seeds for profile completion
+      try {
+        await storage.awardSeedsForAction(userId, "profile_completion", practitioner.id, "practitioner");
+      } catch (seedsError) {
+        console.error("Failed to award profile completion Seeds:", seedsError);
       }
 
       res.status(201).json(practitioner);
@@ -645,12 +689,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       const client = await storage.createClient(clientData);
-      
+
       // Create client role if it doesn't exist
       const roles = await storage.getUserRoles(userId);
       const hasClientRole = roles.some(role => role.role === 'client');
       if (!hasClientRole) {
         await storage.createUserRole(userId, 'client');
+      }
+
+      // Award Seeds for profile completion
+      try {
+        await storage.awardSeedsForAction(userId, "profile_completion", client.id, "client");
+      } catch (seedsError) {
+        console.error("Failed to award profile completion Seeds:", seedsError);
       }
 
       res.status(201).json(client);
@@ -1156,57 +1207,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Community Garden API endpoints
-  app.post('/api/garden/content', requireAuth, async (req: any, res) => {
+  // Admin: manually award or deduct Seeds
+  app.post('/api/admin/seeds/award', requireDevAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.id;
-      const contentData = {
-        authorId: userId,
-        ...req.body
-      };
+      const { userId, amount, reason, description } = req.body;
 
-      const content = await storage.createGardenContent(contentData);
-      res.status(201).json(content);
-    } catch (error) {
-      console.error("Error creating garden content:", error);
-      res.status(500).json({ message: "Failed to create content" });
-    }
-  });
-
-  app.get('/api/garden/content', async (req, res) => {
-    try {
-      const options = {
-        authorId: req.query.authorId as string,
-        contentType: req.query.contentType as string,
-        status: req.query.status as string || "approved", // Default to approved content
-        isPublic: req.query.isPublic !== undefined ? req.query.isPublic === 'true' : true,
-        limit: parseInt(req.query.limit as string) || 20,
-        offset: parseInt(req.query.offset as string) || 0,
-      };
-
-      const content = await storage.getGardenContent(options);
-      res.json(content);
-    } catch (error) {
-      console.error("Error fetching garden content:", error);
-      res.status(500).json({ message: "Failed to fetch content" });
-    }
-  });
-
-  app.get('/api/garden/content/:id', async (req, res) => {
-    try {
-      const { id } = req.params;
-      const content = await storage.getGardenContentById(id);
-
-      if (!content) {
-        return res.status(404).json({ message: "Content not found" });
+      if (!userId || typeof amount !== 'number' || amount === 0) {
+        return res.status(400).json({ message: "userId and non-zero amount are required" });
       }
 
-      res.json(content);
+      const user = await storage.getUserById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      let transaction;
+      if (amount > 0) {
+        transaction = await storage.addSeeds(
+          userId, amount,
+          reason || "milestone_achievement",
+          description || "Manually awarded by admin"
+        );
+      } else {
+        transaction = await storage.spendSeeds(
+          userId, Math.abs(amount),
+          description || "Manually deducted by admin"
+        );
+      }
+
+      if (!transaction) {
+        return res.status(400).json({ message: "Insufficient Seeds balance for deduction" });
+      }
+
+      const wallet = await storage.getSeedsWallet(userId);
+      res.json({ message: "Seeds updated", transaction, wallet });
     } catch (error) {
-      console.error("Error fetching garden content:", error);
-      res.status(500).json({ message: "Failed to fetch content" });
+      console.error("Error managing Seeds:", error);
+      res.status(500).json({ message: "Failed to manage Seeds" });
     }
   });
+
+  // (Duplicate garden endpoints removed - originals registered above)
 
   app.post('/api/garden/interaction', requireAuth, async (req: any, res) => {
     try {

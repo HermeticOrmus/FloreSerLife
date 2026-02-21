@@ -727,8 +727,16 @@ export class DatabaseStorage implements IStorage {
     referenceType?: string,
     metadata?: any
   ): Promise<SeedsTransaction | null> {
-    const amount = seedsEarningRates[action];
-    const description = this.getActionDescription(action);
+    let amount = seedsEarningRates[action];
+    let description = this.getActionDescription(action);
+
+    // Apply facilitator 2x multiplier if user is a practitioner
+    const roles = await this.getUserRoles(userId);
+    const isFacilitator = roles.some(r => r.role === 'practitioner');
+    if (isFacilitator) {
+      amount = Math.floor(amount * 2);
+      description += " (Facilitator 2x bonus)";
+    }
 
     return await this.addSeeds(
       userId,
