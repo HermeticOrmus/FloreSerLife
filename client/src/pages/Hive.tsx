@@ -2,48 +2,108 @@ import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
+import Header from "@/components/layout/header";
+import Footer from "@/components/layout/footer";
+import { PaperCutBanner } from "@/components/landing/PaperCutBanner";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  LayoutDashboard,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   User,
   Calendar,
-  MessageCircle,
-  CreditCard,
-  BarChart3,
-  TreePine,
-  Settings,
+  Heart,
   Star,
   MapPin,
   Video,
   Users,
-  Hexagon,
-  Crown,
+  Search,
+  Shield,
   Award,
-  BookOpen,
-  Heart,
-  TrendingUp,
-  ArrowRight,
-  Leaf
+  Crown,
 } from "lucide-react";
 import { ArchetypeIcons } from "@/components/icons/archetype-icons";
-import { ReviewsSummary } from "@/components/reviews";
 import {
   archetypeDefinitions,
   professionalCategoryDefinitions,
 } from "@shared/schema";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { papercut, archetypeIcons } from "@/assets";
+
+// Experience season derived from total sessions
+function getExperienceSeason(totalSessions: number) {
+  if (totalSessions >= 150) return { label: "Rooted", color: "bg-purple-100 text-purple-700" };
+  if (totalSessions >= 40) return { label: "Evolving", color: "bg-blue-100 text-blue-700" };
+  return { label: "Emerging", color: "bg-green-100 text-green-700" };
+}
+
+// Session type label from boolean flags
+function getSessionType(isVirtual: boolean, isInPerson: boolean) {
+  if (isVirtual && isInPerson) return "Hybrid";
+  if (isInPerson) return "In-person";
+  return "Online";
+}
+
+// Floating hexagon fragment SVG
+function HexFragment({
+  x,
+  y,
+  size,
+  color,
+  delay,
+}: {
+  x: string;
+  y: string;
+  size: number;
+  color: string;
+  delay: number;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ opacity: 0.15, scale: 1 }}
+      transition={{ delay, duration: 0.8 }}
+      className="absolute pointer-events-none"
+      style={{ left: x, top: y }}
+    >
+      <svg width={size} height={size} viewBox="0 0 30 30">
+        <polygon
+          points="15,2 27,9 27,21 15,28 3,21 3,9"
+          fill={color}
+          stroke={color}
+          strokeWidth="0.5"
+          opacity="0.8"
+        />
+      </svg>
+    </motion.div>
+  );
+}
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08, delayChildren: 0.15 },
+  },
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+};
 
 export default function Hive() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedArchetype, setSelectedArchetype] = useState<string>("");
   const [selectedExperience, setSelectedExperience] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 300]);
   const [sortBy, setSortBy] = useState<string>("featured");
   const [, setLocation] = useLocation();
   const { user } = useAuth();
@@ -59,44 +119,20 @@ export default function Hive() {
     enabled: !!user?.id,
     queryFn: async () => {
       const res = await fetch(`/api/favorites/${user?.id}`, {
-        credentials: 'include'
+        credentials: "include",
       });
       if (!res.ok) return [];
       return res.json();
-    }
-  });
-
-  const { data: dashboardData } = useQuery<any>({
-    queryKey: ["/api/dashboard/practitioner", user?.id],
-    enabled: !!user?.id && user?.roles?.includes('practitioner'),
-    queryFn: async () => {
-      const res = await fetch(`/api/dashboard/practitioner/${user?.id}`, {
-        credentials: 'include'
-      });
-      if (!res.ok) return null;
-      return res.json();
-    }
-  });
-
-  const { data: seedsData } = useQuery<any>({
-    queryKey: ["/api/seeds/wallet", user?.id],
-    enabled: !!user?.id,
-    queryFn: async () => {
-      const res = await fetch(`/api/seeds/wallet/${user?.id}`, {
-        credentials: 'include'
-      });
-      if (!res.ok) return null;
-      return res.json();
-    }
+    },
   });
 
   const toggleFavoriteMutation = useMutation({
     mutationFn: async (practitionerId: string) => {
-      const res = await fetch('/api/favorites', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ practitionerId })
+      const res = await fetch("/api/favorites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ practitionerId }),
       });
       if (!res.ok) throw new Error(await res.text());
       return res.json();
@@ -104,96 +140,81 @@ export default function Hive() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/favorites"] });
       toast({ title: "Favorites updated!" });
-    }
+    },
   });
 
   const practitioners = Array.isArray(practitionersData)
     ? practitionersData
     : (practitionersData as any)?.practitioners || [];
 
-  const favorites = Array.isArray(favoritesData) ? favoritesData.map((f: any) => f.practitionerId) : [];
+  const favorites = Array.isArray(favoritesData)
+    ? favoritesData.map((f: any) => f.practitionerId)
+    : [];
 
   useEffect(() => {
-    document.title = "My Hive - FloreSer";
+    document.title = "The Hive - FloreSer";
   }, []);
 
-  const filteredPractitioners = practitioners.filter((practitioner: any) => {
-    const matchesSearch = searchTerm === "" ||
-      practitioner.bio?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      practitioner.specializations?.some((spec: string) =>
-        spec.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredPractitioners = practitioners.filter((p: any) => {
+    const matchesSearch =
+      searchTerm === "" ||
+      p.bio?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.specializations?.some((s: string) =>
+        s.toLowerCase().includes(searchTerm.toLowerCase())
       ) ||
-      practitioner.professionalCategories?.some((cat: string) =>
-        (professionalCategoryDefinitions as any)[cat]?.name.toLowerCase().includes(searchTerm.toLowerCase())
+      p.professionalCategories?.some(
+        (cat: string) =>
+          (professionalCategoryDefinitions as any)[cat]?.name
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())
       );
 
-    const matchesArchetype = selectedArchetype === "" ||
-      practitioner.archetype === selectedArchetype;
+    const matchesArchetype =
+      selectedArchetype === "" || p.archetype === selectedArchetype;
 
-    const matchesExperience = selectedExperience === "" ||
-      practitioner.experienceLevel === selectedExperience;
+    const matchesExperience =
+      selectedExperience === "" || p.experienceLevel === selectedExperience;
 
-    const matchesCategory = selectedCategory === "" ||
-      practitioner.professionalCategories?.includes(selectedCategory);
+    const matchesCategory =
+      selectedCategory === "" ||
+      p.professionalCategories?.includes(selectedCategory);
 
-    const matchesPrice = !practitioner.hourlyRate ||
-      (parseFloat(practitioner.hourlyRate) >= priceRange[0] &&
-       parseFloat(practitioner.hourlyRate) <= priceRange[1]);
-
-    return matchesSearch && matchesArchetype && matchesExperience && matchesCategory && matchesPrice;
+    return matchesSearch && matchesArchetype && matchesExperience && matchesCategory;
   });
 
-  const sortedPractitioners = [...filteredPractitioners].sort((a: any, b: any) => {
-    switch (sortBy) {
-      case "featured":
-        if (a.isFeatured && !b.isFeatured) return -1;
-        if (!a.isFeatured && b.isFeatured) return 1;
-        return parseFloat(b.averageRating || 0) - parseFloat(a.averageRating || 0);
-      case "rating":
-        return parseFloat(b.averageRating || 0) - parseFloat(a.averageRating || 0);
-      case "price-low":
-        return parseFloat(a.hourlyRate || 9999) - parseFloat(b.hourlyRate || 9999);
-      case "price-high":
-        return parseFloat(b.hourlyRate || 0) - parseFloat(a.hourlyRate || 0);
-      case "experience":
-        const expOrder = { wise: 3, evolving: 2, rising: 1 };
-        return (expOrder[b.experienceLevel as keyof typeof expOrder] || 0) -
-               (expOrder[a.experienceLevel as keyof typeof expOrder] || 0);
-      default:
-        return 0;
+  const sortedPractitioners = [...filteredPractitioners].sort(
+    (a: any, b: any) => {
+      switch (sortBy) {
+        case "rating":
+          return (
+            parseFloat(b.averageRating || 0) -
+            parseFloat(a.averageRating || 0)
+          );
+        case "price-low":
+          return (
+            parseFloat(a.hourlyRate || 9999) -
+            parseFloat(b.hourlyRate || 9999)
+          );
+        case "price-high":
+          return (
+            parseFloat(b.hourlyRate || 0) - parseFloat(a.hourlyRate || 0)
+          );
+        case "experience":
+          const expOrder = { wise: 3, evolving: 2, rising: 1 };
+          return (
+            (expOrder[b.experienceLevel as keyof typeof expOrder] || 0) -
+            (expOrder[a.experienceLevel as keyof typeof expOrder] || 0)
+          );
+        default: // featured
+          if (a.isFeatured && !b.isFeatured) return -1;
+          if (!a.isFeatured && b.isFeatured) return 1;
+          return (
+            parseFloat(b.averageRating || 0) -
+            parseFloat(a.averageRating || 0)
+          );
+      }
     }
-  });
-
-  const getArchetypeIcon = (archetype: string) => {
-    switch (archetype) {
-      case 'bee': return <ArchetypeIcons.Bee className="w-6 h-6" />;
-      case 'hummingbird': return <ArchetypeIcons.Hummingbird className="w-6 h-6" />;
-      case 'butterfly': return <ArchetypeIcons.Butterfly className="w-6 h-6" />;
-      case 'beetle': return <ArchetypeIcons.Beetle className="w-6 h-6" />;
-      default: return <User className="w-6 h-6" />;
-    }
-  };
-
-  const getExperienceBadge = (level: string) => {
-    const badgeStyles = {
-      rising: "bg-green-100 text-green-700 border-green-200",
-      evolving: "bg-blue-100 text-blue-700 border-blue-200",
-      wise: "bg-purple-100 text-purple-700 border-purple-200"
-    };
-
-    const icons = {
-      rising: <Star className="w-3 h-3 mr-1" />,
-      evolving: <Award className="w-3 h-3 mr-1" />,
-      wise: <Crown className="w-3 h-3 mr-1" />
-    };
-
-    return (
-      <Badge className={`${badgeStyles[level as keyof typeof badgeStyles]} text-xs border`}>
-        {icons[level as keyof typeof icons]}
-        {level.charAt(0).toUpperCase() + level.slice(1)}
-      </Badge>
-    );
-  };
+  );
 
   const handleToggleFavorite = (practitionerId: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -201,367 +222,446 @@ export default function Hive() {
       toast({
         title: "Sign in required",
         description: "Please sign in to save favorites",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
     toggleFavoriteMutation.mutate(practitionerId);
   };
 
-  const sidebarNavItems = [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-    { icon: User, label: "Soul Profile", href: "/profile" },
-    { icon: Calendar, label: "Sessions", href: "/sessions" },
-    { icon: MessageCircle, label: "Messages", href: "/messages" },
-    { icon: CreditCard, label: "Payments", href: "/payments" },
-    { icon: BarChart3, label: "Analytics", href: "/analytics" },
-    { icon: TreePine, label: "Community Garden", href: "/garden" },
-    { icon: Settings, label: "Settings", href: "/settings" },
-  ];
+  const getArchetypeIcon = (archetype: string) => {
+    const iconSrc = archetypeIcons[archetype as keyof typeof archetypeIcons];
+    if (iconSrc) {
+      return (
+        <img
+          src={iconSrc}
+          alt={archetype}
+          className="w-8 h-8 object-contain"
+        />
+      );
+    }
+    return <User className="w-8 h-8" />;
+  };
 
-  const getTierName = (seedsBalance: number) => {
-    if (seedsBalance >= 2000) return "Wise Garden";
-    if (seedsBalance >= 500) return "Blooming";
-    if (seedsBalance >= 100) return "Sprout";
-    return "Seedling";
+  const getExperienceBadge = (level: string) => {
+    const styles: Record<string, string> = {
+      rising: "bg-green-100 text-green-700",
+      evolving: "bg-blue-100 text-blue-700",
+      wise: "bg-purple-100 text-purple-700",
+    };
+    const icons: Record<string, React.ReactNode> = {
+      rising: <Star className="w-3 h-3 mr-1" />,
+      evolving: <Award className="w-3 h-3 mr-1" />,
+      wise: <Crown className="w-3 h-3 mr-1" />,
+    };
+
+    return (
+      <Badge className={`${styles[level] || ""} text-xs`}>
+        {icons[level]}
+        {level.charAt(0).toUpperCase() + level.slice(1)}
+      </Badge>
+    );
   };
 
   return (
-    <div className="flex min-h-screen bg-hive-bg">
-      {/* Sidebar */}
-      <motion.aside
-        initial={{ x: -20, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        className="w-64 bg-hive-card-light border-r border-hive-accent/20 p-6 flex flex-col"
-      >
-        <div className="mb-8">
-          <h2 className="text-page-heading font-heading text-hive-text-primary">
-            My Hive
-          </h2>
+    <div
+      className="min-h-screen text-papercut-neutral-dark"
+      style={{
+        backgroundImage: `url(${papercut.textures.paperUI})`,
+        backgroundSize: "256px 256px",
+        backgroundRepeat: "repeat",
+        backgroundColor: "#f5f3ef",
+      }}
+    >
+      <Header />
+
+      {/* Hero Panel */}
+      <section className="relative overflow-hidden py-20 lg:py-24">
+        {/* Layered paper curves (dunes) */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div
+            className="absolute bottom-0 left-0 right-0 h-[55%]"
+            style={{
+              backgroundImage: `url(${papercut.textures.paperClay})`,
+              backgroundSize: "200px 200px",
+              backgroundRepeat: "repeat",
+              clipPath: "ellipse(85% 100% at 50% 100%)",
+              opacity: 0.2,
+            }}
+          />
+          <div
+            className="absolute bottom-0 left-0 right-0 h-[40%]"
+            style={{
+              backgroundImage: `url(${papercut.textures.cream})`,
+              backgroundSize: "200px 200px",
+              backgroundRepeat: "repeat",
+              clipPath: "ellipse(70% 100% at 45% 100%)",
+              opacity: 0.15,
+            }}
+          />
         </div>
 
-        <nav className="space-y-1 flex-1">
-          {sidebarNavItems.map((item) => (
-            <button
-              key={item.label}
-              onClick={() => setLocation(item.href)}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-button text-body text-hive-text-primary hover:bg-hive-bg transition-colors"
-            >
-              <item.icon className="w-5 h-5" />
-              {item.label}
-            </button>
-          ))}
-        </nav>
+        {/* Floating hexagon fragments */}
+        <HexFragment x="10%" y="20%" size={24} color="#D4A843" delay={0.4} />
+        <HexFragment x="80%" y="15%" size={18} color="#7B2D26" delay={0.6} />
+        <HexFragment x="70%" y="60%" size={20} color="#8B9D77" delay={0.8} />
+        <HexFragment x="15%" y="70%" size={16} color="#C4A882" delay={1.0} />
+        <HexFragment x="50%" y="10%" size={14} color="#D4A843" delay={0.5} />
 
-        {/* User Badge at Bottom */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="mt-auto"
-        >
-          <Card className="bg-gradient-to-br from-hive-accent-light to-hive-accent border-0 shadow-card-sm">
-            <CardContent className="p-4 text-center">
-              <div className="bg-white/20 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
-                <Hexagon className="w-6 h-6 text-white" />
-              </div>
-              <p className="text-caption text-white/90 mb-1">You are an</p>
-              <p className="text-label font-semibold text-white">
-                {seedsData ? getTierName(seedsData.seedsBalance) : "Blooming"} Pollinator
-              </p>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </motion.aside>
-
-      {/* Main Content */}
-      <main className="flex-1 p-12 overflow-y-auto">
-        <div className="max-w-6xl">
-          {/* Top Stats Cards */}
-          <div className="grid grid-cols-2 gap-6 mb-8">
-            {/* Calendar Card */}
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.1 }}
-            >
-              <Card className="bg-hive-card-light border-0 rounded-card shadow-card">
-                <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="bg-hive-bg rounded-card-sm p-3">
-                      <Calendar className="w-6 h-6 text-hive-accent" />
-                    </div>
-                    <div className="flex-1 space-y-2">
-                      <p className="text-body-sm text-hive-text-secondary">Today at 3:00 PM</p>
-                      <p className="text-card-heading font-heading text-hive-text-primary">
-                        Client: Akiya
-                      </p>
-                      <button
-                        className="text-body-sm text-hive-accent hover:text-hive-accent-light font-medium cursor-pointer"
-                        onClick={() => setLocation('/sessions')}
-                      >
-                        Manage Sessions
-                      </button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Earnings Card */}
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              <Card className="bg-gradient-to-br from-hive-accent to-hive-accent-light border-0 rounded-card shadow-card-md">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-label text-hive-text-on-accent mb-2">
-                        Earning this week
-                      </p>
-                      <p className="text-stat-xl font-heading text-hive-text-on-accent">
-                        +{dashboardData?.earnings || 420}
-                      </p>
-                    </div>
-                    <Button
-                      size="sm"
-                      className="bg-hive-accent-light hover:bg-white/20 text-hive-text-on-accent rounded-button text-label border-0"
-                      onClick={() => setLocation('/payments')}
-                    >
-                      View Details
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
-
-          {/* Analytics Card */}
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
           >
-            <Card className="bg-hive-card-dark text-white border-0 rounded-card-lg shadow-card-lg relative overflow-hidden">
-              <CardContent className="p-8">
-                <h3 className="text-card-heading-lg font-heading mb-8">
-                  Your Blooming Metrics
-                </h3>
-
-                <div className="grid grid-cols-3 gap-8 mb-6">
-                  <div className="space-y-2">
-                    <p className="text-body-sm text-white/80">Sessions completed</p>
-                    <p className="text-stat-lg font-heading">
-                      {dashboardData?.sessionsCompleted || 18}
-                    </p>
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-body-sm text-white/80">Favorite clients</p>
-                    <p className="text-stat-md font-heading">
-                      {dashboardData?.favoriteClientsPercent || 67}%
-                    </p>
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-body-sm text-white/80">Question seed bubbles planted</p>
-                    <p className="text-stat-lg font-heading">
-                      {dashboardData?.questionSeeds || 34}
-                    </p>
-                  </div>
-                </div>
-
-                <button
-                  className="text-label text-white hover:text-white/80 font-medium flex items-center gap-2 cursor-pointer"
-                  onClick={() => setLocation('/analytics')}
-                >
-                  View Full Analytics
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-
-                {/* Decorative Leaf */}
-                <div className="absolute bottom-4 right-8 opacity-20">
-                  <Leaf className="w-32 h-32 text-white" />
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Archetype Overview */}
-          <div className="mb-8">
-            <h2 className="text-section-heading font-heading text-hive-text-primary mb-6">
-              Pollinator Archetypes
-            </h2>
-            <div className="grid grid-cols-4 gap-4">
-              {Object.entries(archetypeDefinitions).map(([key, archetype], index) => (
+            {/* Small archetype icons row */}
+            <div className="flex justify-center gap-4 mb-6">
+              {["bee", "butterfly", "hummingbird", "beetle"].map((arch, i) => (
                 <motion.div
-                  key={key}
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.4 + index * 0.1 }}
+                  key={arch}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.3 + i * 0.1, type: "spring" }}
+                  className="w-10 h-10 rounded-full bg-white/60 backdrop-blur-sm shadow-md flex items-center justify-center"
                 >
-                  <Card className="bg-hive-card-light border-0 text-center rounded-card shadow-card-sm hover:shadow-card-hover transition-shadow cursor-pointer">
-                    <CardContent className="p-6">
-                      <div className="mb-3 flex justify-center">
-                        {getArchetypeIcon(key)}
-                      </div>
-                      <h3 className="text-card-subheading font-heading text-hive-text-primary mb-1">
-                        {archetype.name}
-                      </h3>
-                      <p className="text-caption text-hive-text-secondary">
-                        {archetype.scientificName}
-                      </p>
-                    </CardContent>
-                  </Card>
+                  <img
+                    src={archetypeIcons[arch as keyof typeof archetypeIcons]}
+                    alt={arch}
+                    className="w-6 h-6 object-contain"
+                  />
                 </motion.div>
               ))}
             </div>
-          </div>
 
-          {/* Facilitator Filters */}
-          <div className="mb-6 space-y-4">
-            <h2 className="text-section-heading font-heading text-hive-text-primary">
-              Browse Facilitators
-            </h2>
-            <div className="grid grid-cols-3 gap-4">
+            <h1 className="font-heading text-4xl lg:text-5xl font-bold text-forest mb-4">
+              The{" "}
+              <span className="bg-gradient-to-r from-gold via-hive-accent to-garden-accent bg-clip-text text-transparent">
+                Hive
+              </span>
+            </h1>
+            <p className="text-xl text-forest/70 max-w-2xl mx-auto leading-relaxed">
+              Discover your Pollinator &mdash; a facilitator whose presence,
+              wisdom, and approach resonate with where you are now.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Search & Filter Section */}
+      <PaperCutBanner variant="patterned-root">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-forest/40" />
               <Input
-                placeholder="Search facilitators..."
+                placeholder="Search by name, specialization, or keyword..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-hive-card-light border-hive-accent/20 rounded-input"
+                className="pl-10 bg-white/80 border-forest/15 rounded-full"
               />
-              <Select value={selectedArchetype} onValueChange={setSelectedArchetype}>
-                <SelectTrigger className="bg-hive-card-light border-hive-accent/20 rounded-input">
-                  <SelectValue placeholder="All Archetypes" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Archetypes</SelectItem>
-                  {Object.entries(archetypeDefinitions).map(([key, archetype]) => (
-                    <SelectItem key={key} value={key}>
-                      {archetype.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={selectedExperience} onValueChange={setSelectedExperience}>
-                <SelectTrigger className="bg-hive-card-light border-hive-accent/20 rounded-input">
-                  <SelectValue placeholder="Experience Level" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Levels</SelectItem>
-                  <SelectItem value="rising">Rising</SelectItem>
-                  <SelectItem value="evolving">Evolving</SelectItem>
-                  <SelectItem value="wise">Wise</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
+            <Select
+              value={selectedArchetype}
+              onValueChange={setSelectedArchetype}
+            >
+              <SelectTrigger className="w-full md:w-44 bg-white/80 border-forest/15 rounded-full">
+                <SelectValue placeholder="Archetype" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Archetypes</SelectItem>
+                {Object.entries(archetypeDefinitions).map(([key, arch]) => (
+                  <SelectItem key={key} value={key}>
+                    {arch.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select
+              value={selectedExperience}
+              onValueChange={setSelectedExperience}
+            >
+              <SelectTrigger className="w-full md:w-44 bg-white/80 border-forest/15 rounded-full">
+                <SelectValue placeholder="Experience" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Levels</SelectItem>
+                <SelectItem value="rising">Rising</SelectItem>
+                <SelectItem value="evolving">Evolving</SelectItem>
+                <SelectItem value="wise">Wise</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-full md:w-40 bg-white/80 border-forest/15 rounded-full">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="featured">Featured</SelectItem>
+                <SelectItem value="rating">Highest Rated</SelectItem>
+                <SelectItem value="price-low">Price: Low</SelectItem>
+                <SelectItem value="price-high">Price: High</SelectItem>
+                <SelectItem value="experience">Most Experienced</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
+        </div>
+      </PaperCutBanner>
 
-          {/* Facilitators Grid */}
+      {/* Practitioner Cards */}
+      <section className="py-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {isLoading ? (
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {Array.from({ length: 6 }).map((_, i) => (
-                <Card key={i} className="bg-hive-card-light border-0 rounded-card">
-                  <div className="animate-pulse">
-                    <div className="h-48 bg-hive-bg rounded-t-card"></div>
-                    <CardContent className="p-6">
-                      <div className="h-4 bg-hive-bg rounded mb-2"></div>
-                      <div className="h-4 bg-hive-bg rounded w-3/4"></div>
-                    </CardContent>
+                <div
+                  key={i}
+                  className="rounded-2xl overflow-hidden shadow-md animate-pulse"
+                  style={{
+                    backgroundImage: `url(${papercut.textures.cream})`,
+                    backgroundSize: "200px 200px",
+                    backgroundRepeat: "repeat",
+                  }}
+                >
+                  <div className="h-32 bg-forest/5" />
+                  <div className="p-6 space-y-3">
+                    <div className="h-4 bg-forest/10 rounded w-3/4" />
+                    <div className="h-3 bg-forest/5 rounded w-1/2" />
+                    <div className="h-3 bg-forest/5 rounded w-full" />
                   </div>
-                </Card>
+                </div>
               ))}
             </div>
-          ) : filteredPractitioners.length === 0 ? (
-            <Card className="bg-hive-card-light border-0 rounded-card text-center py-12">
-              <CardContent>
-                <Users className="w-16 h-16 text-hive-text-secondary mx-auto mb-4" />
-                <h3 className="text-card-heading font-heading text-hive-text-primary mb-2">
-                  No facilitators found
-                </h3>
-                <p className="text-body-sm text-hive-text-secondary">
-                  Try adjusting your search criteria
-                </p>
-              </CardContent>
-            </Card>
+          ) : sortedPractitioners.length === 0 ? (
+            <div
+              className="text-center py-16 rounded-2xl shadow-md"
+              style={{
+                backgroundImage: `url(${papercut.textures.cream})`,
+                backgroundSize: "200px 200px",
+                backgroundRepeat: "repeat",
+              }}
+            >
+              <Users className="w-16 h-16 text-forest/30 mx-auto mb-4" />
+              <h3 className="font-heading text-xl font-bold text-forest mb-2">
+                No facilitators found
+              </h3>
+              <p className="text-forest/60">
+                Try adjusting your search or filters
+              </p>
+            </div>
           ) : (
-            <div className="grid grid-cols-3 gap-6">
-              {sortedPractitioners.slice(0, 6).map((practitioner: any, index: number) => (
-                <motion.div
-                  key={practitioner.id}
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.5 + index * 0.05 }}
-                >
-                  <Card className="bg-hive-card-light border-0 rounded-card shadow-card hover:shadow-card-hover transition-all duration-300">
-                    <div className="aspect-video bg-gradient-to-br from-hive-bg to-hive-accent/10 rounded-t-card flex items-center justify-center relative">
-                      <User className="w-16 h-16 text-hive-text-secondary/30" />
-                      <div className="absolute top-3 right-3">
+            <motion.div
+              className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+            >
+              {sortedPractitioners.map((p: any) => {
+                const sessionType = getSessionType(
+                  p.isVirtual ?? true,
+                  p.isInPerson ?? false
+                );
+                const season = getExperienceSeason(p.totalSessions || 0);
+                const isFav = favorites.includes(p.id);
+
+                return (
+                  <motion.div key={p.id} variants={fadeUp}>
+                    <div
+                      className="rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow relative group"
+                      style={{
+                        backgroundImage: `url(${papercut.textures.cream})`,
+                        backgroundSize: "200px 200px",
+                        backgroundRepeat: "repeat",
+                      }}
+                    >
+                      {/* Relief overlay */}
+                      <div
+                        className="absolute inset-0 rounded-2xl pointer-events-none"
+                        style={{
+                          background:
+                            "linear-gradient(145deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(0,0,0,0.03) 100%)",
+                        }}
+                      />
+
+                      {/* Archetype badge row */}
+                      <div className="p-4 pb-0 flex items-center justify-between relative z-10">
+                        <div className="flex items-center gap-2">
+                          {getExperienceBadge(p.experienceLevel)}
+                          {p.isVerified && (
+                            <Badge className="bg-gold/20 text-gold text-xs">
+                              <Shield className="w-3 h-3 mr-1" />
+                              Verified
+                            </Badge>
+                          )}
+                        </div>
                         <button
-                          onClick={(e) => handleToggleFavorite(practitioner.id, e)}
-                          className="bg-white/80 rounded-full p-2 hover:bg-white transition-colors"
+                          onClick={(e) => handleToggleFavorite(p.id, e)}
+                          className="p-2 rounded-full hover:bg-forest/5 transition-colors"
                         >
                           <Heart
-                            className={`w-4 h-4 ${
-                              favorites.includes(practitioner.id)
+                            className={`w-5 h-5 ${
+                              isFav
                                 ? "fill-red-500 text-red-500"
-                                : "text-hive-text-secondary"
+                                : "text-forest/30"
                             }`}
                           />
                         </button>
                       </div>
-                    </div>
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          {getArchetypeIcon(practitioner.archetype)}
-                          {getExperienceBadge(practitioner.experienceLevel)}
+
+                      {/* Hexagon portrait + archetype */}
+                      <div className="flex flex-col items-center py-4 relative z-10">
+                        <div
+                          className="w-20 h-20 flex items-center justify-center shadow-md mb-3"
+                          style={{
+                            clipPath:
+                              "polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%)",
+                            backgroundImage: `url(${papercut.textures.paperClay})`,
+                            backgroundSize: "100px 100px",
+                            backgroundRepeat: "repeat",
+                          }}
+                        >
+                          {getArchetypeIcon(p.archetype)}
                         </div>
-                        <ReviewsSummary
-                          averageRating={practitioner.averageRating ? parseFloat(practitioner.averageRating) : undefined}
-                          totalReviews={practitioner.totalSessions || 0}
-                          isVerified={practitioner.isVerified || false}
-                          size="sm"
-                        />
-                      </div>
-
-                      <h3 className="text-card-heading font-heading text-hive-text-primary mb-2">
-                        Facilitator #{practitioner.id.slice(-6)}
-                      </h3>
-
-                      {practitioner.bio && (
-                        <p className="text-body-sm text-hive-text-secondary mb-4 line-clamp-2">
-                          {practitioner.bio}
-                        </p>
-                      )}
-
-                      <div className="flex gap-2">
-                        <Button
+                        <Badge
+                          className="text-xs"
                           variant="outline"
-                          size="sm"
-                          className="flex-1 rounded-button text-label border-hive-accent/20"
-                          onClick={() => setLocation(`/practitioners/${practitioner.id}`)}
                         >
-                          View
-                        </Button>
-                        <Button
-                          size="sm"
-                          className="flex-1 bg-hive-accent text-white hover:bg-hive-accent-light rounded-button text-label"
-                          onClick={() => setLocation(`/book/${practitioner.id}`)}
-                        >
-                          <Calendar className="w-3 h-3 mr-1" />
-                          Book
-                        </Button>
+                          {archetypeDefinitions[p.archetype]?.name || p.archetype}
+                        </Badge>
                       </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
+
+                      {/* Profile info */}
+                      <div className="px-5 pb-5 relative z-10">
+                        {/* Name */}
+                        <h3 className="font-heading text-lg font-bold text-forest text-center mb-1">
+                          {p.firstName && p.lastName
+                            ? `${p.firstName} ${p.lastName}`
+                            : `Pollinator #${p.id.slice(-6)}`}
+                        </h3>
+
+                        {/* Archetype + Season */}
+                        <p className="text-xs text-forest/50 text-center mb-3 italic">
+                          {archetypeDefinitions[p.archetype]?.scientificName}
+                        </p>
+
+                        {/* Bio excerpt */}
+                        {p.bio && (
+                          <p className="text-sm text-forest/70 text-center mb-4 line-clamp-2 leading-relaxed">
+                            {p.bio}
+                          </p>
+                        )}
+
+                        {/* Details row */}
+                        <div className="flex flex-wrap justify-center gap-2 mb-4 text-xs text-forest/60">
+                          <span className="flex items-center gap-1">
+                            <Video className="w-3 h-3" />
+                            {sessionType}
+                          </span>
+                          {p.location && (
+                            <span className="flex items-center gap-1">
+                              <MapPin className="w-3 h-3" />
+                              {p.location}
+                            </span>
+                          )}
+                          {p.averageRating && (
+                            <span className="flex items-center gap-1">
+                              <Star className="w-3 h-3 text-gold fill-gold" />
+                              {parseFloat(p.averageRating).toFixed(1)}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Season + metrics */}
+                        <div className="flex justify-center gap-2 mb-4">
+                          <Badge className={`${season.color} text-xs`}>
+                            {season.label}
+                          </Badge>
+                        </div>
+
+                        {/* Price + Actions */}
+                        <div className="flex items-center justify-between pt-3 border-t border-forest/10">
+                          {p.hourlyRate ? (
+                            <div>
+                              <span className="text-xs text-forest/50">From</span>
+                              <span className="font-heading font-semibold text-forest ml-1">
+                                ${p.hourlyRate}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-xs text-forest/50">
+                              Contact for pricing
+                            </span>
+                          )}
+                          <div className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="rounded-full text-xs border-forest/20"
+                              onClick={() =>
+                                setLocation(`/practitioners/${p.id}`)
+                              }
+                              style={{
+                                backgroundImage: `url(${papercut.textures.cream})`,
+                                backgroundSize: "150px 150px",
+                                backgroundRepeat: "repeat",
+                              }}
+                            >
+                              View Profile
+                            </Button>
+                            <Button
+                              size="sm"
+                              className="rounded-full text-xs text-white"
+                              onClick={() => setLocation(`/book/${p.id}`)}
+                              style={{
+                                backgroundImage: `url(${papercut.textures.paperSage})`,
+                                backgroundSize: "150px 150px",
+                                backgroundRepeat: "repeat",
+                              }}
+                            >
+                              <Calendar className="w-3 h-3 mr-1" />
+                              Book
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
           )}
         </div>
-      </main>
+      </section>
+
+      {/* Bottom engraved band */}
+      <section
+        className="py-8 relative overflow-hidden"
+        style={{
+          backgroundImage: `url(${papercut.textures.paperEarth})`,
+          backgroundSize: "256px 256px",
+          backgroundRepeat: "repeat",
+        }}
+      >
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(145deg, rgba(255,255,255,0.08) 0%, transparent 50%, rgba(0,0,0,0.05) 100%)",
+          }}
+        />
+        {/* Hexagon fragments in band */}
+        <HexFragment x="5%" y="20%" size={20} color="#3C3C3C" delay={0} />
+        <HexFragment x="25%" y="50%" size={16} color="#C4A882" delay={0.1} />
+        <HexFragment x="75%" y="30%" size={22} color="#3C3C3C" delay={0.2} />
+        <HexFragment x="90%" y="60%" size={14} color="#C4A882" delay={0.3} />
+
+        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
+          <p className="text-white/70 text-sm">
+            Every Pollinator is vetted, supported, and part of a living
+            ecosystem of care.
+          </p>
+        </div>
+      </section>
+
+      <Footer />
     </div>
   );
 }
