@@ -74,14 +74,13 @@ export default function FeaturedPractitioners() {
               Featured Pollinators
             </Badge>
             <h2 className="font-heading text-section-heading lg:text-[2.75rem] text-forest mb-4">
-              Meet Our Verified
+              Meet the
               <span className="block bg-gradient-to-r from-gold via-hive-accent to-garden-accent bg-clip-text text-transparent">
-                Wellness Practitioners
+                Pollinators
               </span>
             </h2>
             <p className="text-body-lg text-forest/70 max-w-xl leading-relaxed">
-              Each practitioner embodies a unique pollinator archetype, bringing their authentic
-              healing presence to guide your transformational journey.
+              Each Pollinator embodies a nature-inspired archetype, offering a distinct way of guiding shaped by presence and lived experience. Each one is vetted, supported, and part of a living ecosystem.
             </p>
           </div>
           <Link href="/practitioners">

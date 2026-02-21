@@ -36,41 +36,36 @@ export default function ForFacilitatorsCTA() {
             For Facilitators
           </h2>
 
-          <p className="text-lg text-forest/80 leading-relaxed mb-8 max-w-3xl mx-auto">
-            Are you a guide, healer, or catalyst? You carry a spark. A wisdom
-            shaped by earth, time, and your own journey of becoming. Join the
-            Hive and become a Pollinator in our living ecosystem of co-creation
-            and conscious flourishing.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              className="text-white hover:opacity-90 rounded-full px-8 shadow-lg transform hover:scale-105 transition-all"
-              onClick={handleBecomeFacilitator}
-              style={{
-                backgroundImage: `url(${papercut.textures.paperGold})`,
-                backgroundSize: '200px 200px',
-                backgroundRepeat: 'repeat',
-              }}
-            >
-              <Sparkles className="mr-2 h-4 w-4" />
-              Become a Facilitator
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="rounded-full px-8 hover:opacity-90"
-              onClick={() => setLocation("/join-the-hive")}
-              style={{
-                backgroundImage: `url(${papercut.textures.paperUI})`,
-                backgroundSize: '200px 200px',
-                backgroundRepeat: 'repeat',
-              }}
-            >
-              Learn More
-            </Button>
+          <div className="text-lg text-forest/80 leading-relaxed mb-8 max-w-3xl mx-auto space-y-4">
+            <p>
+              Are you a guide, facilitator, or catalyst?
+              <br />You carry a spark &mdash; a wisdom shaped by time, experience, and your own path of becoming.
+            </p>
+            <p>
+              At <strong>FloreSer.Life</strong>, facilitators are not listings.
+              <br />They are <strong>Pollinators</strong> &mdash; vital contributors to a living ecosystem of shared growth, care, and presence.
+            </p>
+            <p>
+              If you guide with integrity,
+              <br />offer your work with respect,
+              <br />and wish to grow within a thoughtful, curated field,
+              <br />we invite you to join the Hive.
+            </p>
           </div>
+
+          <Button
+            size="lg"
+            className="text-white hover:opacity-90 rounded-full px-8 shadow-lg transform hover:scale-105 transition-all"
+            onClick={handleBecomeFacilitator}
+            style={{
+              backgroundImage: `url(${papercut.textures.paperGold})`,
+              backgroundSize: '200px 200px',
+              backgroundRepeat: 'repeat',
+            }}
+          >
+            <Sparkles className="mr-2 h-4 w-4" />
+            Become a Pollinator
+          </Button>
         </motion.div>
       </div>
     </section>

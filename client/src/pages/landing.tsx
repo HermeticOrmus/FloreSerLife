@@ -26,42 +26,42 @@ const hexItems = [
     id: 'growth',
     icon: Sprout,
     title: 'Growth-Focused',
-    description: 'Your journey is unique, honored at every stage',
+    description: 'Your journey is honoured at every stage',
     color: 'deep-sage' as const,
   },
   {
     id: 'community',
     icon: Users,
     title: 'Community',
-    description: 'Connect with seekers and guides alike',
+    description: 'Connect with guides and seekers',
     color: 'olive-resin' as const,
   },
   {
     id: 'wisdom',
     icon: Sparkles,
     title: 'Nature Wisdom',
-    description: 'Four archetypes guide your perfect match',
+    description: 'Four archetypes guide your match',
     color: 'dew-gold' as const,
   },
   {
     id: 'care',
     icon: Heart,
     title: 'Genuine Care',
-    description: 'Facilitators vetted for authenticity',
+    description: 'Facilitators vetted for integrity',
     color: 'forest-earth' as const,
   },
   {
     id: 'flexibility',
     icon: Calendar,
     title: 'Your Rhythm',
-    description: 'Book sessions that fit your life',
+    description: 'Sessions that fit your life',
     color: 'claystone' as const,
   },
   {
     id: 'trust',
     icon: Shield,
     title: 'Safe Space',
-    description: 'Privacy and trust at the foundation',
+    description: 'Privacy and trust, always',
     color: 'tudor-red' as const,
   },
 ];
@@ -71,7 +71,7 @@ export default function Landing() {
   const [, setLocation] = useLocation();
 
   useEffect(() => {
-    document.title = "FloreSer.Life — Nature-Inspired Guidance for Your Becoming";
+    document.title = "FloreSer.Life — Welcome";
 
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
@@ -105,6 +105,30 @@ export default function Landing() {
       {/* Paper-cut Hero Section */}
       <HeroSection />
 
+      {/* Welcome Dear One */}
+      <section className="py-16 relative">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="font-heading text-3xl md:text-4xl text-papercut-neutral-dark mb-6">
+            Welcome Dear One
+          </h2>
+          <div className="text-body-lg text-papercut-neutral-dark/80 space-y-4 leading-relaxed">
+            <p>This is the garden of your becoming.</p>
+            <p>
+              At <strong>FloreSer.Life</strong>, we see you as a seed,
+              <br />carrying your own rhythm of becoming.
+            </p>
+            <p>
+              We are a living ecosystem &mdash; not a directory &mdash;
+              <br />where soulful guides offer presence, wisdom, and practice to help you tend your inner garden.
+            </p>
+            <p>
+              Whether you're just beginning or already deepening,
+              <br />you're welcome here.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Meet mAIa - Begin Your Journey CTA */}
       <section className="py-16 relative">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -125,17 +149,19 @@ export default function Landing() {
             <div className="flex-1 text-center md:text-left">
               <div className="inline-flex items-center px-3 py-1.5 bg-papercut-leaf-sage/20 text-papercut-leaf-deep rounded-full text-sm font-medium mb-4">
                 <Bot className="w-4 h-4 mr-2" />
-                Meet Your Guide
+                Your Living Guide
               </div>
 
               <h2 className="font-heading text-2xl md:text-3xl text-papercut-neutral-dark mb-3">
-                mAIa is here to help you find your way
+                Meet mAIa &mdash; Your Living Guide
               </h2>
 
+              <p className="text-body text-papercut-neutral-dark/70 mb-2 max-w-xl">
+                Every soul blooms in its own rhythm.
+                <strong> mAIa</strong> is here to sense yours &mdash; a gentle intelligence that listens and guides you toward what you most need now.
+              </p>
               <p className="text-body text-papercut-neutral-dark/70 mb-6 max-w-xl">
-                A gentle, nature-wise guide who helps you discover your unique path to wellness.
-                Through a short, thoughtful journey, mAIa will help match you with practitioners
-                who truly resonate with your needs.
+                Through a few simple, soulful questions, she helps you find the practices and facilitators that can nurture your next unfolding.
               </p>
 
               <Button
@@ -149,7 +175,7 @@ export default function Landing() {
                 }}
               >
                 <Sparkles className="w-5 h-5 mr-2" />
-                Begin with mAIa
+                Begin your conversation with mAIa
               </Button>
             </div>
           </div>
