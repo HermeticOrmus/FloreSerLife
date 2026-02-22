@@ -62,6 +62,50 @@ forest floor quality, organic depth, recycled paper aesthetic --v 7 --ar 1:1
 
 ---
 
+## CATEGORY 1B: Flat Paper Textures (For Interactive UI)
+
+> Use these on cards, panels, and surfaces where text and form fields sit.
+> Much flatter than Category 1 -- text legibility is the priority.
+> Key differences: `--s 100` (lower stylize), emphasis on "flat", "smooth", "washi", "almost solid".
+
+### 1B.1 Flat Cream Paper (Card backgrounds, form panels)
+```
+/imagine prompt: seamless tileable smooth handmade paper texture, cream color #F2E5CA,
+very flat minimal surface, subtle organic fiber visible only on close inspection,
+soft warm diffused lighting, perfectly smooth matte finish, minimal tonal variation,
+Japanese washi paper quality, almost solid color with barely perceptible paper grain,
+clean quiet background suitable for text overlay --v 7 --ar 1:1 --tile --s 100
+```
+**Size**: 1024x1024px (will tile)
+**File**: `depth-texture-flat-cream.png`
+**Usage**: Profile cards, session panels, journal book pages -- anywhere with body text or form fields
+
+### 1B.2 Flat Sage Paper (Active nav items, selected states)
+```
+/imagine prompt: seamless tileable smooth handmade paper texture, muted sage green #AFC8A8,
+very flat minimal surface, barely visible organic plant fibers, soft diffused lighting,
+smooth matte finish, uniform sage tone with minimal variation, washi paper quality,
+almost solid color with subtle paper grain, clean quiet background for text
+--v 7 --ar 1:1 --tile --s 100
+```
+**Size**: 1024x1024px (will tile)
+**File**: `depth-texture-flat-sage.png`
+**Usage**: Active navigation pills, selected menu items where white text sits on sage
+
+### 1B.3 Flat Gold Paper (Buttons, small interactive elements)
+```
+/imagine prompt: seamless tileable smooth handmade paper texture, warm gold #F5D29A,
+very flat minimal surface, barely visible fibers, soft warm lighting, smooth matte finish,
+uniform warm gold tone with minimal variation, washi paper quality, almost solid
+with subtle grain, clean quiet background for text overlay
+--v 7 --ar 1:1 --tile --s 100
+```
+**Size**: 1024x1024px (will tile)
+**File**: `depth-texture-flat-gold.png`
+**Usage**: CTA buttons, action elements where text must be crisp
+
+---
+
 ## CATEGORY 2: Hero Elements (Standalone Pieces)
 
 ### 2.1 Sprout - Seed in Soil
@@ -321,11 +365,12 @@ papercut-hex-sage-512.png
 
 ---
 
-## Total Assets: 19 Pieces
+## Total Assets: 22 Pieces
 
 | Category | Count | Purpose |
 |----------|-------|---------|
-| Paper Textures | 4 | Seamless backgrounds |
+| Paper Textures (dramatic) | 4 | Seamless backgrounds, hero/decorative areas |
+| Paper Textures (flat) | 3 | Interactive surfaces -- cards, forms, journals |
 | Hero Elements | 4 | Sprout + sun composition |
 | Pollinators | 4 | Orbiting icons |
 | Patterns | 2 | Overlay textures |

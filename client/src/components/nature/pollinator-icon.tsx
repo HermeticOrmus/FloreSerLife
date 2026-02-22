@@ -39,12 +39,12 @@ const archetypeIcons: Record<PollinatorArchetype, typeof Sparkles> = {
   beetle: Bug,
 };
 
-// Map archetypes to colors
+// Map archetypes to colors using CSS variables from design system
 const archetypeColors: Record<PollinatorArchetype, string> = {
-  bee: '#F4C430', // hive-honey
-  hummingbird: '#E07A5F', // hive-nectar
-  butterfly: '#F4C2C2', // garden-bloom
-  beetle: '#8B7355', // garden-soil
+  bee: 'var(--gold)',                  // Golden honey color
+  hummingbird: 'var(--hive-accent)',   // Warm terracotta
+  butterfly: 'var(--subtle-rose)',     // Soft transformation pink
+  beetle: 'var(--hive-text-secondary)', // Earthy brown
 };
 
 export function PollinatorIcon({
@@ -68,11 +68,11 @@ export function PollinatorIcon({
 
   const dimensions = sizes[size];
 
-  // Theme colors
+  // Theme colors using design system
   const themeClasses = {
-    garden: 'bg-garden-mist border-garden-leaf',
-    hive: 'bg-hive-wax border-hive-amber',
-    default: 'bg-white border-gray-200',
+    garden: 'bg-garden-card border-sage',
+    hive: 'bg-hive-card-light border-gold',
+    default: 'bg-cream border-sage/30',
   };
 
   return (

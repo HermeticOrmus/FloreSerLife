@@ -8,8 +8,11 @@ interface WavyHorizonProps {
 /**
  * Paper-cut style wavy divider for hero section
  * Creates organic horizon line between hero sections
+ *
+ * Default color aligns with sage from design system (--sage)
+ * Pass CSS variable values via fillColor prop for theming
  */
-export function WavyHorizon({ className, fillColor = "#6F8E72" }: WavyHorizonProps) {
+export function WavyHorizon({ className, fillColor = "hsl(82, 15%, 62%)" }: WavyHorizonProps) {
   return (
     <svg
       viewBox="0 0 1440 100"

@@ -28,7 +28,7 @@ interface BloomAnimationProps {
 
 export function BloomAnimation({
   petalCount = 6,
-  color = '#F4C2C2', // garden-bloom
+  color = 'hsl(0, 20%, 69%)', // subtle-rose from design system
   size = 120,
   duration = 1.5,
   repeat = false,
@@ -45,7 +45,7 @@ export function BloomAnimation({
     >
       {/* Center of flower */}
       <motion.div
-        className="absolute rounded-full bg-hive-gold"
+        className="absolute rounded-full bg-gold"
         style={{ width: size * 0.2, height: size * 0.2 }}
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}

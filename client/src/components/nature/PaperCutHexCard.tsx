@@ -38,13 +38,14 @@ const colorTextures: Record<HexColor, string> = {
   'tudor-red': papercut.textures.paperCrimson,
 };
 
-const textColorClasses: Record<HexColor, string> = {
-  'deep-sage': 'text-white',
-  'olive-resin': 'text-white',
-  'claystone': 'text-papercut-neutral-dark',
-  'forest-earth': 'text-white',  // Changed to white for contrast
-  'dew-gold': 'text-papercut-neutral-dark',
-  'tudor-red': 'text-white',
+// Text colors for contrast - using CSS variables from design system
+const textColors: Record<HexColor, string> = {
+  'deep-sage': 'var(--background-cream)',
+  'olive-resin': 'var(--background-cream)',
+  'claystone': 'var(--primary-forest)',
+  'forest-earth': 'var(--background-cream)',
+  'dew-gold': 'var(--primary-forest)',
+  'tudor-red': 'var(--background-cream)',
 };
 
 export function PaperCutHexCard({
@@ -59,7 +60,6 @@ export function PaperCutHexCard({
       className={cn(
         'relative p-8',
         colorClasses[color],
-        textColorClasses[color],
         'shadow-hex-emboss',
         hoverable && 'cursor-pointer',
         className
@@ -69,6 +69,7 @@ export function PaperCutHexCard({
         backgroundImage: `url(${colorTextures[color]})`,
         backgroundSize: '200px 200px',
         backgroundRepeat: 'repeat',
+        color: textColors[color],
       }}
       whileHover={
         hoverable

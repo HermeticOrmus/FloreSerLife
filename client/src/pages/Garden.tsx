@@ -39,6 +39,7 @@ import {
 import { AccessLevelBadge, FeaturePreview, UpgradeModal, useAccessControl } from "@/components/access-control";
 import { useAuth } from "@/hooks/useAuth";
 import GrowthMandala from "@/components/garden/GrowthMandala";
+import { papercut } from "@/assets";
 import BloomPathTimeline from "@/components/garden/BloomPathTimeline";
 import MaiaMessage from "@/components/garden/MaiaMessage";
 
@@ -285,55 +286,72 @@ export default function Garden() {
   };
 
   return (
-    <div className="flex min-h-screen bg-garden-bg">
+    <div
+      className="flex min-h-screen"
+      style={{
+        backgroundImage: `url(${papercut.textures.paperUI})`,
+        backgroundSize: '256px 256px',
+        backgroundRepeat: 'repeat',
+      }}
+    >
       {/* Sidebar */}
       <motion.aside
         initial={{ x: -20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        className="w-64 bg-garden-sidebar border-r border-garden-accent/20 p-6 flex flex-col"
+        className="w-64 border-r border-garden-accent/20 flex flex-col relative"
+        style={{
+          backgroundImage: `url(${papercut.textures.paperSage})`,
+          backgroundSize: '256px 256px',
+          backgroundRepeat: 'repeat',
+        }}
       >
-        <div className="mb-8">
-          <h2 className="text-page-heading font-heading text-garden-text-on-sage">
-            My Garden
-          </h2>
-        </div>
+        {/* Semi-transparent overlay for text contrast */}
+        <div className="absolute inset-0 bg-cream/60" />
 
-        <nav className="space-y-1 flex-1">
-          {sidebarNavItems.map((item) => (
-            <button
-              key={item.label}
-              onClick={() => setLocation(item.href)}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-button text-body text-garden-text-on-sage hover:bg-white/10 transition-colors"
-            >
-              <item.icon className="w-5 h-5" />
-              {item.label}
-            </button>
-          ))}
-        </nav>
+        <div className="relative z-10 p-6 flex flex-col flex-1">
+          <div className="mb-8">
+            <h2 className="text-page-heading font-heading text-forest">
+              My Garden
+            </h2>
+          </div>
 
-        {/* Reflections Card at Bottom */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="mt-auto"
-        >
-          <Card className="bg-garden-container border-0 shadow-card-sm rounded-card">
-            <CardContent className="p-5">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="text-2xl">🐝</div>
-                <div>
-                  <p className="text-card-subheading font-heading text-garden-text-primary">
-                    Reflections from Maia
-                  </p>
+          <nav className="space-y-1 flex-1">
+            {sidebarNavItems.map((item) => (
+              <button
+                key={item.label}
+                onClick={() => setLocation(item.href)}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-button text-body text-forest hover:bg-garden-accent/20 transition-colors"
+              >
+                <item.icon className="w-5 h-5" />
+                {item.label}
+              </button>
+            ))}
+          </nav>
+
+          {/* Reflections Card at Bottom */}
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="mt-auto"
+          >
+            <Card className="bg-garden-container border-0 shadow-card-sm rounded-card">
+              <CardContent className="p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="text-2xl">🐝</div>
+                  <div>
+                    <p className="text-card-subheading font-heading text-garden-text-primary">
+                      Reflections from Maia
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <p className="text-body-sm text-garden-text-secondary">
-                You are a {seedsData ? getTierName(seedsData.seedsBalance) : "Blooming"} Seeker
-              </p>
-            </CardContent>
-          </Card>
-        </motion.div>
+                <p className="text-body-sm text-garden-text-secondary">
+                  You are a {seedsData ? getTierName(seedsData.seedsBalance) : "Blooming"} Seeker
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
       </motion.aside>
 
       {/* Main Content */}

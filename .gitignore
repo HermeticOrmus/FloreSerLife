@@ -12,3 +12,13 @@ vite.config.ts.*
 .env.*.local
 .env.production
 .env.development
+.env*.local
+
+# Syncthing conflict files
+*.sync-conflict-*
+
+# Screenshots (local verification only)
+screenshots/
+
+# Meta-gods state
+.meta-gods-history.json

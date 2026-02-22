@@ -191,7 +191,7 @@ export default function Sessions() {
             <div
               className="md:w-[340px] flex-shrink-0 rounded-xl shadow-lg overflow-hidden"
               style={{
-                backgroundImage: `url(${papercut.textures.cream})`,
+                backgroundImage: `url(${papercut.textures.flatCream})`,
                 backgroundSize: "256px 256px",
                 backgroundRepeat: "repeat",
               }}
@@ -359,7 +359,7 @@ export default function Sessions() {
             <div
               className="flex-1 rounded-xl shadow-lg overflow-hidden min-h-[480px]"
               style={{
-                backgroundImage: `url(${papercut.textures.cream})`,
+                backgroundImage: `url(${papercut.textures.flatCream})`,
                 backgroundSize: "256px 256px",
                 backgroundRepeat: "repeat",
               }}

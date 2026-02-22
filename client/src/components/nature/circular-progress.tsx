@@ -39,17 +39,17 @@ export function CircularProgress({
   const circumference = radius * 2 * Math.PI;
   const offset = circumference - (normalizedValue / 100) * circumference;
 
-  // Theme colors
+  // Theme colors using CSS variables from design system
   const colors = {
     garden: {
-      track: '#E8F4F8', // garden-mist
-      progress: '#9CA986', // garden-leaf
-      text: '#7A9A5C', // garden-stem
+      track: 'var(--garden-card)',      // Very light cream sections
+      progress: 'var(--garden-accent)', // Warm gold
+      text: 'var(--garden-text-primary)', // Dark text
     },
     hive: {
-      track: '#FFF8DC', // hive-wax
-      progress: '#F4C430', // hive-honey
-      text: '#D4AF37', // hive-gold
+      track: 'var(--hive-card-light)',  // Soft cream
+      progress: 'var(--hive-accent)',   // Golden orange
+      text: 'var(--hive-text-primary)', // Dark brown
     },
   };
 

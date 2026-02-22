@@ -66,7 +66,8 @@ const SURVEY_STEPS = [
   { id: 'final', title: 'Your Vision', description: 'Shaping the future of wellness technology', icon: Trophy },
 ];
 
-const ALPHA_MEMBER_NUMBER = Math.floor(Math.random() * 150) + 1; // Simulated alpha member number
+// Use a stable member number based on timestamp of page load (avoids hydration mismatch)
+const getAlphaMemberNumber = () => Math.floor(Math.random() * 150) + 1;
 
 const AGE_RANGES = [
   "18-24", "25-34", "35-44", "45-54", "55-64", "65+"
@@ -123,6 +124,7 @@ export default function Survey() {
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [alphaMemberNumber] = useState(getAlphaMemberNumber);
 
   const form = useForm<SurveyFormData>({
     resolver: zodResolver(surveySchema),
@@ -313,7 +315,7 @@ export default function Survey() {
                 </div>
                 <Trophy className="w-20 h-20 text-gold mx-auto mb-6" />
                 <div className="bg-gold/10 rounded-full px-4 py-2 mb-4 inline-block">
-                  <span className="text-gold font-semibold text-sm">COMMUNITY CONTRIBUTOR #{ALPHA_MEMBER_NUMBER.toString().padStart(3, '0')}</span>
+                  <span className="text-gold font-semibold text-sm">COMMUNITY CONTRIBUTOR #{alphaMemberNumber.toString().padStart(3, '0')}</span>
                 </div>
                 <h1 className="font-heading text-3xl font-bold text-forest mb-4">
                   Thank You for Your Voice!
@@ -1164,7 +1166,7 @@ export default function Survey() {
                     <div className="flex items-center justify-between text-sm">
                       <div className="flex items-center text-forest/70">
                         <Crown className="w-4 h-4 text-gold mr-2" />
-                        Founding Member #{ALPHA_MEMBER_NUMBER.toString().padStart(3, '0')}
+                        Founding Member #{alphaMemberNumber.toString().padStart(3, '0')}
                       </div>
                       <div className="text-forest/70">
                         Your insights directly influence our development roadmap
@@ -1294,7 +1296,7 @@ function SurveyShareSection({ isCompleted = false }: { isCompleted?: boolean }) 
         </Button>
       </div>
 
-      <p className="text-xs text-forest/40 mt-3">
+      <p className="text-xs text-forest/60 mt-3">
         Survey responses are anonymous and help us create a platform that serves everyone
       </p>
     </div>

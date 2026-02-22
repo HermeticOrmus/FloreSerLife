@@ -289,11 +289,25 @@ export function AIGuardian() {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
-      <Card className={`w-96 shadow-2xl border-forest/20 transition-all duration-300 ${
-        isMinimized ? 'h-16' : 'h-[500px]'
-      }`}>
-        <CardHeader className="flex flex-row items-center justify-between p-4 bg-gradient-to-r from-forest to-green-600 text-white rounded-t-lg">
+    <div className="fixed bottom-6 right-6 z-50 max-h-[calc(100vh-3rem)]">
+      <Card
+        className={`w-96 shadow-2xl border-forest/20 transition-all duration-300 flex flex-col ${
+          isMinimized ? 'h-16' : 'max-h-[500px] h-[80vh]'
+        }`}
+        style={{
+          backgroundImage: `url(${papercut.textures.paperUI})`,
+          backgroundSize: '256px 256px',
+          backgroundRepeat: 'repeat',
+        }}
+      >
+        <CardHeader
+          className="flex flex-row items-center justify-between p-4 text-white rounded-t-lg flex-shrink-0"
+          style={{
+            backgroundImage: `url(${papercut.textures.paperForest})`,
+            backgroundSize: '256px 256px',
+            backgroundRepeat: 'repeat',
+          }}
+        >
           <div className="flex items-center space-x-2">
             <div className="relative">
               <Bot className="w-6 h-6" />
@@ -325,7 +339,7 @@ export function AIGuardian() {
         </CardHeader>
 
         {!isMinimized && (
-          <CardContent className="p-0 h-full flex flex-col">
+          <CardContent className="p-0 flex-1 flex flex-col overflow-hidden">
             {/* Messages Area */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {messages.map((message) => (
@@ -334,48 +348,71 @@ export function AIGuardian() {
                   className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-[80%] rounded-lg p-3 ${
+                    className={`max-w-[80%] rounded-lg p-3 relative overflow-hidden ${
                       message.sender === 'user'
-                        ? 'bg-forest text-white'
-                        : message.type === 'archetype_insight'
-                        ? 'bg-gradient-to-r from-gold/10 to-forest/10 border border-gold/20'
-                        : message.type === 'guidance'
-                        ? 'bg-green-50 border border-green-200'
-                        : 'bg-gray-100'
+                        ? 'bg-forest text-white shadow-sm'
+                        : 'shadow-sm border'
+                    } ${
+                      message.sender === 'maia' && message.type === 'archetype_insight'
+                        ? 'border-gold/30 bg-cream'
+                        : message.sender === 'maia' && message.type === 'guidance'
+                        ? 'border-garden-accent/30 bg-cream'
+                        : message.sender === 'maia'
+                        ? 'border-sage/30 bg-cream'
+                        : ''
                     }`}
+                    style={message.sender === 'maia' ? {
+                      backgroundImage: `url(${papercut.textures.paperUI})`,
+                      backgroundSize: '128px 128px',
+                      backgroundRepeat: 'repeat',
+                    } : undefined}
                   >
+                    {/* Overlay for maia messages */}
                     {message.sender === 'maia' && (
-                      <div className="flex items-center space-x-2 mb-2">
-                        <Bot className="w-4 h-4 text-forest" />
-                        <span className="text-xs font-medium text-forest">mAIa</span>
-                        {message.type === 'archetype_insight' && (
-                          <Badge className="text-xs bg-gold/20 text-gold">
-                            <Star className="w-3 h-3 mr-1" />
-                            Archetype Wisdom
-                          </Badge>
-                        )}
-                        {message.type === 'guidance' && (
-                          <Badge className="text-xs bg-green-100 text-green-700">
-                            <Lightbulb className="w-3 h-3 mr-1" />
-                            Guidance
-                          </Badge>
-                        )}
-                      </div>
+                      <div className="absolute inset-0 bg-cream/70" />
                     )}
-                    <div
-                      className="text-sm"
-                      dangerouslySetInnerHTML={{
-                        __html: formatMessage(message.content)
-                      }}
-                    />
+                    <div className="relative z-10">
+                      {message.sender === 'maia' && (
+                        <div className="flex items-center space-x-2 mb-2">
+                          <Bot className="w-4 h-4 text-forest" />
+                          <span className="text-xs font-medium text-forest">mAIa</span>
+                          {message.type === 'archetype_insight' && (
+                            <Badge className="text-xs bg-gold/20 text-gold border-gold/30">
+                              <Star className="w-3 h-3 mr-1" />
+                              Archetype Wisdom
+                            </Badge>
+                          )}
+                          {message.type === 'guidance' && (
+                            <Badge className="text-xs bg-garden-accent/20 text-forest border-garden-accent/30">
+                              <Lightbulb className="w-3 h-3 mr-1" />
+                              Guidance
+                            </Badge>
+                          )}
+                        </div>
+                      )}
+                      <div
+                        className={`text-sm ${message.sender === 'maia' ? 'text-forest' : ''}`}
+                        dangerouslySetInnerHTML={{
+                          __html: formatMessage(message.content)
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               ))}
 
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-gray-100 rounded-lg p-3 max-w-[80%]">
-                    <div className="flex items-center space-x-2">
+                  <div
+                    className="bg-cream rounded-lg p-3 max-w-[80%] shadow-sm border border-sage/30 relative overflow-hidden"
+                    style={{
+                      backgroundImage: `url(${papercut.textures.paperUI})`,
+                      backgroundSize: '128px 128px',
+                      backgroundRepeat: 'repeat',
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-cream/70" />
+                    <div className="relative z-10 flex items-center space-x-2">
                       <Bot className="w-4 h-4 text-forest" />
                       <div className="flex space-x-1">
                         <div className="w-2 h-2 bg-forest/60 rounded-full animate-bounce"></div>
@@ -392,7 +429,7 @@ export function AIGuardian() {
 
             {/* Suggestions */}
             {suggestions.length > 0 && (
-              <div className="px-4 py-2">
+              <div className="px-4 py-2 flex-shrink-0">
                 <div className="flex flex-wrap gap-2">
                   {suggestions.map((suggestion) => (
                     <Button
@@ -411,7 +448,7 @@ export function AIGuardian() {
             )}
 
             {/* Input Area */}
-            <div className="p-4 border-t border-gray-200">
+            <div className="p-4 border-t border-gray-200 flex-shrink-0">
               <div className="flex space-x-2">
                 <Input
                   value={inputValue}

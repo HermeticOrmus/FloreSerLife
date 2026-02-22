@@ -249,7 +249,7 @@ export default function Journal() {
               <div
                 className="md:w-[38%] p-8 md:p-10 flex flex-col"
                 style={{
-                  backgroundImage: `url(${papercut.textures.cream})`,
+                  backgroundImage: `url(${papercut.textures.flatCream})`,
                   backgroundSize: "256px 256px",
                   backgroundRepeat: "repeat",
                 }}
@@ -290,7 +290,7 @@ export default function Journal() {
                           style={
                             isActive
                               ? {
-                                  backgroundImage: `url(${papercut.textures.paperSage})`,
+                                  backgroundImage: `url(${papercut.textures.flatSage})`,
                                   backgroundSize: "200px 200px",
                                   backgroundRepeat: "repeat",
                                 }
@@ -332,7 +332,7 @@ export default function Journal() {
               <div
                 className="md:w-[62%] p-8 md:p-10 flex flex-col min-h-[400px] md:min-h-0"
                 style={{
-                  backgroundImage: `url(${papercut.textures.cream})`,
+                  backgroundImage: `url(${papercut.textures.flatCream})`,
                   backgroundSize: "256px 256px",
                   backgroundRepeat: "repeat",
                 }}

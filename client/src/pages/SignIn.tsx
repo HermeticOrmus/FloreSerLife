@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, Sparkles } from "lucide-react";
-import { logos } from "@/assets";
+import { logos, papercut } from "@/assets";
 
 export default function SignIn() {
   const [, setLocation] = useLocation();
@@ -61,9 +61,16 @@ export default function SignIn() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-4">
-      {/* Organic gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-cream via-light-green/10 to-hive-accent/5" />
+    <div
+      className="min-h-screen relative overflow-hidden flex items-center justify-center p-4"
+      style={{
+        backgroundImage: `url(${papercut.textures.paperUI})`,
+        backgroundSize: '256px 256px',
+        backgroundRepeat: 'repeat',
+      }}
+    >
+      {/* Subtle color overlay on paper texture */}
+      <div className="absolute inset-0 bg-gradient-to-br from-cream/30 via-light-green/10 to-hive-accent/5" />
 
       {/* Floating organic shapes */}
       <div className="absolute top-10 left-10 w-72 h-72 bg-gradient-to-br from-garden-accent/15 to-transparent rounded-full blur-3xl animate-float" />
@@ -245,7 +252,7 @@ export default function SignIn() {
         </Card>
 
         {/* Bottom decorative text */}
-        <p className="text-center text-caption text-forest/40 mt-6">
+        <p className="text-center text-caption text-forest/60 mt-6">
           Your sanctuary for holistic wellness
         </p>
       </div>

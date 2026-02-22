@@ -70,11 +70,11 @@ export function HexagonGrid({ items, className }: HexagonGridProps) {
             color={item.color}
             className="w-48 h-52 md:w-56 md:h-60"
           >
-            <item.icon className="w-10 h-10 mb-3 opacity-90" />
-            <h3 className="font-heading text-card-heading mb-2">
+            <item.icon className="w-10 h-10 mb-3 drop-shadow-sm text-inherit" />
+            <h3 className="font-heading text-card-heading mb-2 drop-shadow-sm text-inherit">
               {item.title}
             </h3>
-            <p className="text-body-sm opacity-80 leading-relaxed">
+            <p className="text-body-sm drop-shadow-sm leading-relaxed text-inherit">
               {item.description}
             </p>
           </PaperCutHexCard>

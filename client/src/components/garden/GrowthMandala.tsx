@@ -12,13 +12,14 @@ interface GrowthMandalaProps {
   };
 }
 
+// Domain colors using CSS variables from design system
 const domains = [
-  { key: "body", label: "Body", icon: Sparkles, color: "rgb(156, 125, 88)" },
-  { key: "emotion", label: "Emotion", icon: Heart, color: "rgb(189, 147, 99)" },
-  { key: "mind", label: "Mind", icon: Brain, color: "rgb(124, 148, 114)" },
-  { key: "spirit", label: "Spirit", icon: Sparkles, color: "rgb(214, 188, 165)" },
-  { key: "creativity", label: "Creativity", icon: Palette, color: "rgb(156, 125, 88)" },
-  { key: "connection", label: "Connection", icon: Users, color: "rgb(189, 147, 99)" }
+  { key: "body", label: "Body", icon: Sparkles, color: "var(--hive-text-secondary)" },
+  { key: "emotion", label: "Emotion", icon: Heart, color: "var(--hive-accent)" },
+  { key: "mind", label: "Mind", icon: Brain, color: "var(--sage)" },
+  { key: "spirit", label: "Spirit", icon: Sparkles, color: "var(--subtle-rose)" },
+  { key: "creativity", label: "Creativity", icon: Palette, color: "var(--gold)" },
+  { key: "connection", label: "Connection", icon: Users, color: "var(--hive-accent-light)" }
 ];
 
 export default function GrowthMandala({ progress = {} }: GrowthMandalaProps) {
