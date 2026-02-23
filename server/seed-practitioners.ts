@@ -257,6 +257,51 @@ const mockPractitioners = [
     responseTimeHours: 1,
     yearsActive: 1,
   },
+  // ============================================
+  // REAL PRACTITIONERS (verified applications)
+  // ============================================
+
+  // Natalia de Diego - First approved facilitator
+  // Application submitted: Feb 2026 | Primary: Hummingbird | Secondary: Beetle
+  // Certifications: Reiki (I & II), Akashic Records, Regression, Ayurveda, Kids Yoga, 200hr RYT
+  {
+    firstName: "Natalia",
+    lastName: "de Diego",
+    email: "nati@nataliadediego.com",
+    archetype: "hummingbird" as const,
+    experienceLevel: "wise" as const,
+    bio: "I am a priestess, guide, ceremonialist, and energy practitioner devoted to creating sacred spaces for transformation and reconnection to self.\n\nMy work weaves Reiki, Akashic Records, regression, ceremonies, and intuitive guidance into experiences that support people in coming home to themselves, their light, their body, and their soul.\n\nI don't see healing as something that needs to be fixed, but as a remembering of what has always been present. I walk alongside you as you reconnect with your inner wisdom, your channel of light, and the deeper truth that already lives within you.",
+    specializations: [
+      "Reiki & Energy Healing",
+      "Akashic Records",
+      "Past Life Regression",
+      "Cacao Ceremonies",
+      "Sound Healing",
+      "Breathwork & Meditation",
+      "Yoga",
+      "Sacred Ceremonies (Weddings, Baptisms, Rites of Passage)",
+    ],
+    professionalCategories: [
+      "reiki",
+      "energy_healing",
+      "past_life_regression",
+      "spiritual_counseling",
+      "sound_healing",
+      "yoga_instruction",
+      "breathwork",
+      "meditation_instruction",
+    ],
+    hourlyRate: "0", // To be set by practitioner
+    location: "Playa Venao, Panama",
+    isVirtual: true,
+    isInPerson: true,
+    isVerified: true,
+    isFeatured: true,
+    totalSessions: 150,
+    averageRating: "0", // No platform reviews yet
+    responseTimeHours: 12,
+    yearsActive: 13, // Practicing since 2013
+  },
 ];
 
 async function seedPractitioners() {

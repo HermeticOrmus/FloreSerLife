@@ -23,7 +23,15 @@ import hummingbirdIcon from './images/icons/hummingbird.png';
 // CHARACTER ILLUSTRATIONS
 // =============================================================================
 import maiaTheBee from './images/characters/maia.png';
+import maiaTheMascot from './images/characters/maia-mascot-transparent.png';
 import angelicaTheColibri from './images/characters/angelica.png';
+
+// =============================================================================
+// MAIA ANIMATION GIFs (Fallbacks - sprite component uses individual frames)
+// =============================================================================
+import maiaIdleGif from './animations/maia/idle.gif';
+import maiaThinkingGif from './animations/maia/thinking.gif';
+import maiaGreetingGif from './animations/maia/greeting.gif';
 
 // =============================================================================
 // PAPERCUT ASSETS - DEPTH STYLE (Primary)
@@ -127,7 +135,17 @@ export const archetypeIcons = {
 // =============================================================================
 export const characters = {
   maia: maiaTheBee,
+  maiaMascot: maiaTheMascot,
   angelica: angelicaTheColibri,
+} as const;
+
+// =============================================================================
+// EXPORTS - MAIA ANIMATIONS (GIF fallbacks)
+// =============================================================================
+export const maiaAnimations = {
+  idle: maiaIdleGif,
+  thinking: maiaThinkingGif,
+  greeting: maiaGreetingGif,
 } as const;
 
 // =============================================================================

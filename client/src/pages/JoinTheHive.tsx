@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useLocation } from "wouter";
+import Header from "@/components/layout/header";
+import Footer from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -91,6 +93,7 @@ export default function JoinTheHive() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-hive-bg via-hive-card-light to-cream">
+      <Header />
       {/* Hero */}
       <section className="relative py-20 md:py-32">
         <div className="max-w-5xl mx-auto px-6 text-center">
@@ -362,6 +365,7 @@ export default function JoinTheHive() {
           </motion.div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 }

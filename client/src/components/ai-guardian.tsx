@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
-  Bot,
   MessageCircle,
   Send,
   Sparkles,
@@ -24,6 +23,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { papercut } from "@/assets";
+import { MaiaSprite } from "./maia-sprite";
 
 interface Message {
   id: string;
@@ -48,6 +48,7 @@ export function AIGuardian() {
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [showGreeting, setShowGreeting] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Initialize mAIa with welcome message
@@ -280,7 +281,7 @@ export function AIGuardian() {
             backgroundRepeat: 'repeat',
           }}
         >
-          <Bot className="w-5 h-5 mr-2" />
+          <MaiaSprite state="idle" size={24} className="mr-2" />
           <span className="font-medium">Chat with mAIa</span>
           <Sparkles className="w-4 h-4 ml-2" />
         </Button>
@@ -310,7 +311,7 @@ export function AIGuardian() {
         >
           <div className="flex items-center space-x-2">
             <div className="relative">
-              <Bot className="w-6 h-6" />
+              <MaiaSprite state={showGreeting ? "greeting" : "idle"} size={32} onAnimationEnd={() => setShowGreeting(false)} />
               <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
             </div>
             <div>
@@ -374,7 +375,7 @@ export function AIGuardian() {
                     <div className="relative z-10">
                       {message.sender === 'maia' && (
                         <div className="flex items-center space-x-2 mb-2">
-                          <Bot className="w-4 h-4 text-forest" />
+                          <MaiaSprite state="idle" size={20} />
                           <span className="text-xs font-medium text-forest">mAIa</span>
                           {message.type === 'archetype_insight' && (
                             <Badge className="text-xs bg-gold/20 text-gold border-gold/30">
@@ -413,12 +414,8 @@ export function AIGuardian() {
                   >
                     <div className="absolute inset-0 bg-cream/70" />
                     <div className="relative z-10 flex items-center space-x-2">
-                      <Bot className="w-4 h-4 text-forest" />
-                      <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-forest/60 rounded-full animate-bounce"></div>
-                        <div className="w-2 h-2 bg-forest/60 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                        <div className="w-2 h-2 bg-forest/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                      </div>
+                      <MaiaSprite state="thinking" size={32} />
+                      <span className="text-xs text-forest/70">mAIa is thinking...</span>
                     </div>
                   </div>
                 </div>
