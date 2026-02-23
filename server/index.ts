@@ -95,13 +95,14 @@ async function initializeRoutes() {
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
+  // On Vercel, static files are served by CDN — skip Vite and Express static serving.
+  // For standalone: use Vite dev server in development, Express static in production.
+  if (!isVercel) {
+    if (app.get("env") === "development") {
+      await setupVite(app, server);
+    } else {
+      serveStatic(app);
+    }
   }
 
   return server;
