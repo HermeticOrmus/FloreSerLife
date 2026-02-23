@@ -1,9 +1,33 @@
 import 'dotenv/config';
 import express, { type Request, Response, NextFunction } from "express";
+import fs from "fs";
+import path from "path";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
+
+function log(message: string, source = "express") {
+  const formattedTime = new Date().toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  });
+  console.log(`${formattedTime} [${source}] ${message}`);
+}
+
+function serveStatic(app: express.Express) {
+  const distPath = path.resolve(import.meta.dirname, "public");
+  if (!fs.existsSync(distPath)) {
+    throw new Error(
+      `Could not find the build directory: ${distPath}, make sure to build the client first`,
+    );
+  }
+  app.use(express.static(distPath));
+  app.use("*", (_req, res) => {
+    res.sendFile(path.resolve(distPath, "index.html"));
+  });
+}
 
 const app = express();
 
@@ -99,6 +123,8 @@ async function initializeRoutes() {
   // For standalone: use Vite dev server in development, Express static in production.
   if (!isVercel) {
     if (app.get("env") === "development") {
+      // Dynamic import avoids bundling Vite + Rollup into the production build
+      const { setupVite } = await import("./vite");
       await setupVite(app, server);
     } else {
       serveStatic(app);
