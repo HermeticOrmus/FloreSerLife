@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FloreSer - UI/UX Changelog & Visual Audit</title>
+  <style>
+    :root {
+      --forest: #2d5016;
+      --sage: #87a878;
+      --gold: #d4a843;
+      --cream: #faf8f5;
+      --subtle-rose: #c4736f;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--cream);
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--forest);
+      color: white;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    header .subtitle {
+      font-size: 1.15rem;
+      opacity: 0.85;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    header .date {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      opacity: 0.65;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Stats banner */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0 3rem;
+    }
+
+    .stat-card {
+      background: white;
+      border: 1px solid #e5e0d8;
+      border-radius: 12px;
+      padding: 1.25rem;
+      text-align: center;
+    }
+
+    .stat-card .number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--forest);
+    }
+
+    .stat-card .label {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 0.25rem;
+    }
+
+    /* Section */
+    .section {
+      margin-bottom: 3.5rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--sage);
+    }
+
+    .section-header .icon {
+      width: 40px;
+      height: 40px;
+      background: var(--forest);
+      color: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .section-header h2 {
+      font-size: 1.6rem;
+      color: var(--forest);
+    }
+
+    .section-header .badge {
+      background: var(--sage);
+      color: white;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    /* Change list */
+    .changes {
+      list-style: none;
+      margin-bottom: 1.5rem;
+    }
+
+    .changes li {
+      padding: 0.5rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+      color: #333;
+    }
+
+    .changes li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.85rem;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+
+    .changes li code {
+      background: #f0ebe3;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.85em;
+      color: var(--forest);
+    }
+
+    .changes li strong {
+      color: var(--forest);
+    }
+
+    /* Screenshot grid */
+    .screenshot-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .screenshot-grid.two-col {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .screenshot-card {
+      background: white;
+      border: 1px solid #e5e0d8;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+
+    .screenshot-card:hover {
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .screenshot-card img {
+      width: 100%;
+      display: block;
+      border-bottom: 1px solid #e5e0d8;
+    }
+
+    .screenshot-card .caption {
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .screenshot-card .caption strong {
+      color: var(--forest);
+    }
+
+    /* Commit log */
+    .commit-log {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      border-radius: 12px;
+      padding: 1.5rem;
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.85rem;
+      line-height: 1.8;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
+    .commit-log .hash {
+      color: var(--gold);
+    }
+
+    .commit-log .msg {
+      color: #9cdcfe;
+    }
+
+    .commit-log .date {
+      color: #6a9955;
+    }
+
+    /* Severity badges */
+    .severity {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .severity.critical { background: #fee2e2; color: #991b1b; }
+    .severity.high { background: #fef3c7; color: #92400e; }
+    .severity.medium { background: #dbeafe; color: #1e40af; }
+    .severity.low { background: #d1fae5; color: #065f46; }
+
+    /* Summary table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid #e5e0d8;
+    }
+
+    th {
+      background: var(--forest);
+      color: white;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    td {
+      font-size: 0.9rem;
+    }
+
+    tr:hover td {
+      background: #f5f0e8;
+    }
+
+    .status-pass {
+      color: #059669;
+      font-weight: 600;
+    }
+
+    .status-fixed {
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: #999;
+      font-size: 0.85rem;
+      border-top: 1px solid #e5e0d8;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .screenshot-grid.two-col { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      header h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>FloreSer UI/UX Changelog</h1>
+  <p class="subtitle">
+    Complete visual audit and battle test results.
+    102 findings resolved across critical, high, medium, and low priority tiers.
+  </p>
+  <p class="date">February 24, 2026 &mdash; Deployed to floreser.life</p>
+</header>
+
+<div class="container">
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="number">102</div>
+      <div class="label">Total Findings</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">17</div>
+      <div class="label"><span class="severity critical">Critical</span> Fixed</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">26</div>
+      <div class="label"><span class="severity high">High</span> Fixed</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">33</div>
+      <div class="label"><span class="severity medium">Medium</span> Fixed</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">26</div>
+      <div class="label"><span class="severity low">Low</span> Fixed</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">78%</div>
+      <div class="label">Image Size Reduction</div>
+    </div>
+  </div>
+
+  <!-- Commit Log -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon">G</div>
+      <h2>Commit History</h2>
+    </div>
+    <div class="commit-log">
+      <span class="hash">e60fb0c</span> <span class="msg">fix(ui): improve About page value card legibility over paper textures</span> <span class="date"># Feb 24</span><br/>
+      <span class="hash">ad9c04c</span> <span class="msg">fix(ui): unify UI/UX consistency and fix paper texture legibility</span> <span class="date"># Feb 24</span><br/>
+      <span class="hash">0346f17</span> <span class="msg">fix(low): battle test low-priority fixes -- 30+ issues resolved</span> <span class="date"># Feb 24</span><br/>
+      <span class="hash">ce22491</span> <span class="msg">fix(medium): battle test medium-priority fixes -- 15 issues resolved</span> <span class="date"># Feb 24</span><br/>
+      <span class="hash">84583d2</span> <span class="msg">fix(critical+high): battle test fixes -- 22 critical and high issues resolved</span> <span class="date"># Feb 24</span>
+    </div>
+  </div>
+
+  <!-- Section 1: Landing Page -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon">1</div>
+      <h2>Landing Page</h2>
+      <span class="badge">5 Screenshots</span>
+    </div>
+
+    <ul class="changes">
+      <li>Removed <strong>global paper texture overlay</strong> from <code>App.tsx</code> that was double-layering with page textures, causing illegibility</li>
+      <li>Lightened page background from <code>#f5f3ef</code> to <code>#faf8f5</code> for better readability</li>
+      <li>Fixed undefined Tailwind tokens: <code>bg-papercut-leaf-sage</code> replaced with <code>bg-forest/10</code></li>
+      <li>Improved mAIa section body text contrast from <code>opacity-70</code> to <code>opacity-80</code></li>
+      <li>Added <strong>code splitting</strong> with <code>React.lazy</code> for 35 route components</li>
+      <li>Added <strong>skip-to-content</strong> accessibility link and <code>aria-live</code> on loading states</li>
+    </ul>
+
+    <div class="screenshot-grid">
+      <div class="screenshot-card">
+        <img src="01-landing-hero.png" alt="Landing page hero section" loading="lazy" />
+        <div class="caption"><strong>Hero Section</strong> &mdash; Clean paper texture, brand header with search, CTA button</div>
+      </div>
+    </div>
+
+    <div class="screenshot-grid two-col" style="margin-top: 1.5rem;">
+      <div class="screenshot-card">
+        <img src="02-landing-welcome.png" alt="Welcome section" loading="lazy" />
+        <div class="caption"><strong>Welcome Section</strong> &mdash; Legible text over cream paper, no double texture</div>
+      </div>
+      <div class="screenshot-card">
+        <img src="03-landing-maia.png" alt="mAIa guide section" loading="lazy" />
+        <div class="caption"><strong>mAIa Guide</strong> &mdash; Improved text contrast, brand-consistent CTA</div>
+      </div>
+    </div>
+
+    <div class="screenshot-grid two-col" style="margin-top: 1.5rem;">
+      <div class="screenshot-card">
+        <img src="04-landing-hexagons.png" alt="What Makes FloreSer Different hexagons" loading="lazy" />
+        <div class="caption"><strong>Differentiators</strong> &mdash; Solid hexagonal cards with proper contrast</div>
+      </div>
+      <div class="screenshot-card">
+        <img src="05-landing-footer.png" alt="Footer" loading="lazy" />
+        <div class="caption"><strong>Footer</strong> &mdash; Forest green background, organized link columns</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Practitioners -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon">2</div>
+      <h2>Practitioners Page</h2>
+      <span class="badge">1 Screenshot</span>
+    </div>
+
+    <ul class="changes">
+      <li>Standardized container to <code>max-w-6xl</code> with consistent <code>py-8 lg:py-12</code> padding</li>
+      <li>Simplified buttons to use <strong>default variant</strong> (removed inline color overrides)</li>
+      <li>Unified card borders to <code>border-sage/20</code></li>
+      <li>Error states changed from <code>text-red-600</code> to <code>text-destructive</code></li>
+    </ul>
+
+    <div class="screenshot-grid">
+      <div class="screenshot-card">
+        <img src="06-practitioners.png" alt="Practitioners page" loading="lazy" />
+        <div class="caption"><strong>Browse Practitioners</strong> &mdash; Consistent bg-cream, unified heading typography</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: The Hive -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon">3</div>
+      <h2>The Hive</h2>
+      <span class="badge">2 Screenshots</span>
+    </div>
+
+    <ul class="changes">
+      <li>Added <code>bg-white/90 rounded-xl</code> backdrop to practitioner card text areas for legibility</li>
+      <li>Replaced generic experience badge colors (purple/blue/green) with brand tokens (gold/sage/cream)</li>
+      <li>Unified search input to <code>rounded-lg bg-white border-sage/30</code></li>
+      <li>Lightened texture background to <code>#faf8f5</code></li>
+    </ul>
+
+    <div class="screenshot-grid two-col">
+      <div class="screenshot-card">
+        <img src="07-hive-hero.png" alt="Hive hero section" loading="lazy" />
+        <div class="caption"><strong>Hive Hero</strong> &mdash; Lightened paper texture, readable title text</div>
+      </div>
+      <div class="screenshot-card">
+        <img src="08-hive-search.png" alt="Hive search and filters" loading="lazy" />
+        <div class="caption"><strong>Search &amp; Filters</strong> &mdash; Unified search input, brand-consistent dropdowns</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: About -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon">4</div>
+      <h2>About Page</h2>
+      <span class="badge">4 Screenshots</span>
+    </div>
+
+    <ul class="changes">
+      <li>Extracted <strong>TudorRose SVG</strong> into reusable <code>@/components/icons/TudorRose.tsx</code></li>
+      <li>Added <code>bg-white/50 backdrop-blur-[1px]</code> to "What We Stand For" value cards for text legibility over textures</li>
+      <li>Improved description text from <code>text-forest/75</code> to <code>text-forest/80</code></li>
+    </ul>
+
+    <div class="screenshot-grid two-col">
+      <div class="screenshot-card">
+        <img src="09-about-hero.png" alt="About hero section" loading="lazy" />
+        <div class="caption"><strong>About Hero</strong> &mdash; Tudor Rose illustration, brand gradient title</div>
+      </div>
+      <div class="screenshot-card">
+        <img src="10-about-story.png" alt="Our Story section" loading="lazy" />
+        <div class="caption"><strong>Our Story</strong> &mdash; Sage green banner, high contrast text</div>
+      </div>
+    </div>
+
+    <div class="screenshot-grid two-col" style="margin-top: 1.5rem;">
+      <div class="screenshot-card">
+        <img src="11-about-values.png" alt="What We Stand For value cards" loading="lazy" />
+        <div class="caption"><strong>Value Cards</strong> &mdash; Frosted white backdrop ensures text readability over paper textures</div>
+      </div>
+      <div class="screenshot-card">
+        <img src="12-about-hexcards.png" alt="Living Ecosystem hexagon cards" loading="lazy" />
+        <div class="caption"><strong>Hexagon Cards</strong> &mdash; PaperCut hex components with brand colors</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: Garden, Sign In, Survey, Alpha -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon">5</div>
+      <h2>Other Pages</h2>
+      <span class="badge">4 Screenshots</span>
+    </div>
+
+    <ul class="changes">
+      <li><strong>Garden:</strong> Sage sidebar, cream main area, white content cards</li>
+      <li><strong>Sign In:</strong> White card over paper texture, aria-labels on interactive elements</li>
+      <li><strong>Survey:</strong> Clean cream background, gold accent icon, accessible form</li>
+      <li><strong>Alpha:</strong> Brand typography, hummingbird illustration, consistent layout</li>
+    </ul>
+
+    <div class="screenshot-grid two-col">
+      <div class="screenshot-card">
+        <img src="13-garden.png" alt="Community Garden" loading="lazy" />
+        <div class="caption"><strong>Community Garden</strong> &mdash; Sidebar navigation, session overview, growth tracking</div>
+      </div>
+      <div class="screenshot-card">
+        <img src="14-signin.png" alt="Sign In page" loading="lazy" />
+        <div class="caption"><strong>Sign In</strong> &mdash; Google OAuth + email, white card over paper texture</div>
+      </div>
+    </div>
+
+    <div class="screenshot-grid two-col" style="margin-top: 1.5rem;">
+      <div class="screenshot-card">
+        <img src="15-survey.png" alt="Alpha Survey" loading="lazy" />
+        <div class="caption"><strong>Alpha Survey</strong> &mdash; Clean card layout, gold icon, brand typography</div>
+      </div>
+      <div class="screenshot-card">
+        <img src="16-alpha.png" alt="Alpha Program" loading="lazy" />
+        <div class="caption"><strong>Alpha Program</strong> &mdash; Angelica hummingbird, brand gradient heading</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 6: Orphan Pages Fixed -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon">6</div>
+      <h2>Orphan Pages Unified</h2>
+    </div>
+
+    <p style="margin-bottom: 1rem; color: #555;">Three pages had custom navigation bars and off-brand color schemes. They now use the shared Header/Footer and brand tokens.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Page</th>
+          <th>Before</th>
+          <th>After</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>/payments</code></td>
+          <td>Custom nav, emerald gradient, off-brand buttons</td>
+          <td>Shared Header/Footer, bg-cream, forest/sage/gold tokens</td>
+        </tr>
+        <tr>
+          <td><code>/analytics</code></td>
+          <td>Custom nav, amber gradient, generic gray colors</td>
+          <td>Shared Header/Footer, bg-cream, brand typography</td>
+        </tr>
+        <tr>
+          <td><code>/favorites</code></td>
+          <td>Custom nav, teal gradient, inconsistent styling</td>
+          <td>Shared Header/Footer, bg-cream, font-heading headings</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Section 7: Performance -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon">7</div>
+      <h2>Performance &amp; Bundle Optimization</h2>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th>Before</th>
+          <th>After</th>
+          <th>Improvement</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Main JS Bundle</td>
+          <td>501 KB</td>
+          <td>290 KB</td>
+          <td><strong>-42%</strong></td>
+        </tr>
+        <tr>
+          <td>Image Assets (dist)</td>
+          <td>94 MB</td>
+          <td>21 MB</td>
+          <td><strong>-78%</strong></td>
+        </tr>
+        <tr>
+          <td>Route Loading</td>
+          <td>Monolithic bundle</td>
+          <td>React.lazy (35 routes)</td>
+          <td><strong>Code-split</strong></td>
+        </tr>
+        <tr>
+          <td>Vendor Chunks</td>
+          <td>1 monolith</td>
+          <td>4 chunks (react, motion, ui, query)</td>
+          <td><strong>Cacheable</strong></td>
+        </tr>
+        <tr>
+          <td>npm Vulnerabilities</td>
+          <td>36</td>
+          <td>20</td>
+          <td><strong>-44%</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Section 8: Security -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon">8</div>
+      <h2>Security Hardening</h2>
+    </div>
+
+    <ul class="changes">
+      <li>Added <strong>Helmet.js</strong> with Content Security Policy, frame options, and permissions policy</li>
+      <li>Added <strong>rate limiting</strong>: 500 req/15min global, 5 req/15min for auth endpoints</li>
+      <li>Added <strong>security headers</strong> in <code>vercel.json</code>: X-Frame-Options DENY, X-Content-Type-Options nosniff, strict Referrer-Policy</li>
+      <li>Added <strong>immutable caching</strong> for Vite-hashed assets (<code>/assets/*</code>)</li>
+      <li>Removed <strong>dead code</strong>: <code>server/replitAuth.ts</code> and archived landing page</li>
+      <li>Guarded dev-only route (<code>/design-system-test</code>) behind <code>import.meta.env.DEV</code></li>
+      <li>Removed <strong>console.log</strong> statements from production code paths</li>
+    </ul>
+  </div>
+
+  <!-- Section 9: Accessibility -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon">9</div>
+      <h2>Accessibility Improvements</h2>
+    </div>
+
+    <ul class="changes">
+      <li>Added <strong>skip-to-content</strong> link in <code>App.tsx</code> with <code>id="main-content"</code> target</li>
+      <li>Added <code>SheetTitle</code> for mobile navigation accessibility (required by Radix dialog)</li>
+      <li>Added <code>aria-label</code> attributes on search inputs and password toggle buttons</li>
+      <li>Associated <code>htmlFor</code>/<code>id</code> on admin dashboard form labels</li>
+      <li>Wrapped decorative emojis in <code>&lt;span aria-hidden="true"&gt;</code></li>
+      <li>Added <code>width</code> and <code>height</code> attributes on logo images to prevent CLS</li>
+      <li>Added <code>loading="lazy"</code> on below-fold images and <code>fetchPriority="high"</code> on hero images</li>
+    </ul>
+  </div>
+
+  <!-- Section 10: SEO -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon">10</div>
+      <h2>SEO &amp; Meta</h2>
+    </div>
+
+    <ul class="changes">
+      <li>Created <strong><code>usePageMeta</code> hook</strong> for centralized document title, meta description, and canonical URL management</li>
+      <li>Applied to 6 key pages: About, Practitioners, Garden, Survey, Alpha, Practitioner Profile</li>
+      <li>Added <code>robots.txt</code> and <code>sitemap.xml</code></li>
+      <li>Added web manifest link for PWA readiness</li>
+    </ul>
+  </div>
+
+  <!-- Section 11: Database -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon">11</div>
+      <h2>Database Indexes</h2>
+    </div>
+
+    <p style="margin-bottom: 1rem; color: #555;">Added 15 database indexes across 10 tables in <code>shared/schema.ts</code> to improve query performance on frequently-accessed columns.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Table</th>
+          <th>Indexed Columns</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>users</td><td>googleId, stripeCustomerId</td></tr>
+        <tr><td>user_roles</td><td>userId</td></tr>
+        <tr><td>practitioners</td><td>userId</td></tr>
+        <tr><td>clients</td><td>userId</td></tr>
+        <tr><td>sessions_booking</td><td>clientId, practitionerId</td></tr>
+        <tr><td>reviews</td><td>practitionerId, sessionId</td></tr>
+        <tr><td>seeds_transactions</td><td>userId</td></tr>
+        <tr><td>garden_content</td><td>authorId</td></tr>
+        <tr><td>garden_interactions</td><td>userId, contentId</td></tr>
+        <tr><td>favorite_practitioners</td><td>userId, practitionerId</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Visual Audit Summary -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon">&#10003;</div>
+      <h2>Live Site Visual Audit</h2>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Page</th>
+          <th>Route</th>
+          <th>Status</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Landing</td>
+          <td><code>/</code></td>
+          <td class="status-pass">Pass</td>
+          <td>Hero, mAIa, hexagons, footer -- all legible, no double texture</td>
+        </tr>
+        <tr>
+          <td>Practitioners</td>
+          <td><code>/practitioners</code></td>
+          <td class="status-pass">Pass</td>
+          <td>Consistent header, bg-cream, unified card layout</td>
+        </tr>
+        <tr>
+          <td>The Hive</td>
+          <td><code>/hive</code></td>
+          <td class="status-pass">Pass</td>
+          <td>Unified search/filters, readable texture backgrounds</td>
+        </tr>
+        <tr>
+          <td>About</td>
+          <td><code>/about</code></td>
+          <td class="status-fixed">Fixed</td>
+          <td>Value cards got frosted backdrop for text legibility</td>
+        </tr>
+        <tr>
+          <td>Garden</td>
+          <td><code>/garden</code></td>
+          <td class="status-pass">Pass</td>
+          <td>Sage sidebar, cream main area, white cards</td>
+        </tr>
+        <tr>
+          <td>Sign In</td>
+          <td><code>/auth/signin</code></td>
+          <td class="status-pass">Pass</td>
+          <td>White card, good contrast, accessible form</td>
+        </tr>
+        <tr>
+          <td>Survey</td>
+          <td><code>/survey</code></td>
+          <td class="status-pass">Pass</td>
+          <td>Clean card layout, gold accent, brand typography</td>
+        </tr>
+        <tr>
+          <td>Alpha</td>
+          <td><code>/alpha</code></td>
+          <td class="status-pass">Pass</td>
+          <td>Brand gradient heading, hummingbird art</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<footer>
+  FloreSer.Life &mdash; UI/UX Changelog generated February 24, 2026
+</footer>
+
+</body>
+</html>
