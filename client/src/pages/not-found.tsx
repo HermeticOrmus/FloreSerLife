@@ -16,10 +16,10 @@ export default function NotFound() {
     >
       {/* Decorative elements */}
       <div className="absolute top-20 left-10 opacity-20">
-        <img src={papercut.accents.leaf} alt="" className="w-24 h-24" />
+        <img src={papercut.accents.leaf} alt="" className="w-24 h-24" loading="lazy" width={96} height={96} />
       </div>
       <div className="absolute bottom-20 right-10 opacity-20 rotate-45">
-        <img src={papercut.accents.flowerbud} alt="" className="w-20 h-20" />
+        <img src={papercut.accents.flowerbud} alt="" className="w-20 h-20" loading="lazy" width={80} height={80} />
       </div>
 
       <Card className="w-full max-w-lg mx-4 shadow-card-lg border-sage/20 overflow-hidden">
@@ -37,6 +37,9 @@ export default function NotFound() {
               src={papercut.sunGlow}
               alt=""
               className="w-32 h-32 opacity-80"
+              loading="lazy"
+              width={128}
+              height={128}
             />
           </div>
 

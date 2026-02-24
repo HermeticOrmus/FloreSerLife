@@ -1,5 +1,5 @@
-import { useEffect } from "react";
 import { useLocation } from "wouter";
+import { usePageMeta } from "@/hooks/usePageMeta";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import ArchetypeShowcase from "@/components/archetype-showcase";
@@ -15,9 +15,11 @@ import { characters } from "@/assets";
 export default function Alpha() {
   const [, setLocation] = useLocation();
 
-  useEffect(() => {
-    document.title = "FloreSer Germination - Shaping the Future of Wellness";
-  }, []);
+  usePageMeta(
+    "Alpha Program - FloreSer",
+    "Join the FloreSer alpha program and help shape the future of wellness practitioner matching.",
+    "/alpha"
+  );
 
   return (
     <div className="min-h-screen bg-cream text-forest">

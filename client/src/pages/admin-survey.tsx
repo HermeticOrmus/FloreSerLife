@@ -467,9 +467,9 @@ export default function AdminSurveyPage({}: AdminSurveyPageProps) {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div>
-                <label className="text-sm font-medium text-forest mb-2 block">Identity Type</label>
+                <label htmlFor="filter-identity-type" className="text-sm font-medium text-forest mb-2 block">Identity Type</label>
                 <Select value={filterIdentityType} onValueChange={setFilterIdentityType}>
-                  <SelectTrigger data-testid="filter-identity-type">
+                  <SelectTrigger id="filter-identity-type" data-testid="filter-identity-type">
                     <SelectValue placeholder="All identity types" />
                   </SelectTrigger>
                   <SelectContent>
@@ -484,10 +484,11 @@ export default function AdminSurveyPage({}: AdminSurveyPageProps) {
               </div>
               
               <div>
-                <label className="text-sm font-medium text-forest mb-2 block">Search</label>
+                <label htmlFor="survey-search" className="text-sm font-medium text-forest mb-2 block">Search</label>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-forest/40 w-4 h-4" />
                   <Input
+                    id="survey-search"
                     placeholder="Search country, currency, age..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}

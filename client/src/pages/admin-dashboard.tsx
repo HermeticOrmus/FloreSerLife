@@ -207,7 +207,9 @@ export default function AdminDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            <label htmlFor="admin-access-code" className="sr-only">Admin access code</label>
             <Input
+              id="admin-access-code"
               type="password"
               placeholder="Enter admin access code"
               value={accessCode}
@@ -615,8 +617,9 @@ function EmailTestingPanel({ adminToken }: { adminToken: string }) {
       <CardContent className="space-y-4">
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="text-sm font-medium">Test Email Address</label>
+            <label htmlFor="test-email-address" className="text-sm font-medium">Test Email Address</label>
             <Input
+              id="test-email-address"
               type="email"
               placeholder="test@example.com"
               value={testEmail}
@@ -624,8 +627,9 @@ function EmailTestingPanel({ adminToken }: { adminToken: string }) {
             />
           </div>
           <div>
-            <label className="text-sm font-medium">Email Type</label>
+            <label htmlFor="email-type-select" className="text-sm font-medium">Email Type</label>
             <select
+              id="email-type-select"
               className="w-full p-2 border border-gray-300 rounded-md"
               value={emailType}
               onChange={(e) => setEmailType(e.target.value)}

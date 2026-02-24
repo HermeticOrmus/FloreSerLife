@@ -281,7 +281,6 @@ export function UpgradeModal({
               className="bg-gold text-white hover:bg-gold/90"
               onClick={() => {
                 // Upgrade logic
-                console.log("Upgrading to:", selectedPlan);
                 onClose();
               }}
             >

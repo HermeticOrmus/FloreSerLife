@@ -140,6 +140,9 @@ export default function Landing() {
                   src={characters.maia}
                   alt="mAIa, your gentle guide"
                   className="w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-lg"
+                  loading="lazy"
+                  width={160}
+                  height={160}
                 />
                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-papercut-leaf-sage rounded-full animate-pulse" />
               </div>

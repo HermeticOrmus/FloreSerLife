@@ -1,7 +1,7 @@
-import { useEffect } from "react";
 import { motion } from "framer-motion";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
+import { usePageMeta } from "@/hooks/usePageMeta";
 import { PaperCutBanner } from "@/components/landing/PaperCutBanner";
 import { PaperCutHexCard } from "@/components/nature/PaperCutHexCard";
 import { papercut } from "@/assets";
@@ -206,9 +206,11 @@ const fadeUp = {
 };
 
 export default function About() {
-  useEffect(() => {
-    document.title = "About - FloreSer.Life";
-  }, []);
+  usePageMeta(
+    "About - FloreSer",
+    "Learn about FloreSer's mission to connect wellness seekers with certified practitioners through nature-inspired archetypes.",
+    "/about"
+  );
 
   return (
     <div

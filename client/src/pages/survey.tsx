@@ -19,6 +19,7 @@ import { ArrowLeft, ArrowRight, CheckCircle, ChevronLeft, ChevronRight, Crown, S
 import { apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { usePageMeta } from "@/hooks/usePageMeta";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 
@@ -138,9 +139,14 @@ export default function Survey() {
 
   const identityType = form.watch("identityType");
 
+  usePageMeta(
+    "Alpha Survey - FloreSer",
+    "Share your feedback on the FloreSer wellness platform alpha experience.",
+    "/survey"
+  );
+
   // Load saved draft on mount
   useEffect(() => {
-    document.title = "Community Wellness Vision Survey - FloreSer";
     const savedDraft = localStorage.getItem(STORAGE_KEY);
     if (savedDraft) {
       try {

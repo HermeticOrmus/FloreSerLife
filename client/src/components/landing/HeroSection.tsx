@@ -11,7 +11,10 @@ export function HeroSection() {
       <img
         src={papercut.heroBackground}
         alt="FloreSer - Paper-cut landscape with sprout"
+        width={1632}
+        height={2356}
         className="w-full h-auto"
+        fetchPriority="high"
       />
     </section>
   );

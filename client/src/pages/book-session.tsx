@@ -270,11 +270,11 @@ export default function BookSession() {
 
                       {/* Duration selector */}
                       <div>
-                        <label className="text-sm font-medium text-forest mb-2 block">
+                        <label htmlFor="session-duration" className="text-sm font-medium text-forest mb-2 block">
                           Session Duration
                         </label>
                         <Select value={duration} onValueChange={(v) => setDuration(v as any)}>
-                          <SelectTrigger>
+                          <SelectTrigger id="session-duration">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -287,7 +287,7 @@ export default function BookSession() {
 
                       {/* Available time slots */}
                       <div>
-                        <label className="text-sm font-medium text-forest mb-2 block">
+                        <label id="available-times-label" className="text-sm font-medium text-forest mb-2 block">
                           Available Times for {format(selectedDate, 'MMMM d, yyyy')}
                         </label>
                         {availabilityLoading ? (
@@ -343,7 +343,7 @@ export default function BookSession() {
                 <CardContent className="space-y-6">
                   {/* Session type */}
                   <div>
-                    <label className="text-sm font-medium text-forest mb-2 block">
+                    <label id="session-type-label" className="text-sm font-medium text-forest mb-2 block">
                       Session Type
                     </label>
                     <div className="grid grid-cols-2 gap-4">
@@ -388,10 +388,11 @@ export default function BookSession() {
 
                   {/* Session notes */}
                   <div>
-                    <label className="text-sm font-medium text-forest mb-2 block">
+                    <label htmlFor="session-notes" className="text-sm font-medium text-forest mb-2 block">
                       Session Notes (Optional)
                     </label>
                     <Textarea
+                      id="session-notes"
                       placeholder="Share what you'd like to focus on in this session..."
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}

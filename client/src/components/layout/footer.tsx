@@ -9,10 +9,13 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <img 
-                src={logos.main.coloredIcon} 
-                alt="FloreSer Logo" 
+              <img
+                src={logos.main.coloredIcon}
+                alt="FloreSer Logo"
                 className="w-8 h-8"
+                loading="lazy"
+                width={32}
+                height={32}
               />
               <span className="font-heading text-lg font-bold">FloreSer</span>
             </div>
@@ -48,7 +51,7 @@ export default function Footer() {
                 <Link href="/join-the-hive" className="hover:text-gold transition-colors">Join the Hive</Link>
               </li>
               <li>
-                <Link href="/auth/signup" className="hover:text-gold transition-colors">🐝 Start with Bee Archetype</Link>
+                <Link href="/auth/signup" className="hover:text-gold transition-colors"><span aria-hidden="true">🐝 </span>Start with Bee Archetype</Link>
               </li>
               <li>
                 <Link href="/resources" className="hover:text-gold transition-colors">Facilitator Resources</Link>

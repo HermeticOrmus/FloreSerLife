@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, useParams } from "wouter";
+import { usePageMeta } from "@/hooks/usePageMeta";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
@@ -31,11 +31,19 @@ export default function PractitionerProfile() {
   const { usePractitionerReviews } = useReviews();
   const { data: reviews = [], isLoading: reviewsLoading } = usePractitionerReviews(practitionerId || "");
 
-  useEffect(() => {
-    if (practitioner) {
-      document.title = `Practitioner Profile - FloreSer`;
-    }
-  }, [practitioner]);
+  const practitionerName = practitioner
+    ? `${(practitioner as any).firstName || ""} ${(practitioner as any).lastName || ""}`.trim()
+    : "";
+
+  usePageMeta(
+    practitionerName
+      ? `${practitionerName} - Wellness Practitioner | FloreSer`
+      : "Practitioner Profile - FloreSer",
+    practitionerName
+      ? `View ${practitionerName}'s wellness practitioner profile on FloreSer.`
+      : "View this wellness practitioner's profile on FloreSer.",
+    practitionerId ? `/practitioners/${practitionerId}` : undefined
+  );
 
   if (isLoading) {
     return (

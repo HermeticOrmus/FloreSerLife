@@ -37,11 +37,14 @@ export default function CharacterShowcase() {
             <CardContent className="p-8">
               <div className="flex items-start space-x-6">
                 <div className="mb-6 relative flex-shrink-0">
-                  <img 
-                    src={characters.maia} 
-                    alt="MAIA the Bee - Systematic Community Healer" 
+                  <img
+                    src={characters.maia}
+                    alt="MAIA the Bee - Systematic Community Healer"
                     className="w-32 h-32 object-contain group-hover:scale-105 transition-transform duration-300"
                     data-testid="img-character-maia"
+                    loading="lazy"
+                    width={128}
+                    height={128}
                   />
                   <div className="absolute -top-2 -right-2 bg-gold/20 backdrop-blur-sm rounded-full p-2">
                     <Users className="w-4 h-4 text-gold" />
@@ -100,11 +103,14 @@ export default function CharacterShowcase() {
             <CardContent className="p-8">
               <div className="flex items-start space-x-6">
                 <div className="mb-6 relative flex-shrink-0">
-                  <img 
-                    src={characters.angelica} 
-                    alt="ANGELICA the Colibri - Precision Energy Healer" 
+                  <img
+                    src={characters.angelica}
+                    alt="ANGELICA the Colibri - Precision Energy Healer"
                     className="w-32 h-32 object-contain group-hover:scale-105 transition-transform duration-300"
                     data-testid="img-character-angelica"
+                    loading="lazy"
+                    width={128}
+                    height={128}
                   />
                   <div className="absolute -top-2 -right-2 bg-sage/20 backdrop-blur-sm rounded-full p-2">
                     <Zap className="w-4 h-4 text-sage" />

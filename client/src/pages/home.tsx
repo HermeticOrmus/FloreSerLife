@@ -24,7 +24,7 @@ export default function Home() {
     enabled: !!user?.id,
   });
 
-  const { data: sessionsData } = useQuery<any>({
+  const { data: sessionsData, isError: isSessionsError } = useQuery<any>({
     queryKey: ["/api/sessions", user?.id],
     queryFn: async () => {
       if (!user?.id) return [];
@@ -70,6 +70,12 @@ export default function Home() {
             Your Life-Tending journey continues here.
           </p>
         </div>
+
+        {isSessionsError && (
+          <div className="text-center py-6 mb-4">
+            <p className="text-red-600">Failed to load session data. Please try again later.</p>
+          </div>
+        )}
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card className="border-sage/20">

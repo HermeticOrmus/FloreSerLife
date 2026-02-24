@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
+import { usePageMeta } from "@/hooks/usePageMeta";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -94,9 +95,11 @@ export default function Garden() {
   const gardenAccess = checkPermission("accessGarden");
   const uploadAccess = checkPermission("createContent");
 
-  useEffect(() => {
-    document.title = "My Garden - FloreSer";
-  }, []);
+  usePageMeta(
+    "Community Garden - FloreSer",
+    "Explore wellness content, articles, and resources shared by the FloreSer community.",
+    "/garden"
+  );
 
   // Fix: extract content array from API response object
   const gardenContent: GardenContent[] = useMemo(() => {

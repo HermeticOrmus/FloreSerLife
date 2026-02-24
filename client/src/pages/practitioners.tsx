@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, useSearch } from "wouter";
+import { usePageMeta } from "@/hooks/usePageMeta";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,7 @@ export default function Practitioners() {
   const [location, setLocation] = useLocation();
   const searchString = useSearch();
 
-  const { data: practitionersData, isLoading } = useQuery<any>({
+  const { data: practitionersData, isLoading, isError } = useQuery<any>({
     queryKey: ["/api/practitioners/all"],
   });
 
@@ -49,9 +50,11 @@ export default function Practitioners() {
     }
   }, [searchString]);
 
-  useEffect(() => {
-    document.title = "Find Practitioners - FloreSer";
-  }, []);
+  usePageMeta(
+    "Wellness Practitioners - FloreSer",
+    "Browse and connect with certified wellness practitioners matched to your needs through our pollinator archetype system.",
+    "/practitioners"
+  );
 
   // Clear quiz-based filter and localStorage
   const handleShowAll = () => {
@@ -257,6 +260,12 @@ export default function Practitioners() {
             </SelectContent>
           </Select>
         </div>
+        )}
+
+        {isError && (
+          <div className="text-center py-12">
+            <p className="text-red-600">Failed to load practitioners. Please try again later.</p>
+          </div>
         )}
 
         {/* Results - only show when there are practitioners or still loading */}

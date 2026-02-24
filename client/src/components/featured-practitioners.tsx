@@ -31,7 +31,7 @@ export default function FeaturedPractitioners() {
   const getArchetypeIcon = (archetype: string) => {
     const iconSrc = archetypeIcons[archetype as keyof typeof archetypeIcons];
     if (iconSrc) {
-      return <img src={iconSrc} alt={`${archetype} archetype`} className="w-8 h-8 object-contain drop-shadow-sm" />;
+      return <img src={iconSrc} alt={`${archetype} archetype`} className="w-8 h-8 object-contain drop-shadow-sm" loading="lazy" width={32} height={32} />;
     }
     return <User className="w-8 h-8" />;
   };

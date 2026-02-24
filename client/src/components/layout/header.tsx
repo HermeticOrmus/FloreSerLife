@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { logos, papercut } from "@/assets";
 import { cn } from "@/lib/utils";
 
@@ -33,7 +33,6 @@ export default function Header() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      console.log("Search for:", searchQuery);
     }
   };
 
@@ -66,7 +65,7 @@ export default function Header() {
     <div className="flex flex-col space-y-2 p-4">
       <div className="pb-4 mb-4 border-b border-sage/20">
         <div className="flex items-center space-x-2">
-          <img src={logos.main.coloredIcon} alt="FloreSer" className="w-8 h-8" />
+          <img src={logos.main.coloredIcon} alt="FloreSer" width={32} height={32} className="w-8 h-8" />
           <span className="font-heading text-lg font-bold text-forest">FloreSer</span>
         </div>
       </div>
@@ -157,6 +156,8 @@ export default function Header() {
               <img
                 src={logos.main.coloredIcon}
                 alt="FloreSer Logo"
+                width={40}
+                height={40}
                 className="w-10 h-10 transition-transform duration-300 group-hover:scale-110"
                 style={{
                   filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1))',
@@ -178,6 +179,7 @@ export default function Header() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full"
+                aria-label="Search practitioners and content"
                 data-testid="input-search-desktop"
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-earth-400 h-4 w-4 transition-colors group-focus-within:text-gold" />
@@ -297,6 +299,7 @@ export default function Header() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-80 bg-white/95 backdrop-blur-md">
+                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                 <MobileNav />
               </SheetContent>
             </Sheet>
@@ -313,6 +316,7 @@ export default function Header() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full"
+              aria-label="Search practitioners and content"
               data-testid="input-search-mobile"
             />
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-earth-400 h-4 w-4" />
