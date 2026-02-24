@@ -165,7 +165,7 @@ export default function BookSession() {
     return (
       <div className="min-h-screen bg-cream">
         <Header />
-        <main className="max-w-4xl mx-auto px-4 py-8">
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           <div className="animate-pulse space-y-4">
             <div className="h-8 bg-sage/20 rounded w-1/3"></div>
             <div className="h-64 bg-sage/20 rounded"></div>
@@ -179,7 +179,7 @@ export default function BookSession() {
     return (
       <div className="min-h-screen bg-cream">
         <Header />
-        <main className="max-w-4xl mx-auto px-4 py-8">
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           <Alert variant="destructive">
             <AlertDescription>Practitioner not found</AlertDescription>
           </Alert>
@@ -192,7 +192,7 @@ export default function BookSession() {
     <div className="min-h-screen bg-cream">
       <Header />
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         {/* Back button */}
         <Button
           variant="ghost"

@@ -39,7 +39,7 @@ export default function ComingSoon({ title, description }: ComingSoonProps) {
 
           <div className="bg-white/50 backdrop-blur-sm rounded-lg p-8 border border-sage/20 mb-8">
             <h2 className="font-heading text-2xl font-semibold text-forest mb-4">
-              We're Working on Something Special 🌸
+              We're Working on Something Special
             </h2>
             <p className="text-forest/70 mb-6">
               This feature is currently in development. We're crafting a meaningful experience
@@ -55,7 +55,6 @@ export default function ComingSoon({ title, description }: ComingSoonProps) {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               onClick={() => setLocation('/')}
-              className="bg-gold text-white hover:bg-gold/90"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Dashboard

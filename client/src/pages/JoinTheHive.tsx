@@ -92,7 +92,7 @@ export default function JoinTheHive() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-hive-bg via-hive-card-light to-cream">
+    <div className="min-h-screen bg-cream">
       <Header />
       {/* Hero */}
       <section className="relative py-20 md:py-32">

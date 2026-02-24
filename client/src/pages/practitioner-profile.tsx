@@ -49,7 +49,7 @@ export default function PractitionerProfile() {
     return (
       <div className="min-h-screen bg-cream">
         <Header />
-        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           <div className="animate-pulse">
             <div className="h-8 bg-sage/20 rounded w-1/4 mb-6"></div>
             <div className="grid md:grid-cols-3 gap-8">
@@ -72,8 +72,8 @@ export default function PractitionerProfile() {
     return (
       <div className="min-h-screen bg-cream">
         <Header />
-        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <Card>
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+          <Card className="border-sage/20">
             <CardContent className="p-8 text-center">
               <h2 className="text-2xl font-heading font-bold text-forest mb-4">
                 Practitioner Not Found
@@ -83,7 +83,6 @@ export default function PractitionerProfile() {
               </p>
               <Button
                 onClick={() => setLocation("/practitioners")}
-                className="bg-gold hover:bg-gold/90"
               >
                 Browse All Practitioners
               </Button>
@@ -110,7 +109,7 @@ export default function PractitionerProfile() {
     <div className="min-h-screen bg-cream">
       <Header />
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         {/* Back Button */}
         <Button
           variant="ghost"
@@ -125,7 +124,7 @@ export default function PractitionerProfile() {
           {/* Main Content */}
           <div className="md:col-span-2 space-y-6">
             {/* Practitioner Header */}
-            <Card>
+            <Card className="border-sage/20">
               <CardContent className="p-6">
                 <div className="flex items-start space-x-4">
                   <Avatar className="w-20 h-20">
@@ -198,7 +197,7 @@ export default function PractitionerProfile() {
               </TabsList>
 
               <TabsContent value="about" className="space-y-6">
-                <Card>
+                <Card className="border-sage/20">
                   <CardHeader>
                     <CardTitle className="text-forest">About</CardTitle>
                   </CardHeader>
@@ -212,7 +211,7 @@ export default function PractitionerProfile() {
                 </Card>
 
                 {practitioner.specializations && practitioner.specializations.length > 0 && (
-                  <Card>
+                  <Card className="border-sage/20">
                     <CardHeader>
                       <CardTitle className="text-forest">Specializations</CardTitle>
                     </CardHeader>
@@ -230,7 +229,7 @@ export default function PractitionerProfile() {
               </TabsContent>
 
               <TabsContent value="reviews" className="space-y-6">
-                <Card>
+                <Card className="border-sage/20">
                   <CardHeader>
                     <CardTitle className="text-forest">Client Reviews</CardTitle>
                   </CardHeader>
@@ -252,7 +251,7 @@ export default function PractitionerProfile() {
               </TabsContent>
 
               <TabsContent value="approach" className="space-y-6">
-                <Card>
+                <Card className="border-sage/20">
                   <CardHeader>
                     <CardTitle className="text-forest">{archetype.name} Approach</CardTitle>
                   </CardHeader>
@@ -302,13 +301,13 @@ export default function PractitionerProfile() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            <Card>
+            <Card className="border-sage/20">
               <CardHeader>
                 <CardTitle className="text-forest">Book a Session</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <Button
-                  className="w-full bg-gold hover:bg-gold/90"
+                  className="w-full"
                   onClick={() => setLocation(`/book/${practitionerId}`)}
                 >
                   <Calendar className="w-4 h-4 mr-2" />
@@ -330,7 +329,7 @@ export default function PractitionerProfile() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-sage/20">
               <CardHeader>
                 <CardTitle className="text-forest">Quick Stats</CardTitle>
               </CardHeader>

@@ -630,7 +630,7 @@ function EmailTestingPanel({ adminToken }: { adminToken: string }) {
             <label htmlFor="email-type-select" className="text-sm font-medium">Email Type</label>
             <select
               id="email-type-select"
-              className="w-full p-2 border border-gray-300 rounded-md"
+              className="w-full p-2 border border-sage/30 rounded-md"
               value={emailType}
               onChange={(e) => setEmailType(e.target.value)}
             >
@@ -666,14 +666,14 @@ function EmailTestingPanel({ adminToken }: { adminToken: string }) {
           </div>
         )}
 
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-          <h4 className="font-medium mb-2">Email Infrastructure Status</h4>
+        <div className="mt-6 p-4 bg-sage/10 rounded-lg">
+          <h4 className="font-medium text-forest mb-2">Email Infrastructure Status</h4>
           <div className="space-y-2 text-sm">
             <div className="flex items-center space-x-2">
               <Badge variant="outline">Development Mode</Badge>
               <span>Emails are logged to console (not sent)</span>
             </div>
-            <div className="text-gray-600">
+            <div className="text-forest/60">
               To enable real email sending:
               <ol className="list-decimal list-inside mt-1 space-y-1">
                 <li>Configure SMTP settings in environment variables</li>

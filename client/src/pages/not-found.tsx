@@ -10,8 +10,9 @@ export default function NotFound() {
       className="min-h-screen w-full flex items-center justify-center relative"
       style={{
         backgroundImage: `url(${papercut.textures.cream})`,
-        backgroundSize: '512px 512px',
+        backgroundSize: '256px 256px',
         backgroundRepeat: 'repeat',
+        backgroundColor: '#faf8f5',
       }}
     >
       {/* Decorative elements */}

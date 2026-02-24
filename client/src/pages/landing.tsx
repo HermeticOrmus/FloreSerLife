@@ -97,7 +97,7 @@ export default function Landing() {
         backgroundImage: `url(${papercut.textures.paperUI})`,
         backgroundSize: '256px 256px',
         backgroundRepeat: 'repeat',
-        backgroundColor: '#f5f3ef',
+        backgroundColor: '#faf8f5',
       }}
     >
       <Header />
@@ -144,13 +144,13 @@ export default function Landing() {
                   width={160}
                   height={160}
                 />
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-papercut-leaf-sage rounded-full animate-pulse" />
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-forest/10 rounded-full animate-pulse" />
               </div>
             </div>
 
             {/* Content */}
             <div className="flex-1 text-center md:text-left">
-              <div className="inline-flex items-center px-3 py-1.5 bg-papercut-leaf-sage/20 text-papercut-leaf-deep rounded-full text-sm font-medium mb-4">
+              <div className="inline-flex items-center px-3 py-1.5 bg-sage/20 text-forest rounded-full text-sm font-medium mb-4">
                 <Bot className="w-4 h-4 mr-2" />
                 Your Living Guide
               </div>
@@ -159,11 +159,11 @@ export default function Landing() {
                 Meet mAIa &mdash; Your Living Guide
               </h2>
 
-              <p className="text-body text-papercut-neutral-dark/70 mb-2 max-w-xl">
+              <p className="text-body text-papercut-neutral-dark/80 mb-2 max-w-xl">
                 Every soul blooms in its own rhythm.
                 <strong> mAIa</strong> is here to sense yours &mdash; a gentle intelligence that listens and guides you toward what you most need now.
               </p>
-              <p className="text-body text-papercut-neutral-dark/70 mb-6 max-w-xl">
+              <p className="text-body text-papercut-neutral-dark/80 mb-6 max-w-xl">
                 Through a few simple, soulful questions, she helps you find the practices and facilitators that can nurture your next unfolding.
               </p>
 
@@ -223,7 +223,7 @@ export default function Landing() {
           Interested in contributing to our development?{" "}
           <button
             onClick={handleJoinAlphaProgram}
-            className="text-papercut-accent-crimson hover:text-papercut-accent-deep underline transition-colors"
+            className="text-subtle-rose hover:text-forest underline transition-colors"
           >
             Join our Alpha Program
           </button>

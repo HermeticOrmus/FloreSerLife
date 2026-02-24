@@ -7,7 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AIGuardianProvider } from "@/components/ai-guardian";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { useAuth } from "@/hooks/useAuth";
-import { papercut } from "@/assets";
+
 
 const NotFound = lazy(() => import("@/pages/not-found"));
 const Landing = lazy(() => import("@/pages/landing"));
@@ -153,16 +153,7 @@ function App() {
           <AIGuardianProvider>
             <div className="min-h-screen relative bg-background">
               <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white focus:text-green-800 focus:rounded-md focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-500">Skip to main content</a>
-              {/* Global paper texture overlay - subtle for legibility */}
-              <div
-                className="fixed inset-0 pointer-events-none z-0 opacity-20"
-                style={{
-                  backgroundImage: `url(${papercut.textures.paperUI})`,
-                  backgroundSize: '256px 256px',
-                  backgroundRepeat: 'repeat',
-                }}
-              />
-              <div id="main-content" className="relative z-10">
+              <div id="main-content">
                 <Toaster />
                 <Suspense fallback={<div className="min-h-screen flex items-center justify-center" role="status" aria-live="polite"><div className="animate-pulse text-gold text-lg">Loading...</div></div>}>
                   <Router />

@@ -61,19 +61,19 @@ export default function Home() {
     <div className="min-h-screen bg-cream">
       <Header />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         <div className="mb-8">
           <h1 className="font-heading text-3xl lg:text-4xl font-bold text-forest mb-2">
             Welcome back, {user?.firstName || 'Friend'}!
           </h1>
-          <p className="text-forest/70">
+          <p className="text-forest/60">
             Your Life-Tending journey continues here.
           </p>
         </div>
 
         {isSessionsError && (
-          <div className="text-center py-6 mb-4">
-            <p className="text-red-600">Failed to load session data. Please try again later.</p>
+          <div className="text-center py-8">
+            <p className="text-destructive text-sm">Failed to load session data. Please try again later.</p>
           </div>
         )}
 
@@ -176,7 +176,7 @@ export default function Home() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <Button
-                  className="w-full bg-gold text-white hover:bg-gold/90"
+                  className="w-full"
                   onClick={() => setLocation('/practitioners')}
                 >
                   Find a Practitioner

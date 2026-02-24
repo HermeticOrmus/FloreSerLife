@@ -196,18 +196,10 @@ export default function Journal() {
   const ActiveContent = sectionComponents[activeSection];
 
   return (
-    <div
-      className="min-h-screen text-papercut-neutral-dark"
-      style={{
-        backgroundImage: `url(${papercut.textures.paperUI})`,
-        backgroundSize: "256px 256px",
-        backgroundRepeat: "repeat",
-        backgroundColor: "#f5f3ef",
-      }}
-    >
+    <div className="min-h-screen bg-cream">
       <Header />
 
-      <main className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 overflow-hidden">
+      <main className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 overflow-hidden">
         <PaperHills />
 
         {/* Page heading */}

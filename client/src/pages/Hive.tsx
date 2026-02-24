@@ -39,9 +39,9 @@ import { papercut, archetypeIcons } from "@/assets";
 
 // Experience season derived from total sessions
 function getExperienceSeason(totalSessions: number) {
-  if (totalSessions >= 150) return { label: "Rooted", color: "bg-purple-100 text-purple-700" };
-  if (totalSessions >= 40) return { label: "Evolving", color: "bg-blue-100 text-blue-700" };
-  return { label: "Emerging", color: "bg-green-100 text-green-700" };
+  if (totalSessions >= 150) return { label: "Rooted", color: "bg-gold/20 text-gold" };
+  if (totalSessions >= 40) return { label: "Evolving", color: "bg-sage/20 text-forest" };
+  return { label: "Emerging", color: "bg-cream text-forest/70" };
 }
 
 // Session type label from boolean flags
@@ -245,9 +245,9 @@ export default function Hive() {
 
   const getExperienceBadge = (level: string) => {
     const styles: Record<string, string> = {
-      rising: "bg-green-100 text-green-700",
-      evolving: "bg-blue-100 text-blue-700",
-      wise: "bg-purple-100 text-purple-700",
+      rising: "bg-cream text-forest/70",
+      evolving: "bg-sage/20 text-forest",
+      wise: "bg-gold/20 text-gold",
     };
     const icons: Record<string, React.ReactNode> = {
       rising: <Star className="w-3 h-3 mr-1" />,
@@ -270,7 +270,7 @@ export default function Hive() {
         backgroundImage: `url(${papercut.textures.paperUI})`,
         backgroundSize: "256px 256px",
         backgroundRepeat: "repeat",
-        backgroundColor: "#f5f3ef",
+        backgroundColor: "#faf8f5",
       }}
     >
       <Header />
@@ -357,7 +357,7 @@ export default function Hive() {
                 placeholder="Search by name, specialization, or keyword..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-white/80 border-forest/15 rounded-full"
+                className="pl-10 bg-white border-sage/30 rounded-lg"
               />
             </div>
             <Select
@@ -529,7 +529,7 @@ export default function Hive() {
                       </div>
 
                       {/* Profile info */}
-                      <div className="px-5 pb-5 relative z-10">
+                      <div className="px-5 pb-5 relative z-10 mx-3 mb-3 rounded-xl bg-white/90 py-4">
                         {/* Name */}
                         <h3 className="font-heading text-lg font-bold text-forest text-center mb-1">
                           {p.firstName && p.lastName

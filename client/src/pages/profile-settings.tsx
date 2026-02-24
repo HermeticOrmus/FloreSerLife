@@ -315,18 +315,10 @@ export default function ProfileSettings() {
   const userName = [user?.firstName, user?.lastName].filter(Boolean).join(" ") || "User";
 
   return (
-    <div
-      className="min-h-screen text-papercut-neutral-dark"
-      style={{
-        backgroundImage: `url(${papercut.textures.paperUI})`,
-        backgroundSize: "256px 256px",
-        backgroundRepeat: "repeat",
-        backgroundColor: "#f5f3ef",
-      }}
-    >
+    <div className="min-h-screen bg-cream">
       <Header />
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         {/* Page heading */}
         <motion.div
           initial={{ y: 10, opacity: 0 }}
@@ -337,7 +329,7 @@ export default function ProfileSettings() {
           <h1 className="font-heading text-3xl lg:text-4xl font-bold text-forest mb-2">
             My Profile
           </h1>
-          <p className="text-forest/50 text-base">Account settings</p>
+          <p className="text-forest/60 text-base">Account settings</p>
         </motion.div>
 
         {/* ── Two-Panel Layout ─────────────────────────────────────── */}

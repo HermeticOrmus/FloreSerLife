@@ -150,18 +150,10 @@ export default function Sessions() {
   const duration = nextSession?.duration || 60;
 
   return (
-    <div
-      className="min-h-screen text-papercut-neutral-dark"
-      style={{
-        backgroundImage: `url(${papercut.textures.paperUI})`,
-        backgroundSize: "256px 256px",
-        backgroundRepeat: "repeat",
-        backgroundColor: "#f5f3ef",
-      }}
-    >
+    <div className="min-h-screen bg-cream">
       <Header />
 
-      <main className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 overflow-hidden">
+      <main className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 overflow-hidden">
         <PaperHills />
 
         {/* Page heading */}
@@ -174,7 +166,7 @@ export default function Sessions() {
           <h1 className="font-heading text-3xl lg:text-4xl font-bold text-forest mb-2">
             My Next Session
           </h1>
-          <p className="text-forest/50 text-base">
+          <p className="text-forest/60 text-base">
             {nextSession ? "Your sanctuary awaits" : "No upcoming sessions"}
           </p>
         </motion.div>

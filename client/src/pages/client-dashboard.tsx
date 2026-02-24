@@ -16,77 +16,7 @@ import {
   Star,
   type LucideIcon,
 } from "lucide-react";
-
-// Tudor Rose SVG component - paper-cut style
-function TudorRose({ size = 130 }: { size?: number }) {
-  const cx = size / 2;
-  const cy = size / 2;
-  const outerR = size * 0.42;
-  const innerR = size * 0.28;
-  const centerR = size * 0.13;
-
-  // Generate petal path (teardrop shape)
-  const petal = (r: number, width: number) => {
-    const tipY = -r;
-    const cpX = width * 0.6;
-    const cpY = -r * 0.5;
-    return `M 0,0 C ${cpX},${cpY} ${cpX * 0.8},${tipY * 0.85} 0,${tipY} C ${-cpX * 0.8},${tipY * 0.85} ${-cpX},${cpY} 0,0 Z`;
-  };
-
-  const outerPetalPath = petal(outerR, outerR * 0.55);
-  const innerPetalPath = petal(innerR, innerR * 0.5);
-
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox={`0 0 ${size} ${size}`}
-      className="drop-shadow-md"
-    >
-      <defs>
-        <filter id="petalShadow" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="1" stdDeviation="1.5" floodColor="#00000020" />
-        </filter>
-      </defs>
-
-      {/* Outer petals - deep Tudor red */}
-      <g transform={`translate(${cx}, ${cy})`} filter="url(#petalShadow)">
-        {[0, 72, 144, 216, 288].map((angle) => (
-          <path
-            key={`outer-${angle}`}
-            d={outerPetalPath}
-            transform={`rotate(${angle})`}
-            fill="#7B2D26"
-            opacity="0.95"
-          />
-        ))}
-      </g>
-
-      {/* Inner petals - creamy white, rotated 36 degrees */}
-      <g transform={`translate(${cx}, ${cy})`} filter="url(#petalShadow)">
-        {[36, 108, 180, 252, 324].map((angle) => (
-          <path
-            key={`inner-${angle}`}
-            d={innerPetalPath}
-            transform={`rotate(${angle})`}
-            fill="#FFF5E1"
-            opacity="0.95"
-          />
-        ))}
-      </g>
-
-      {/* Golden center */}
-      <circle
-        cx={cx}
-        cy={cy}
-        r={centerR}
-        fill="#D4A843"
-        filter="url(#petalShadow)"
-      />
-      <circle cx={cx} cy={cy} r={centerR * 0.5} fill="#E8C06A" opacity="0.6" />
-    </svg>
-  );
-}
+import { TudorRose } from "@/components/icons/TudorRose";
 
 // Garden circle card data
 interface GardenCircle {
@@ -199,18 +129,10 @@ export default function ClientDashboard() {
   };
 
   return (
-    <div
-      className="min-h-screen text-papercut-neutral-dark"
-      style={{
-        backgroundImage: `url(${papercut.textures.paperUI})`,
-        backgroundSize: "256px 256px",
-        backgroundRepeat: "repeat",
-        backgroundColor: "#f5f3ef",
-      }}
-    >
+    <div className="min-h-screen bg-cream">
       <Header />
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         {/* Page heading */}
         <div className="text-center mb-12">
           <h1 className="font-heading text-3xl lg:text-4xl font-bold text-forest mb-2">

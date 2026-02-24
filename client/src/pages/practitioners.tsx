@@ -95,7 +95,7 @@ export default function Practitioners() {
     <div className="min-h-screen bg-cream">
       <Header />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         <div className="mb-12">
           <div className="inline-flex items-center px-4 py-2 bg-forest/10 text-forest rounded-full text-sm font-medium mb-4">
             <span className="mr-2">🌸</span>
@@ -158,7 +158,6 @@ export default function Practitioners() {
               </div>
               <Button
                 size="sm"
-                className="bg-gold text-white hover:bg-gold/90"
                 onClick={() => setShowUpgradeModal(true)}
               >
                 Upgrade Access
@@ -211,7 +210,6 @@ export default function Practitioners() {
               Join the alpha program to be notified when our first practitioners are available.
             </p>
             <Button
-              className="bg-gold text-white hover:bg-gold/90"
               onClick={() => setLocation('/alpha')}
             >
               Join the Alpha Program
@@ -226,7 +224,7 @@ export default function Practitioners() {
             placeholder="Search by specialization or keyword..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="md:col-span-2"
+            className="md:col-span-2 bg-white border-sage/30 rounded-lg"
           />
 
           <Select value={selectedArchetype} onValueChange={setSelectedArchetype}>
@@ -263,8 +261,8 @@ export default function Practitioners() {
         )}
 
         {isError && (
-          <div className="text-center py-12">
-            <p className="text-red-600">Failed to load practitioners. Please try again later.</p>
+          <div className="text-center py-8">
+            <p className="text-destructive text-sm">Failed to load practitioners. Please try again later.</p>
           </div>
         )}
 
@@ -381,7 +379,7 @@ export default function Practitioners() {
                         View Profile
                       </Button>
                       <Button
-                        className="flex-1 bg-gold text-white hover:bg-gold/90"
+                        className="flex-1"
                         onClick={() => setLocation(`/book/${practitioner.id}`)}
                       >
                         Book Session
