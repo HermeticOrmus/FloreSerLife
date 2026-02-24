@@ -814,7 +814,7 @@ Requires authentication: 4000 0025 0000 3155
 - [ ] Add `subscriptions` table
 - [ ] Add `payments` table
 - [ ] Run `npm run db:push` to sync schema
-- [ ] Verify tables created in Neon dashboard
+- [ ] Verify tables created in Supabase dashboard
 
 ---
 

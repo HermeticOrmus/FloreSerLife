@@ -24,13 +24,13 @@ FloreSer is a wellness practitioners marketplace that connects clients with veri
 ### Technology Stack
 - **Frontend**: React 18 + TypeScript + Vite
 - **Backend**: Express.js + TypeScript
-- **Database**: PostgreSQL (Neon) + Drizzle ORM
+- **Database**: PostgreSQL (Supabase) + Drizzle ORM
 - **Auth**: Passport.js (Local + Google OAuth)
 - **Payments**: Checkout.com (checkout-sdk-node + frames-react)
 - **Styling**: Tailwind CSS + shadcn/ui components
 - **Routing**: Wouter (lightweight React router)
 - **State Management**: TanStack Query (React Query)
-- **Deployment**: Replit hosting
+- **Deployment**: Vercel
 
 ### Project Structure
 ```
@@ -476,7 +476,7 @@ Located in `attached_assets/` and referenced via `@assets/` alias:
 ## 💡 Important Implementation Notes
 
 ### Authentication
-- The system migrated from Replit Auth to Passport.js (email/password + Google OAuth)
+- Authentication uses Passport.js (email/password + Google OAuth)
 - Session management uses PostgreSQL, not in-memory
 - Sessions expire after 7 days
 - JWT tokens also used for API authentication
