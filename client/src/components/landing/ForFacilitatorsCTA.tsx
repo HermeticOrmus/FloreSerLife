@@ -55,13 +55,8 @@ export default function ForFacilitatorsCTA() {
 
           <Button
             size="lg"
-            className="text-white hover:opacity-90 rounded-full px-8 shadow-lg transform hover:scale-105 transition-all"
+            className="bg-gold hover:bg-gold/90 text-white rounded-full px-8 shadow-md transition-colors"
             onClick={handleBecomeFacilitator}
-            style={{
-              backgroundImage: `url(${papercut.textures.paperGold})`,
-              backgroundSize: '200px 200px',
-              backgroundRepeat: 'repeat',
-            }}
           >
             <Sparkles className="mr-2 h-4 w-4" />
             Become a Pollinator

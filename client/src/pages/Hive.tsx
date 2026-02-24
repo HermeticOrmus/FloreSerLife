@@ -431,14 +431,7 @@ export default function Hive() {
               ))}
             </div>
           ) : sortedPractitioners.length === 0 ? (
-            <div
-              className="text-center py-16 rounded-2xl shadow-md"
-              style={{
-                backgroundImage: `url(${papercut.textures.cream})`,
-                backgroundSize: "200px 200px",
-                backgroundRepeat: "repeat",
-              }}
-            >
+            <div className="text-center py-16 rounded-2xl shadow-md bg-white/80 border border-sage/20">
               <Users className="w-16 h-16 text-forest/30 mx-auto mb-4" />
               <h3 className="font-heading text-xl font-bold text-forest mb-2">
                 No facilitators found
