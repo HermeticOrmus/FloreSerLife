@@ -58,7 +58,10 @@ export const users = pgTable("users", {
 
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => [
+  index("idx_users_google_id").on(table.googleId),
+  index("idx_users_stripe_customer_id").on(table.stripeCustomerId),
+]);
 
 // Enums for archetype system
 export const archetypeEnum = pgEnum("archetype", ["bee", "hummingbird", "butterfly", "beetle"]);
@@ -164,7 +167,9 @@ export const userRoles = pgTable("user_roles", {
   userId: varchar("user_id").notNull().references(() => users.id),
   role: userRoleEnum("role").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
-});
+}, (table) => [
+  index("idx_user_roles_user_id").on(table.userId),
+]);
 
 // Practitioners table
 export const practitioners = pgTable("practitioners", {
@@ -187,7 +192,9 @@ export const practitioners = pgTable("practitioners", {
   yearsActive: integer("years_active"), // Years in practice
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => [
+  index("idx_practitioners_user_id").on(table.userId),
+]);
 
 // Clients table
 export const clients = pgTable("clients", {
@@ -201,7 +208,9 @@ export const clients = pgTable("clients", {
   preferenceInPerson: boolean("preference_in_person").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => [
+  index("idx_clients_user_id").on(table.userId),
+]);
 
 // Payment status enum
 export const paymentStatusEnum = pgEnum("payment_status", ["pending", "processing", "succeeded", "failed", "refunded", "cancelled"]);
@@ -224,7 +233,10 @@ export const sessions_table = pgTable("sessions_booking", {
   paidAt: timestamp("paid_at"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => [
+  index("idx_sessions_booking_client_id").on(table.clientId),
+  index("idx_sessions_booking_practitioner_id").on(table.practitionerId),
+]);
 
 // Reviews table
 export const reviews = pgTable("reviews", {
@@ -235,7 +247,10 @@ export const reviews = pgTable("reviews", {
   rating: integer("rating").notNull(), // 1-5 stars
   comment: text("comment"),
   createdAt: timestamp("created_at").defaultNow(),
-});
+}, (table) => [
+  index("idx_reviews_practitioner_id").on(table.practitionerId),
+  index("idx_reviews_session_id").on(table.sessionId),
+]);
 
 // Survey responses table
 export const surveyResponses = pgTable("survey_responses", {
@@ -301,7 +316,9 @@ export const seedsTransactions = pgTable("seeds_transactions", {
   balanceAfter: integer("balance_after").notNull(),
   metadata: jsonb("metadata"), // Additional data for specific transaction types
   createdAt: timestamp("created_at").defaultNow(),
-});
+}, (table) => [
+  index("idx_seeds_transactions_user_id").on(table.userId),
+]);
 
 export const pollinatorTiers = pgTable("pollinator_tiers", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -337,7 +354,9 @@ export const gardenContent = pgTable("garden_content", {
   seedsReward: integer("seeds_reward").default(10), // Seeds earned by author for this content
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => [
+  index("idx_garden_content_author_id").on(table.authorId),
+]);
 
 export const gardenInteractions = pgTable("garden_interactions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -346,7 +365,10 @@ export const gardenInteractions = pgTable("garden_interactions", {
   interactionType: varchar("interaction_type").notNull(), // "view", "like", "download", "share"
   aiResponse: text("ai_response"), // For AI Guardian interactions
   createdAt: timestamp("created_at").defaultNow(),
-});
+}, (table) => [
+  index("idx_garden_interactions_user_id").on(table.userId),
+  index("idx_garden_interactions_content_id").on(table.contentId),
+]);
 
 // User favorites table
 export const favoritePractitioners = pgTable("favorite_practitioners", {
@@ -354,7 +376,10 @@ export const favoritePractitioners = pgTable("favorite_practitioners", {
   userId: varchar("user_id").notNull().references(() => users.id),
   practitionerId: varchar("practitioner_id").notNull().references(() => practitioners.id),
   createdAt: timestamp("created_at").defaultNow(),
-});
+}, (table) => [
+  index("idx_favorite_practitioners_user_id").on(table.userId),
+  index("idx_favorite_practitioners_practitioner_id").on(table.practitionerId),
+]);
 
 // ============================================
 // MESSAGING SYSTEM

@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /simple-admin/
+Disallow: /design-system-test
+
+Sitemap: https://www.floreser.life/sitemap.xml

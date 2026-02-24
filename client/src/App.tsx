@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -7,41 +8,42 @@ import { AIGuardianProvider } from "@/components/ai-guardian";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { useAuth } from "@/hooks/useAuth";
 import { papercut } from "@/assets";
-import NotFound from "@/pages/not-found";
-import Landing from "@/pages/landing";
-import Alpha from "@/pages/alpha";
-import Home from "@/pages/home";
-import Practitioners from "@/pages/practitioners";
-import PractitionerProfile from "@/pages/practitioner-profile";
-import ClientDashboard from "@/pages/client-dashboard";
-import PractitionerDashboard from "@/pages/practitioner-dashboard";
-import AdminSurveyPage from "@/pages/admin-survey";
-import AdminDashboard from "@/pages/admin-dashboard";
-import SignIn from "@/pages/SignIn";
-import SignUp from "@/pages/SignUp";
-import Survey from "@/pages/survey";
-import Hive from "@/pages/Hive";
-import Garden from "@/pages/Garden";
-import JoinTheHive from "@/pages/JoinTheHive";
-import BookSession from "@/pages/book-session";
-import SimpleAdminLogin from "@/pages/simple-admin-login";
-import SimpleAdminPanel from "@/pages/simple-admin-panel";
-import Quiz from "@/pages/quiz";
-import Resources from "@/pages/resources";
-import About from "@/pages/about";
-import Contact from "@/pages/contact";
-import Privacy from "@/pages/privacy";
-import Terms from "@/pages/terms";
-import DesignSystemTest from "@/pages/design-system-test";
-import Journal from "@/pages/journal";
-import Sessions from "@/pages/sessions";
-import Payments from "@/pages/payments";
-import Analytics from "@/pages/analytics";
-import Application from "@/pages/application";
-import Favorites from "@/pages/favorites";
-import PractitionerOnboarding from "@/pages/practitioner-onboarding";
-import ProfileSettings from "@/pages/profile-settings";
-import AdminApplications from "@/pages/admin-applications";
+
+const NotFound = lazy(() => import("@/pages/not-found"));
+const Landing = lazy(() => import("@/pages/landing"));
+const Alpha = lazy(() => import("@/pages/alpha"));
+const Home = lazy(() => import("@/pages/home"));
+const Practitioners = lazy(() => import("@/pages/practitioners"));
+const PractitionerProfile = lazy(() => import("@/pages/practitioner-profile"));
+const ClientDashboard = lazy(() => import("@/pages/client-dashboard"));
+const PractitionerDashboard = lazy(() => import("@/pages/practitioner-dashboard"));
+const AdminSurveyPage = lazy(() => import("@/pages/admin-survey"));
+const AdminDashboard = lazy(() => import("@/pages/admin-dashboard"));
+const SignIn = lazy(() => import("@/pages/SignIn"));
+const SignUp = lazy(() => import("@/pages/SignUp"));
+const Survey = lazy(() => import("@/pages/survey"));
+const Hive = lazy(() => import("@/pages/Hive"));
+const Garden = lazy(() => import("@/pages/Garden"));
+const JoinTheHive = lazy(() => import("@/pages/JoinTheHive"));
+const BookSession = lazy(() => import("@/pages/book-session"));
+const SimpleAdminLogin = lazy(() => import("@/pages/simple-admin-login"));
+const SimpleAdminPanel = lazy(() => import("@/pages/simple-admin-panel"));
+const Quiz = lazy(() => import("@/pages/quiz"));
+const Resources = lazy(() => import("@/pages/resources"));
+const About = lazy(() => import("@/pages/about"));
+const Contact = lazy(() => import("@/pages/contact"));
+const Privacy = lazy(() => import("@/pages/privacy"));
+const Terms = lazy(() => import("@/pages/terms"));
+const DesignSystemTest = lazy(() => import("@/pages/design-system-test"));
+const Journal = lazy(() => import("@/pages/journal"));
+const Sessions = lazy(() => import("@/pages/sessions"));
+const Payments = lazy(() => import("@/pages/payments"));
+const Analytics = lazy(() => import("@/pages/analytics"));
+const Application = lazy(() => import("@/pages/application"));
+const Favorites = lazy(() => import("@/pages/favorites"));
+const PractitionerOnboarding = lazy(() => import("@/pages/practitioner-onboarding"));
+const ProfileSettings = lazy(() => import("@/pages/profile-settings"));
+const AdminApplications = lazy(() => import("@/pages/admin-applications"));
 
 function Router() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -161,7 +163,9 @@ function App() {
               />
               <div className="relative z-10">
                 <Toaster />
-                <Router />
+                <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-pulse text-gold text-lg">Loading...</div></div>}>
+                  <Router />
+                </Suspense>
               </div>
             </div>
           </AIGuardianProvider>

@@ -82,20 +82,16 @@ export default function Footer() {
           <p className="text-white/60 text-sm">
             © {new Date().getFullYear()} FloreSer.Life — Where growth is sacred and flourishing is your birthright.
           </p>
+          {/* Social links - add URLs when accounts are created
           <div className="flex space-x-4 mt-4 md:mt-0">
-            <a href="#" className="text-white/60 hover:text-gold transition-colors">
+            <a href="https://facebook.com/floreser.life" className="text-white/60 hover:text-gold transition-colors" aria-label="Facebook">
               <Facebook className="w-5 h-5" />
             </a>
-            <a href="#" className="text-white/60 hover:text-gold transition-colors">
+            <a href="https://instagram.com/floreser.life" className="text-white/60 hover:text-gold transition-colors" aria-label="Instagram">
               <Instagram className="w-5 h-5" />
             </a>
-            <a href="#" className="text-white/60 hover:text-gold transition-colors">
-              <Twitter className="w-5 h-5" />
-            </a>
-            <a href="#" className="text-white/60 hover:text-gold transition-colors">
-              <Linkedin className="w-5 h-5" />
-            </a>
           </div>
+          */}
         </div>
       </div>
     </footer>

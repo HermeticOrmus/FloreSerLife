@@ -218,14 +218,6 @@ export default function SignIn() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-end">
-                <Link href="/auth/forgot-password">
-                  <span className="text-body-sm text-gold hover:text-gold/80 cursor-pointer transition-colors">
-                    Forgot password?
-                  </span>
-                </Link>
-              </div>
-
               <Button
                 type="submit"
                 variant="hummingbird"

@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Mail, Lock, User, ArrowLeft, Sparkles } from "lucide-react";
 import { logos, papercut } from "@/assets";
+import { queryClient } from "@/lib/queryClient";
 
 export default function SignUp() {
   const [, setLocation] = useLocation();
@@ -66,8 +67,9 @@ export default function SignUp() {
         throw new Error(data.message || "Failed to create account");
       }
 
-      // Redirect to email verification or dashboard
-      setLocation("/auth/verify-email");
+      // Invalidate auth cache and redirect to dashboard
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+      setLocation("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create account");
     } finally {

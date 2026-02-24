@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -259,9 +260,18 @@ export function UpgradeModal({
           <div className="space-x-3">
             <Button
               variant="outline"
-              onClick={() => {
-                // Start free trial logic
-                console.log("Starting free trial...");
+              onClick={async () => {
+                try {
+                  const res = await fetch("/api/access/start-trial", {
+                    method: "POST",
+                    credentials: "include",
+                  });
+                  if (res.ok) {
+                    window.location.reload();
+                  }
+                } catch (e) {
+                  console.error("Failed to start trial:", e);
+                }
                 onClose();
               }}
             >
@@ -344,11 +354,34 @@ export function FeaturePreview({
   );
 }
 
-// Access control context hook (simplified version)
+// Access control context hook
 export function useAccessControl() {
-  // This would normally connect to your authentication system
-  // For now, returning mock data for development
-  const [accessInfo] = useState<AccessInfo>({
+  const { data: accessInfo, isLoading } = useQuery<AccessInfo>({
+    queryKey: ["/api/access/info"],
+    queryFn: async () => {
+      const res = await fetch("/api/access/info", { credentials: "include" });
+      if (!res.ok) {
+        // Default to preview for unauthenticated users
+        return {
+          accessLevel: "preview" as const,
+          subscriptionStatus: "free" as const,
+          permissions: {
+            viewPractitioners: 3,
+            viewSessions: false,
+            bookSessions: false,
+            messagePractitioners: false,
+            accessGarden: false,
+            createContent: false,
+            viewFullProfiles: false,
+            accessSeeds: false,
+          }
+        };
+      }
+      return res.json();
+    },
+  });
+
+  const defaultAccessInfo: AccessInfo = {
     accessLevel: "preview",
     subscriptionStatus: "free",
     permissions: {
@@ -361,10 +394,12 @@ export function useAccessControl() {
       viewFullProfiles: false,
       accessSeeds: false,
     }
-  });
+  };
+
+  const currentInfo = accessInfo || defaultAccessInfo;
 
   const checkPermission = (permission: string): UsageInfo => {
-    const permissionValue = accessInfo.permissions[permission];
+    const permissionValue = currentInfo.permissions[permission];
 
     if (permissionValue === true || permissionValue === "unlimited") {
       return { allowed: true };
@@ -373,18 +408,15 @@ export function useAccessControl() {
     if (permissionValue === false) {
       return {
         allowed: false,
-        message: `This feature requires upgraded access`
+        message: "This feature requires upgraded access"
       };
     }
 
     if (typeof permissionValue === "number") {
-      // For demo purposes, simulate some usage
-      const used = Math.floor(permissionValue * 0.7);
       return {
-        allowed: used < permissionValue,
+        allowed: true,
         limit: permissionValue,
-        used,
-        message: used >= permissionValue ? "You've reached your limit" : undefined
+        used: 0,
       };
     }
 
@@ -392,7 +424,8 @@ export function useAccessControl() {
   };
 
   return {
-    accessInfo,
+    accessInfo: currentInfo,
     checkPermission,
+    isLoading,
   };
 }

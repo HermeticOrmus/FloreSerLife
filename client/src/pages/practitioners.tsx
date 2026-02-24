@@ -196,7 +196,28 @@ export default function Practitioners() {
           </Alert>
         )}
 
-        {/* Filters */}
+        {/* Empty state when no practitioners exist at all */}
+        {!isLoading && practitioners.length === 0 && (
+          <div className="text-center py-16">
+            <User className="h-16 w-16 text-sage/40 mx-auto mb-4" />
+            <h2 className="font-heading text-2xl font-bold text-forest mb-2">
+              Practitioners Coming Soon
+            </h2>
+            <p className="text-forest/60 max-w-md mx-auto mb-6">
+              We're carefully curating our network of verified wellness practitioners.
+              Join the alpha program to be notified when our first practitioners are available.
+            </p>
+            <Button
+              className="bg-gold text-white hover:bg-gold/90"
+              onClick={() => setLocation('/alpha')}
+            >
+              Join the Alpha Program
+            </Button>
+          </div>
+        )}
+
+        {/* Filters - only show when there are practitioners */}
+        {(isLoading || practitioners.length > 0) && (
         <div className="grid md:grid-cols-4 gap-4 mb-8">
           <Input
             placeholder="Search by specialization or keyword..."
@@ -204,7 +225,7 @@ export default function Practitioners() {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="md:col-span-2"
           />
-          
+
           <Select value={selectedArchetype} onValueChange={setSelectedArchetype}>
             <SelectTrigger>
               <SelectValue placeholder="All Archetypes" />
@@ -236,8 +257,9 @@ export default function Practitioners() {
             </SelectContent>
           </Select>
         </div>
+        )}
 
-        {/* Results */}
+        {/* Results - only show when there are practitioners or still loading */}
         {isLoading ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
@@ -252,7 +274,7 @@ export default function Practitioners() {
               </Card>
             ))}
           </div>
-        ) : filteredPractitioners.length === 0 ? (
+        ) : practitioners.length > 0 && filteredPractitioners.length === 0 ? (
           <Card className="border-sage/20 text-center py-12">
             <CardContent>
               <User className="w-16 h-16 text-sage mx-auto mb-4" />
@@ -264,7 +286,7 @@ export default function Practitioners() {
               </p>
             </CardContent>
           </Card>
-        ) : (
+        ) : practitioners.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredPractitioners.map((practitioner: any) => (
               <Card key={practitioner.id} className="border-sage/20 hover:shadow-lg transition-all duration-300 practitioner-card">
@@ -361,7 +383,7 @@ export default function Practitioners() {
               </Card>
             ))}
           </div>
-        )}
+        ) : null}
       </main>
 
       <Footer />

@@ -20,14 +20,16 @@ export default function PractitionerProfile() {
   const [, setLocation] = useLocation();
   const practitionerId = params.id;
 
-  const { data: practitioners = [], isLoading } = useQuery<Practitioner[]>({
+  const { data: practitioner, isLoading } = useQuery<Practitioner | undefined>({
     queryKey: ["/api/practitioners/all"],
+    select: (data: any) => {
+      const list = Array.isArray(data) ? data : data?.practitioners || [];
+      return list.find((p: any) => p.id === practitionerId);
+    },
   });
 
   const { usePractitionerReviews } = useReviews();
   const { data: reviews = [], isLoading: reviewsLoading } = usePractitionerReviews(practitionerId || "");
-
-  const practitioner = practitioners.find(p => p.id === practitionerId);
 
   useEffect(() => {
     if (practitioner) {
