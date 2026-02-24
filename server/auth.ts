@@ -10,6 +10,13 @@ import rateLimit from "express-rate-limit";
 import { storage } from "./storage";
 import { emailService } from "./email";
 
+// Strip sensitive fields before sending user data to clients
+function sanitizeUser(user: any) {
+  if (!user) return user;
+  const { passwordHash, resetPasswordToken, emailVerificationToken, stripeCustomerId, stripeSubscriptionId, checkoutCustomerId, ...safe } = user;
+  return safe;
+}
+
 // Auth-specific rate limiter - 5 attempts per 15 minutes per IP
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -207,7 +214,7 @@ export async function setupAuth(app: Express) {
         if (err) {
           return res.status(500).json({ message: "Failed to login after signup" });
         }
-        res.json({ user, message: "Account created successfully" });
+        res.json({ user: sanitizeUser(user), message: "Account created successfully" });
       });
 
     } catch (error) {
@@ -244,7 +251,7 @@ export async function setupAuth(app: Express) {
           console.error("Failed to award daily login Seeds:", seedsError);
         }
 
-        res.json({ user, message: "Signed in successfully" });
+        res.json({ user: sanitizeUser(user), message: "Signed in successfully" });
       });
     })(req, res, next);
   });
@@ -283,7 +290,7 @@ export async function setupAuth(app: Express) {
 
     try {
       const user = await storage.getUserWithProfiles((req.user as any).id);
-      res.json(user);
+      res.json(sanitizeUser(user));
     } catch (error) {
       console.error('Error fetching user:', error);
       res.status(500).json({ message: "Failed to fetch user" });

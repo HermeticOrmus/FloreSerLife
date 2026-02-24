@@ -587,23 +587,23 @@ export class DatabaseStorage implements IStorage {
     referenceType?: string,
     metadata?: any
   ): Promise<SeedsTransaction> {
-    const wallet = await this.getOrCreateSeedsWallet(userId);
-    const newBalance = wallet.seedsBalance + amount;
-    const newTotalEarned = wallet.totalEarned + amount;
+    // Ensure wallet exists
+    await this.getOrCreateSeedsWallet(userId);
 
-    // Update wallet
-    await db
+    // Atomic balance update using SQL expressions to prevent race conditions
+    const [updatedWallet] = await db
       .update(seedsWallets)
       .set({
-        seedsBalance: newBalance,
-        totalEarned: newTotalEarned,
+        seedsBalance: sql`${seedsWallets.seedsBalance} + ${amount}`,
+        totalEarned: sql`${seedsWallets.totalEarned} + ${amount}`,
         lastActiveDate: new Date(),
         updatedAt: new Date(),
       })
-      .where(eq(seedsWallets.userId, userId));
+      .where(eq(seedsWallets.userId, userId))
+      .returning();
 
     // Check and update tier
-    await this.updatePollinatorTier(userId, newTotalEarned);
+    await this.updatePollinatorTier(userId, updatedWallet.totalEarned);
 
     // Create transaction record
     const [transaction] = await db
@@ -616,7 +616,7 @@ export class DatabaseStorage implements IStorage {
         description,
         referenceId,
         referenceType,
-        balanceAfter: newBalance,
+        balanceAfter: updatedWallet.seedsBalance,
         metadata,
       })
       .returning();
@@ -632,36 +632,36 @@ export class DatabaseStorage implements IStorage {
     referenceType?: string,
     metadata?: any
   ): Promise<SeedsTransaction | null> {
-    const wallet = await this.getSeedsWallet(userId);
-    if (!wallet || wallet.seedsBalance < amount) {
-      return null; // Insufficient funds
-    }
-
-    const newBalance = wallet.seedsBalance - amount;
-    const newTotalSpent = wallet.totalSpent + amount;
-
-    // Update wallet
-    await db
+    // Atomic balance check + update to prevent race conditions
+    const [updatedWallet] = await db
       .update(seedsWallets)
       .set({
-        seedsBalance: newBalance,
-        totalSpent: newTotalSpent,
+        seedsBalance: sql`${seedsWallets.seedsBalance} - ${amount}`,
+        totalSpent: sql`${seedsWallets.totalSpent} + ${amount}`,
         lastActiveDate: new Date(),
         updatedAt: new Date(),
       })
-      .where(eq(seedsWallets.userId, userId));
+      .where(and(
+        eq(seedsWallets.userId, userId),
+        sql`${seedsWallets.seedsBalance} >= ${amount}`
+      ))
+      .returning();
+
+    if (!updatedWallet) {
+      return null; // Insufficient funds or wallet not found
+    }
 
     // Create transaction record
     const [transaction] = await db
       .insert(seedsTransactions)
       .values({
         userId,
-        amount: -amount, // Negative for spending
+        amount: -amount,
         type: "spent",
         description,
         referenceId,
         referenceType,
-        balanceAfter: newBalance,
+        balanceAfter: updatedWallet.seedsBalance,
         metadata,
       })
       .returning();
@@ -727,7 +727,7 @@ export class DatabaseStorage implements IStorage {
     referenceType?: string,
     metadata?: any
   ): Promise<SeedsTransaction | null> {
-    let amount = seedsEarningRates[action];
+    let amount: number = seedsEarningRates[action];
     let description = this.getActionDescription(action);
 
     // Apply facilitator 2x multiplier if user is a practitioner
@@ -770,15 +770,8 @@ export class DatabaseStorage implements IStorage {
       .values(contentData)
       .returning();
 
-    // Award Seeds for garden upload
-    if (content.authorId) {
-      await this.awardSeedsForAction(
-        content.authorId,
-        "garden_upload",
-        content.id,
-        "garden_content"
-      );
-    }
+    // Note: Seeds are awarded in the route handler (routes.ts) to properly
+    // handle facilitator bonus calculation. Do not award here to avoid double-counting.
 
     return content;
   }

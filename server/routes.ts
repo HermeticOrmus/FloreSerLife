@@ -1,5 +1,7 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
+import crypto from "crypto";
+import rateLimit from "express-rate-limit";
 import { storage } from "./storage";
 import { setupAuth, requireAuth, requireAdmin, requireDevAdmin } from "./auth";
 import { requirePermission, addAccessInfo } from "./accessControl";
@@ -14,6 +16,14 @@ import {
   pollinatorTierDefinitions,
   insertSurveyResponseSchema
 } from "@shared/schema";
+
+const adminLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: { message: "Too many login attempts, please try again later" },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // AI Guardian response generation
 async function generateAIResponse(userMessage: string, context: any) {
@@ -444,7 +454,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Booking not found" });
       }
 
-      // TODO: Add authorization check
+      // Authorization: user must be the client or practitioner for this booking
+      const clientProfile = await storage.getClientByUserId(userId);
+      const practitionerProfile = await storage.getPractitionerByUserId(userId);
+      const isClient = clientProfile && booking.clientId === clientProfile.id;
+      const isPractitioner = practitionerProfile && booking.practitionerId === practitionerProfile.id;
+      if (!isClient && !isPractitioner) {
+        return res.status(403).json({ message: "Not authorized to update this booking" });
+      }
 
       await storage.updateBookingStatus(id, status);
 
@@ -478,7 +495,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Enhanced admin authentication endpoint
-  app.post('/api/admin/login', async (req, res) => {
+  app.post('/api/admin/login', adminLimiter, async (req, res) => {
     try {
       const { accessCode } = req.body;
 
@@ -492,7 +509,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      if (accessCode === adminAccessCode) {
+      const isValid = accessCode && adminAccessCode &&
+        accessCode.length === adminAccessCode.length &&
+        crypto.timingSafeEqual(Buffer.from(accessCode), Buffer.from(adminAccessCode));
+      if (isValid) {
         // Set admin session
         (req.session as any).isAdmin = true;
 
@@ -517,7 +537,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Legacy simple admin endpoint (for backwards compatibility)
-  app.post('/api/simple-admin/login', async (req, res) => {
+  app.post('/api/simple-admin/login', adminLimiter, async (req, res) => {
     try {
       const { password } = req.body;
 
@@ -531,7 +551,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      if (password === adminPassword) {
+      const isValid = password && adminPassword &&
+        password.length === adminPassword.length &&
+        crypto.timingSafeEqual(Buffer.from(password), Buffer.from(adminPassword));
+      if (isValid) {
         res.json({
           success: true,
           message: "Authentication successful"
@@ -645,9 +668,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Practitioner profile already exists" });
       }
 
+      const { displayName, bio, specializations, archetype, experienceLevel, hourlyRate, location, languages, certifications, isVirtual, profileImageUrl } = req.body;
       const practitionerData = {
         userId,
-        ...req.body
+        displayName,
+        bio,
+        specializations,
+        archetype,
+        experienceLevel,
+        hourlyRate,
+        location,
+        languages,
+        certifications,
+        isVirtual,
+        profileImageUrl,
       };
 
       const practitioner = await storage.createPractitioner(practitionerData);
@@ -683,9 +717,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Client profile already exists" });
       }
 
+      const { displayName, bio, interests, preferredArchetypes, preferredModalities, profileImageUrl } = req.body;
       const clientData = {
         userId,
-        ...req.body
+        displayName,
+        bio,
+        interests,
+        preferredArchetypes,
+        preferredModalities,
+        profileImageUrl,
       };
 
       const client = await storage.createClient(clientData);
@@ -732,6 +772,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const existingReview = await storage.getReviewBySessionId(sessionId);
       if (existingReview) {
         return res.status(400).json({ message: "Review already exists for this session" });
+      }
+
+      // Verify client attended this session
+      if (sessionId) {
+        const session = await storage.getBookingById(sessionId);
+        if (session && session.clientId !== client.id) {
+          return res.status(403).json({ message: "You can only review sessions you attended" });
+        }
       }
 
       const review = await storage.createReview({
@@ -1393,7 +1441,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/email/alpha-invite', async (req, res) => {
+  app.post('/api/email/alpha-invite', requireAdmin, async (req, res) => {
     try {
       const { email } = req.body;
 
@@ -1444,6 +1492,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else if (email) {
         application = await storage.getFacilitatorApplicationByEmail(email);
       }
+
+        // Verify the requester owns this application
+        if (application && userId && application.userId && application.userId !== userId) {
+          return res.status(403).json({ message: "Not authorized to access this application" });
+        }
+        if (application && !userId && email && application.email !== email) {
+          return res.status(403).json({ message: "Email does not match this application" });
+        }
 
       // Create new application if none exists
       if (!application) {

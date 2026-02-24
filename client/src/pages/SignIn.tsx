@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, Sparkles } from "lucide-react";
 import { logos, papercut } from "@/assets";
+import { queryClient } from "@/lib/queryClient";
 
 export default function SignIn() {
   const [, setLocation] = useLocation();
@@ -47,6 +48,8 @@ export default function SignIn() {
         throw new Error(data.message || "Failed to sign in");
       }
 
+      // Invalidate auth cache so useAuth picks up the new session
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       // Redirect to dashboard or home
       setLocation("/");
     } catch (err) {

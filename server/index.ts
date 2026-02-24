@@ -41,7 +41,9 @@ app.use(helmet({
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      scriptSrc: ["'self'", "'unsafe-inline'"], // Required for Vite HMR in dev
+      scriptSrc: process.env.NODE_ENV === 'development'
+        ? ["'self'", "'unsafe-inline'"]
+        : ["'self'"], // unsafe-inline only for Vite HMR in dev
       imgSrc: ["'self'", "data:", "https:", "blob:"],
       connectSrc: ["'self'", "https:", "wss:"],
     },
@@ -49,10 +51,10 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false, // Required for some embeds
 }));
 
-// Global rate limiter - 100 requests per 15 minutes per IP
+// Global rate limiter - 500 requests per 15 minutes per IP
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 500,
   message: { message: "Too many requests, please try again later" },
   standardHeaders: true,
   legacyHeaders: false,
@@ -116,7 +118,7 @@ async function initializeRoutes() {
     const message = err.message || "Internal Server Error";
 
     res.status(status).json({ message });
-    throw err;
+    console.error("Unhandled error:", err);
   });
 
   // On Vercel, static files are served by CDN — skip Vite and Express static serving.
