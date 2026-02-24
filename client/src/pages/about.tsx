@@ -347,11 +347,11 @@ export default function About() {
                     </div>
                   )}
 
-                  <div className="relative z-10">
+                  <div className="relative z-10 bg-white/50 backdrop-blur-[1px] rounded-xl p-5">
                     <h3 className="font-heading text-xl font-bold text-forest mb-3">
                       {value.title}
                     </h3>
-                    <p className="text-forest/75 leading-relaxed">
+                    <p className="text-forest/80 leading-relaxed">
                       {value.description}
                     </p>
                   </div>
