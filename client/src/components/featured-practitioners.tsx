@@ -8,19 +8,17 @@ import { archetypeIcons } from "@/assets";
 import { archetypeDefinitions, type Practitioner } from "@shared/schema";
 import { cn } from "@/lib/utils";
 
-// Extended type to include user info from joined query
 type PractitionerWithUser = Practitioner & {
   firstName: string | null;
   lastName: string | null;
   profileImageUrl: string | null;
 };
 
-// Map archetypes to their card, badge variants, and paper textures
 const archetypeStyles = {
-  bee: { card: "bee" as const, badge: "bee" as const, accent: "hive-accent", solidBg: "bg-gold hover:bg-gold/90" },
-  butterfly: { card: "butterfly" as const, badge: "butterfly" as const, accent: "garden-accent", solidBg: "bg-sage hover:bg-sage/90" },
-  beetle: { card: "beetle" as const, badge: "beetle" as const, accent: "earth-600", solidBg: "bg-earth-600 hover:bg-earth-700" },
-  hummingbird: { card: "hummingbird" as const, badge: "hummingbird" as const, accent: "gold", solidBg: "bg-gold hover:bg-gold/90" },
+  bee: { card: "bee" as const, badge: "bee" as const, solidBg: "bg-forest hover:bg-forest/90" },
+  butterfly: { card: "butterfly" as const, badge: "butterfly" as const, solidBg: "bg-forest hover:bg-forest/90" },
+  beetle: { card: "beetle" as const, badge: "beetle" as const, solidBg: "bg-forest hover:bg-forest/90" },
+  hummingbird: { card: "hummingbird" as const, badge: "hummingbird" as const, solidBg: "bg-forest hover:bg-forest/90" },
 };
 
 export default function FeaturedPractitioners() {
@@ -31,7 +29,7 @@ export default function FeaturedPractitioners() {
   const getArchetypeIcon = (archetype: string) => {
     const iconSrc = archetypeIcons[archetype as keyof typeof archetypeIcons];
     if (iconSrc) {
-      return <img src={iconSrc} alt={`${archetype} archetype`} className="w-8 h-8 object-contain drop-shadow-sm" loading="lazy" width={32} height={32} />;
+      return <img src={iconSrc} alt={`${archetype} archetype`} className="w-8 h-8 object-contain" loading="lazy" width={32} height={32} />;
     }
     return <User className="w-8 h-8" />;
   };
@@ -41,159 +39,100 @@ export default function FeaturedPractitioners() {
   };
 
   return (
-    <section className="relative py-24 overflow-hidden">
-      {/* Organic background with flowing shapes */}
-      <div className="absolute inset-0 bg-gradient-to-b from-white via-cream/30 to-white" />
-
-      {/* Decorative floating elements */}
-      <div className="absolute top-10 right-20 w-72 h-72 bg-gradient-to-br from-garden-accent/10 to-transparent rounded-full blur-3xl animate-float" />
-      <div className="absolute bottom-20 left-10 w-56 h-56 bg-gradient-to-tl from-hive-accent/10 to-transparent rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
-      <div className="absolute top-1/2 left-1/4 w-40 h-40 bg-gradient-to-r from-gold/5 to-light-green/5 rounded-full blur-2xl animate-float" style={{ animationDelay: '4s' }} />
-
-      {/* Decorative vine on the right */}
-      <div className="absolute right-0 top-0 w-24 h-full opacity-10 pointer-events-none">
-        <svg viewBox="0 0 80 600" className="h-full w-full" preserveAspectRatio="none">
-          <path
-            d="M40,0 Q60,80 40,160 T40,320 T40,480 T40,600"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            className="text-forest"
-          />
-          <circle cx="40" cy="120" r="6" className="text-gold fill-current animate-bloom" style={{ animationDelay: '0.3s' }} />
-          <circle cx="40" cy="280" r="8" className="text-garden-accent fill-current animate-bloom" style={{ animationDelay: '0.8s' }} />
-          <circle cx="40" cy="440" r="5" className="text-hive-accent fill-current animate-bloom" style={{ animationDelay: '1.3s' }} />
-        </svg>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <section className="py-24 md:py-32">
+      <div className="max-w-5xl mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-16">
-          <div className="animate-petal-fade">
-            <Badge variant="hummingbird" className="mb-4">
-              <Sparkles className="w-3 h-3 mr-1.5" />
+          <div>
+            <p className="text-xs tracking-[0.2em] uppercase text-forest/40 mb-4">
               Featured Pollinators
-            </Badge>
-            <h2 className="font-heading text-section-heading lg:text-[2.75rem] text-forest mb-4">
-              Meet the
-              <span className="block bg-gradient-to-r from-gold via-hive-accent to-garden-accent bg-clip-text text-transparent">
-                Pollinators
-              </span>
+            </p>
+            <h2 className="font-heading text-2xl md:text-3xl text-forest mb-3 tracking-tight">
+              Meet the Pollinators
             </h2>
-            <p className="text-body-lg text-forest/70 max-w-xl leading-relaxed">
-              Each Pollinator embodies a nature-inspired archetype, offering a distinct way of guiding shaped by presence and lived experience. Each one is vetted, supported, and part of a living ecosystem.
+            <p className="text-base text-forest/50 max-w-lg leading-relaxed">
+              Each Pollinator embodies a nature-inspired archetype, offering a distinct way of guiding shaped by presence and lived experience.
             </p>
           </div>
           <Link href="/practitioners">
             <Button
               variant="outline"
-              size="lg"
-              className="hidden md:flex group bg-white hover:bg-earth-50 border-sage/20"
+              className="hidden md:flex group border-forest/15 text-forest/70 hover:text-forest hover:bg-transparent hover:border-forest/30"
             >
-              Explore All Practitioners
+              Explore All
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
         </div>
-        
+
         {isLoading ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {Array.from({ length: 3 }).map((_, i) => (
-              <Card key={i} variant="glass" className="overflow-hidden">
+              <div key={i} className="border border-forest/10 rounded-lg overflow-hidden">
                 <div className="animate-pulse">
-                  <div className="h-48 bg-gradient-to-br from-sage/20 to-cream/50 rounded-t-card" />
-                  <CardContent className="p-6 space-y-3">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 rounded-full bg-sage/20" />
-                      <div className="flex-1 space-y-2">
-                        <div className="h-4 bg-sage/20 rounded-full w-3/4" />
-                        <div className="h-3 bg-sage/15 rounded-full w-1/2" />
-                      </div>
-                    </div>
-                    <div className="h-4 bg-sage/15 rounded-full w-full" />
-                    <div className="h-4 bg-sage/10 rounded-full w-2/3" />
-                  </CardContent>
+                  <div className="h-48 bg-forest/5" />
+                  <div className="p-6 space-y-3">
+                    <div className="h-4 bg-forest/5 rounded w-3/4" />
+                    <div className="h-3 bg-forest/5 rounded w-1/2" />
+                  </div>
                 </div>
-              </Card>
+              </div>
             ))}
           </div>
         ) : practitioners.length === 0 ? (
-          <Card variant="glass" className="text-center py-16 px-8">
-            <CardContent className="flex flex-col items-center">
-              <div className="w-24 h-24 bg-gradient-to-br from-garden-accent/20 to-hive-accent/20 rounded-full flex items-center justify-center mb-6 animate-float">
-                <User className="w-12 h-12 text-forest/40" />
-              </div>
-              <h3 className="font-heading text-card-heading text-forest mb-3">
-                Practitioners Coming Soon
-              </h3>
-              <p className="text-body text-forest/60 max-w-md leading-relaxed">
-                Our verified wellness practitioners are joining the platform.
-                Check back soon to discover amazing healers ready to guide your journey.
-              </p>
-              <Button
-                variant="hummingbird"
-                className="mt-6 bg-gold hover:bg-gold/90 text-white"
-              >
-                <Sparkles className="w-4 h-4 mr-2" />
-                Get Notified
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="text-center py-20 border border-forest/10 rounded-lg">
+            <User className="w-10 h-10 text-forest/20 mx-auto mb-6" strokeWidth={1.5} />
+            <h3 className="font-heading text-lg text-forest mb-3">
+              Practitioners Coming Soon
+            </h3>
+            <p className="text-sm text-forest/50 max-w-md mx-auto mb-8 leading-relaxed">
+              Our verified wellness practitioners are joining the platform.
+              Check back soon to discover amazing healers ready to guide your journey.
+            </p>
+            <Button className="bg-forest text-white hover:bg-forest/90">
+              <Sparkles className="w-4 h-4 mr-2" />
+              Get Notified
+            </Button>
+          </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {practitioners.slice(0, 3).map((practitioner, index) => {
               const style = getArchetypeStyle(practitioner.archetype);
               return (
-                <Card
+                <div
                   key={practitioner.id}
-                  variant={style.card}
-                  className={cn(
-                    "overflow-hidden group animate-petal-fade",
-                  )}
-                  style={{ animationDelay: `${index * 0.15}s` }}
+                  className="border border-forest/10 rounded-lg overflow-hidden group hover:border-forest/20 transition-colors"
                 >
-                  {/* Archetype-themed header */}
-                  <div className="relative aspect-[4/3] bg-gradient-to-br from-cream via-white to-light-green/10 flex items-center justify-center overflow-hidden">
-                    {/* Decorative background pattern */}
-                    <div className="absolute inset-0 opacity-20">
-                      <div className="absolute top-4 right-4 w-20 h-20 rounded-full bg-gradient-to-br from-gold/30 to-transparent blur-xl" />
-                      <div className="absolute bottom-4 left-4 w-16 h-16 rounded-full bg-gradient-to-tl from-garden-accent/30 to-transparent blur-xl" />
-                    </div>
-
-                    {/* Profile placeholder with archetype icon */}
-                    <div className="relative flex flex-col items-center">
-                      <div className="w-20 h-20 rounded-full bg-white/80 backdrop-blur-sm shadow-card flex items-center justify-center mb-3 group-hover:scale-105 transition-transform duration-300">
+                  <div className="aspect-[4/3] bg-forest/[0.03] flex items-center justify-center">
+                    <div className="flex flex-col items-center">
+                      <div className="w-16 h-16 rounded-full bg-white border border-forest/10 flex items-center justify-center mb-3">
                         {getArchetypeIcon(practitioner.archetype)}
                       </div>
-                      <Badge variant={style.badge} className="shadow-card-sm">
+                      <Badge variant={style.badge}>
                         {archetypeDefinitions[practitioner.archetype]?.name}
                       </Badge>
                     </div>
 
-                    {/* Rating badge */}
                     {practitioner.averageRating && (
-                      <div className="absolute top-4 right-4 flex items-center bg-white/90 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-card-sm">
-                        <Star className="w-4 h-4 text-gold fill-gold mr-1" />
-                        <span className="text-body-sm font-semibold text-forest">
-                          {practitioner.averageRating}
-                        </span>
+                      <div className="absolute top-4 right-4 flex items-center text-sm text-forest/60">
+                        <Star className="w-3.5 h-3.5 text-gold fill-gold mr-1" />
+                        {practitioner.averageRating}
                       </div>
                     )}
                   </div>
 
-                  <CardContent className="p-6">
-                    {/* Scientific name */}
-                    <p className="text-caption text-forest/50 mb-1 italic">
+                  <div className="p-6">
+                    <p className="text-xs text-forest/40 mb-1 italic">
                       {archetypeDefinitions[practitioner.archetype]?.scientificName}
                     </p>
 
-                    <h3 className="font-heading text-card-heading text-forest mb-2 group-hover:text-gold transition-colors">
+                    <h3 className="font-heading text-lg text-forest mb-2">
                       {practitioner.firstName && practitioner.lastName
                         ? `${practitioner.firstName} ${practitioner.lastName}`
                         : `Practitioner #${practitioner.id.slice(-6)}`}
                     </h3>
 
                     {practitioner.bio && (
-                      <p className="text-body-sm text-forest/70 mb-4 line-clamp-2 leading-relaxed">
+                      <p className="text-sm text-forest/50 mb-4 line-clamp-2 leading-relaxed">
                         {practitioner.bio}
                       </p>
                     )}
@@ -201,58 +140,44 @@ export default function FeaturedPractitioners() {
                     {practitioner.specializations && practitioner.specializations.length > 0 && (
                       <div className="flex flex-wrap gap-1.5 mb-4">
                         {practitioner.specializations.slice(0, 3).map((spec) => (
-                          <Badge key={spec} variant="subtle" size="sm">
+                          <span key={spec} className="text-xs text-forest/50 border border-forest/10 rounded px-2 py-0.5">
                             {spec}
-                          </Badge>
+                          </span>
                         ))}
-                        {practitioner.specializations.length > 3 && (
-                          <Badge variant="outline" size="sm">
-                            +{practitioner.specializations.length - 3}
-                          </Badge>
-                        )}
                       </div>
                     )}
 
-                    <div className="flex justify-between items-center pt-4 border-t border-sage/10">
+                    <div className="flex justify-between items-center pt-4 border-t border-forest/10">
                       {practitioner.hourlyRate ? (
-                        <div className="flex flex-col">
-                          <span className="text-caption text-forest/50">Starting at</span>
-                          <span className="font-heading font-semibold text-forest">
-                            ${practitioner.hourlyRate}
-                            <span className="text-body-sm font-normal text-forest/60">/session</span>
-                          </span>
+                        <div>
+                          <span className="text-xs text-forest/40">From </span>
+                          <span className="text-forest">${practitioner.hourlyRate}</span>
                         </div>
                       ) : (
-                        <span className="text-body-sm text-forest/50">Contact for pricing</span>
+                        <span className="text-xs text-forest/40">Contact for pricing</span>
                       )}
                       <Link href={`/practitioners/${practitioner.id}`}>
                         <Button
-                          variant={style.card === "bee" ? "bee" : style.card === "butterfly" ? "butterfly" : style.card === "beetle" ? "beetle" : "hummingbird"}
                           size="sm"
-                          className={`rounded-full text-white ${style.solidBg}`}
+                          className={`text-white ${style.solidBg}`}
                           data-testid="button-view-profile"
                         >
                           View Profile
                         </Button>
                       </Link>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               );
             })}
           </div>
         )}
-        
-        {/* Mobile CTA */}
+
         <div className="text-center mt-12 md:hidden">
           <Link href="/practitioners">
-            <Button
-              variant="hummingbird"
-              size="lg"
-              className="group text-white bg-gold hover:bg-gold/90"
-            >
+            <Button variant="outline" className="border-forest/15 text-forest/70">
               Explore All Practitioners
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
         </div>

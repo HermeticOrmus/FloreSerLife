@@ -1,9 +1,7 @@
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
-import { Heart, Sparkles } from "lucide-react";
-import { papercut } from "@/assets";
+import { Sparkles } from "lucide-react";
 
 export default function ForFacilitatorsCTA() {
   const [, setLocation] = useLocation();
@@ -11,7 +9,6 @@ export default function ForFacilitatorsCTA() {
 
   const handleBecomeFacilitator = () => {
     if (isAuthenticated) {
-      // If already a practitioner, go to dashboard; otherwise go to onboarding
       setLocation(user?.roles?.includes('practitioner') ? "/dashboard/practitioner" : "/become-facilitator");
     } else {
       setLocation("/auth/signup");
@@ -19,49 +16,40 @@ export default function ForFacilitatorsCTA() {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-cream to-sage/10">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+    <section className="py-24 md:py-32">
+      <div className="max-w-2xl mx-auto px-6 text-center">
+        <p className="text-xs tracking-[0.2em] uppercase text-forest/40 mb-6">
+          For Healers & Guides
+        </p>
+
+        <h2 className="font-heading text-2xl md:text-3xl text-forest mb-8 tracking-tight">
+          For Facilitators
+        </h2>
+
+        <div className="text-base text-forest/60 leading-relaxed mb-10 space-y-4">
+          <p>
+            Are you a guide, facilitator, or catalyst?
+            You carry a spark — a wisdom shaped by time, experience, and your own path of becoming.
+          </p>
+          <p>
+            At <span className="text-forest/80">FloreSer.Life</span>, facilitators are not listings.
+            They are <span className="text-forest/80">Pollinators</span> — vital contributors to a living ecosystem of shared growth, care, and presence.
+          </p>
+          <p>
+            If you guide with integrity, offer your work with respect,
+            and wish to grow within a thoughtful, curated field,
+            we invite you to join the Hive.
+          </p>
+        </div>
+
+        <Button
+          size="lg"
+          className="bg-forest text-white hover:bg-forest/90 px-10 py-6 text-base font-medium tracking-wide transition-colors"
+          onClick={handleBecomeFacilitator}
         >
-          <div className="inline-flex items-center px-4 py-2 bg-gold/20 text-gold rounded-full text-sm font-medium mb-6">
-            <Heart className="mr-2 h-4 w-4" />
-            For Healers & Guides
-          </div>
-
-          <h2 className="font-heading text-3xl lg:text-4xl font-bold text-forest mb-6">
-            For Facilitators
-          </h2>
-
-          <div className="text-lg text-forest/80 leading-relaxed mb-8 max-w-3xl mx-auto space-y-4">
-            <p>
-              Are you a guide, facilitator, or catalyst?
-              <br />You carry a spark &mdash; a wisdom shaped by time, experience, and your own path of becoming.
-            </p>
-            <p>
-              At <strong>FloreSer.Life</strong>, facilitators are not listings.
-              <br />They are <strong>Pollinators</strong> &mdash; vital contributors to a living ecosystem of shared growth, care, and presence.
-            </p>
-            <p>
-              If you guide with integrity,
-              <br />offer your work with respect,
-              <br />and wish to grow within a thoughtful, curated field,
-              <br />we invite you to join the Hive.
-            </p>
-          </div>
-
-          <Button
-            size="lg"
-            className="bg-gold hover:bg-gold/90 text-white rounded-full px-8 shadow-md transition-colors"
-            onClick={handleBecomeFacilitator}
-          >
-            <Sparkles className="mr-2 h-4 w-4" />
-            Become a Pollinator
-          </Button>
-        </motion.div>
+          <Sparkles className="mr-2 h-4 w-4" />
+          Become a Pollinator
+        </Button>
       </div>
     </section>
   );

@@ -4,12 +4,10 @@ import { useAuth } from "@/hooks/useAuth";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { HeroSection } from "@/components/landing/HeroSection";
-import { PaperCutBanner } from "@/components/landing/PaperCutBanner";
-import { HexagonGrid } from "@/components/landing/HexagonGrid";
 import ForFacilitatorsCTA from "@/components/landing/ForFacilitatorsCTA";
 import FeaturedPractitioners from "@/components/featured-practitioners";
 import { Button } from "@/components/ui/button";
-import { characters, papercut } from "@/assets";
+import { characters } from "@/assets";
 import {
   Sprout,
   Users,
@@ -19,50 +17,39 @@ import {
   Shield,
   Bot,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
-// Hexagon grid items for "What Makes FloreSer Different"
-const hexItems = [
+// Values for the minimal grid
+const values = [
   {
-    id: 'growth',
     icon: Sprout,
     title: 'Growth-Focused',
-    description: 'Your journey is honoured at every stage',
-    color: 'deep-sage' as const,
+    description: 'Your journey is honoured at every stage.',
   },
   {
-    id: 'community',
     icon: Users,
     title: 'Community',
-    description: 'Connect with guides and seekers',
-    color: 'olive-resin' as const,
+    description: 'Connect with guides and seekers.',
   },
   {
-    id: 'wisdom',
     icon: Sparkles,
     title: 'Nature Wisdom',
-    description: 'Four archetypes guide your match',
-    color: 'dew-gold' as const,
+    description: 'Four archetypes guide your match.',
   },
   {
-    id: 'care',
     icon: Heart,
     title: 'Genuine Care',
-    description: 'Facilitators vetted for integrity',
-    color: 'forest-earth' as const,
+    description: 'Facilitators vetted for integrity.',
   },
   {
-    id: 'flexibility',
     icon: Calendar,
     title: 'Your Rhythm',
-    description: 'Sessions that fit your life',
-    color: 'claystone' as const,
+    description: 'Sessions that fit your life.',
   },
   {
-    id: 'trust',
     icon: Shield,
     title: 'Safe Space',
-    description: 'Privacy and trust, always',
-    color: 'tudor-red' as const,
+    description: 'Privacy and trust, always.',
   },
 ];
 
@@ -77,94 +64,83 @@ export default function Landing() {
     if (metaDescription) {
       metaDescription.setAttribute(
         "content",
-        "Discover FloreSer.Life, a nature-inspired wellness ecosystem connecting seekers with trusted holistic facilitators. Find your perfect match with our Pollinator archetypes and begin your next season of growth."
+        "Discover FloreSer.Life, a nature-inspired wellness ecosystem connecting seekers with trusted holistic facilitators."
       );
     }
   }, []);
 
-  const handleJoinAlphaProgram = () => {
-    setLocation("/alpha");
-  };
-
-  const handleBeginWithMaia = () => {
-    setLocation("/quiz");
-  };
-
   return (
-    <div className="min-h-screen text-papercut-neutral-dark overflow-hidden bg-earth-50 paper-grain-light">
+    <div className="min-h-screen bg-white text-forest">
       <Header />
 
-      {/* Paper-cut Hero Section */}
       <HeroSection />
 
-      {/* Welcome Dear One */}
-      <section className="py-16 relative">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="font-heading text-3xl md:text-4xl text-papercut-neutral-dark mb-6">
-            Welcome Dear One
+      {/* Welcome — generous space, clean type */}
+      <section className="py-24 md:py-32">
+        <div className="max-w-2xl mx-auto px-6 text-center">
+          <h2 className="font-heading text-2xl md:text-3xl text-forest mb-8 tracking-tight">
+            Welcome, Dear One
           </h2>
-          <div className="text-body-lg text-papercut-neutral-dark/80 space-y-4 leading-relaxed">
+          <div className="text-base md:text-lg text-forest/60 space-y-6 leading-relaxed">
             <p>This is the garden of your becoming.</p>
             <p>
-              At <strong>FloreSer.Life</strong>, we see you as a seed,
-              <br />carrying your own rhythm of becoming.
+              At <span className="text-forest">FloreSer.Life</span>, we see you as a seed,
+              carrying your own rhythm of becoming.
             </p>
             <p>
-              We are a living ecosystem &mdash; not a directory &mdash;
-              <br />where soulful guides offer presence, wisdom, and practice to help you tend your inner garden.
+              We are a living ecosystem — not a directory —
+              where soulful guides offer presence, wisdom, and practice
+              to help you tend your inner garden.
             </p>
             <p>
               Whether you're just beginning or already deepening,
-              <br />you're welcome here.
+              you're welcome here.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Meet mAIa - Begin Your Journey CTA */}
-      <section className="py-16 relative">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
-            {/* mAIa Character */}
+      {/* Fold line */}
+      <div className="h-px bg-gradient-to-r from-transparent via-forest/10 to-transparent" />
+
+      {/* Meet mAIa — clean layout */}
+      <section className="py-24 md:py-32">
+        <div className="max-w-3xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row items-center gap-12 md:gap-16">
             <div className="flex-shrink-0">
-              <div className="relative">
-                <img
-                  src={characters.maia}
-                  alt="mAIa, your gentle guide"
-                  className="w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-lg"
-                  loading="lazy"
-                  width={160}
-                  height={160}
-                />
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-forest/10 rounded-full animate-pulse" />
-              </div>
+              <img
+                src={characters.maia}
+                alt="mAIa, your gentle guide"
+                className="w-28 h-28 md:w-36 md:h-36 object-contain"
+                loading="lazy"
+                width={144}
+                height={144}
+              />
             </div>
 
-            {/* Content */}
             <div className="flex-1 text-center md:text-left">
-              <div className="inline-flex items-center px-3 py-1.5 bg-sage/20 text-forest rounded-full text-sm font-medium mb-4">
-                <Bot className="w-4 h-4 mr-2" />
+              <p className="text-xs tracking-[0.2em] uppercase text-forest/40 mb-4">
                 Your Living Guide
-              </div>
+              </p>
 
-              <h2 className="font-heading text-2xl md:text-3xl text-papercut-neutral-dark mb-3">
-                Meet mAIa &mdash; Your Living Guide
+              <h2 className="font-heading text-2xl md:text-3xl text-forest mb-4 tracking-tight">
+                Meet mAIa
               </h2>
 
-              <p className="text-body text-papercut-neutral-dark/80 mb-2 max-w-xl">
+              <p className="text-base text-forest/60 mb-3 leading-relaxed">
                 Every soul blooms in its own rhythm.
-                <strong> mAIa</strong> is here to sense yours &mdash; a gentle intelligence that listens and guides you toward what you most need now.
+                <strong className="text-forest/80"> mAIa</strong> is here to sense yours — a gentle intelligence that listens and guides you toward what you most need now.
               </p>
-              <p className="text-body text-papercut-neutral-dark/80 mb-6 max-w-xl">
+              <p className="text-base text-forest/60 mb-8 leading-relaxed">
                 Through a few simple, soulful questions, she helps you find the practices and facilitators that can nurture your next unfolding.
               </p>
 
               <Button
                 size="lg"
-                onClick={handleBeginWithMaia}
-                className="text-white bg-forest hover:bg-forest/90 rounded-full px-8 py-6 shadow-lg transition-colors text-lg font-medium"
+                onClick={() => setLocation("/quiz")}
+                className="text-white bg-forest hover:bg-forest/90 px-8 py-6 text-base font-medium tracking-wide transition-colors"
               >
-                <Sparkles className="w-5 h-5 mr-2" />
+                <Sparkles className="w-4 h-4 mr-2" />
                 Begin your conversation with mAIa
               </Button>
             </div>
@@ -172,45 +148,56 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* What Makes FloreSer Different - Hexagon Grid */}
-      <section
-        className="py-20 relative bg-sage/10"
-        style={{
-          backgroundImage: `url(${papercut.textures.flatCream})`,
-          backgroundSize: '512px 512px',
-          backgroundRepeat: 'repeat',
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-12">
-            <h2 className="font-heading text-section-heading text-papercut-neutral-dark mb-4">
+      {/* Fold line */}
+      <div className="h-px bg-gradient-to-r from-transparent via-forest/10 to-transparent" />
+
+      {/* What Makes FloreSer Different — clean grid, no hexagons */}
+      <section className="py-24 md:py-32">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="text-center mb-16 md:mb-20">
+            <h2 className="font-heading text-2xl md:text-3xl text-forest mb-4 tracking-tight">
               What Makes FloreSer Different
             </h2>
-            <p className="text-body-lg text-papercut-neutral-dark/70 max-w-2xl mx-auto">
-              A living ecosystem where healing becomes flourishing
+            <p className="text-base text-forest/50">
+              A living ecosystem where healing becomes flourishing.
             </p>
           </div>
-          <HexagonGrid items={hexItems} />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-16">
+            {values.map((item) => (
+              <div key={item.title} className="text-center">
+                <item.icon className="w-8 h-8 text-forest/30 mx-auto mb-5" strokeWidth={1.5} />
+                <h3 className="font-heading text-lg text-forest mb-2">
+                  {item.title}
+                </h3>
+                <p className="text-sm text-forest/50 leading-relaxed">
+                  {item.description}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
+      {/* Fold line */}
+      <div className="h-px bg-gradient-to-r from-transparent via-forest/10 to-transparent" />
+
       {/* Featured Practitioners */}
-      <PaperCutBanner variant="plain-forest">
-        <FeaturedPractitioners />
-      </PaperCutBanner>
+      <FeaturedPractitioners />
+
+      {/* Fold line */}
+      <div className="h-px bg-gradient-to-r from-transparent via-forest/10 to-transparent" />
 
       {/* For Facilitators CTA */}
-      <PaperCutBanner variant="patterned-leaf">
-        <ForFacilitatorsCTA />
-      </PaperCutBanner>
+      <ForFacilitatorsCTA />
 
       {/* Alpha Program Link */}
-      <section className="py-12 text-center">
-        <p className="text-caption text-papercut-neutral-dark/60">
+      <section className="py-16 text-center">
+        <p className="text-sm text-forest/40">
           Interested in contributing to our development?{" "}
           <button
-            onClick={handleJoinAlphaProgram}
-            className="text-subtle-rose hover:text-forest underline transition-colors"
+            onClick={() => setLocation("/alpha")}
+            className="text-forest/60 hover:text-forest underline underline-offset-4 transition-colors"
           >
             Join our Alpha Program
           </button>
