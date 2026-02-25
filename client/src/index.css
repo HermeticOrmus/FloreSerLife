@@ -290,10 +290,10 @@
     content: '';
     position: absolute;
     inset: 0;
-    background-image: url('/src/assets/images/papercut/generated/depth/origami-washi-warm.png');
-    background-size: 512px 512px;
+    background-image: url('/src/assets/images/papercut/generated/depth/depth-texture-paper-ui.png');
+    background-size: 400px 400px;
     background-repeat: repeat;
-    opacity: 0.6;
+    opacity: 0.4;
     pointer-events: none;
     z-index: 0;
     border-radius: inherit;
@@ -306,7 +306,7 @@
 
   /* Stronger paper feel for hero/feature sections */
   .origami-paper-strong::before {
-    opacity: 0.8;
+    opacity: 0.55;
   }
 
   /* Dark variant — inverted paper grain for dark backgrounds */
@@ -318,10 +318,11 @@
     content: '';
     position: absolute;
     inset: 0;
-    background-image: url('/src/assets/images/papercut/generated/depth/origami-washi-forest.png');
-    background-size: 512px 512px;
+    background-image: url('/src/assets/images/papercut/generated/depth/depth-texture-paper-ui.png');
+    background-size: 400px 400px;
     background-repeat: repeat;
-    opacity: 0.25;
+    opacity: 0.12;
+    filter: invert(1);
     pointer-events: none;
     z-index: 0;
     border-radius: inherit;
