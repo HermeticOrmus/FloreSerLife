@@ -148,7 +148,7 @@ export default function About() {
   );
 
   return (
-    <div className="min-h-screen text-papercut-neutral-dark bg-earth-50">
+    <div className="min-h-screen text-papercut-neutral-dark bg-earth-50 paper-grain-light">
       <Header />
 
       {/* Hero Panel - Layered paper hills with Tudor rose */}

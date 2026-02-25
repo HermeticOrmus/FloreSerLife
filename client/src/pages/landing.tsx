@@ -91,7 +91,7 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen text-papercut-neutral-dark overflow-hidden bg-earth-50">
+    <div className="min-h-screen text-papercut-neutral-dark overflow-hidden bg-earth-50 paper-grain-light">
       <Header />
 
       {/* Paper-cut Hero Section */}
@@ -173,7 +173,7 @@ export default function Landing() {
       </section>
 
       {/* What Makes FloreSer Different - Hexagon Grid */}
-      <section className="py-20 relative bg-sage/10">
+      <section className="py-20 relative bg-sage/10 paper-grain">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-12">
             <h2 className="font-heading text-section-heading text-papercut-neutral-dark mb-4">

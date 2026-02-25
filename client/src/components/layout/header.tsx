@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { logos } from "@/assets";
+import { logos, papercut } from "@/assets";
 import { cn } from "@/lib/utils";
 
 export default function Header() {
@@ -134,7 +134,15 @@ export default function Header() {
           : "bg-white shadow-card-sm border-b border-sage/20"
       )}
     >
-      {/* Clean background */}
+      {/* Paper texture background */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-60"
+        style={{
+          backgroundImage: `url(${papercut.textures.paperUI})`,
+          backgroundSize: '256px 256px',
+          backgroundRepeat: 'repeat',
+        }}
+      />
       <nav className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}

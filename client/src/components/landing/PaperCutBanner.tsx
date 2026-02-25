@@ -11,18 +11,23 @@ interface PaperCutBannerProps {
 
 const variantStyles: Record<BannerVariant, {
   bg: string;
+  grain: string;
 }> = {
   'patterned-leaf': {
     bg: 'bg-papercut-green-400',
+    grain: 'paper-grain-dark',
   },
   'plain-sage': {
     bg: 'bg-papercut-green-100',
+    grain: 'paper-grain',
   },
   'patterned-root': {
     bg: 'bg-papercut-earth-50',
+    grain: 'paper-grain',
   },
   'plain-forest': {
     bg: 'bg-papercut-green-200',
+    grain: 'paper-grain',
   },
 };
 
@@ -38,6 +43,7 @@ export function PaperCutBanner({ variant, children, className }: PaperCutBannerP
       className={cn(
         "relative py-16 md:py-20 lg:py-24 overflow-hidden",
         styles.bg,
+        styles.grain,
         className
       )}
     >

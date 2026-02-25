@@ -4,7 +4,7 @@ import { Home, Search, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 export default function NotFound() {
   return (
-    <div className="min-h-screen w-full flex items-center justify-center relative bg-earth-50">
+    <div className="min-h-screen w-full flex items-center justify-center relative bg-earth-50 paper-grain-light">
       <Card className="w-full max-w-lg mx-4 shadow-card-lg border-sage/20 overflow-hidden">
         <div className="h-2 bg-gold" />
         <CardContent className="pt-8 pb-8 text-center">

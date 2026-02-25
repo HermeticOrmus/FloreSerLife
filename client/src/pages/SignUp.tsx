@@ -82,7 +82,7 @@ export default function SignUp() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-4 py-8 bg-earth-50">
+    <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-4 py-8 bg-earth-50 paper-grain-light">
       {/* Subtle color overlay on paper texture */}
       <div className="absolute inset-0 bg-gradient-to-br from-cream/30 via-garden-accent/5 to-hive-accent/10" />
 

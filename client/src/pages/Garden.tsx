@@ -273,7 +273,7 @@ export default function Garden() {
 
   return (
     <div
-      className="flex min-h-screen bg-earth-50"
+      className="flex min-h-screen bg-earth-50 paper-grain-light"
     >
       {/* Sidebar */}
       <GardenSidebar
