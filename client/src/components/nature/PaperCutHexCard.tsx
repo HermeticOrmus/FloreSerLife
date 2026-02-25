@@ -8,7 +8,6 @@
 import { motion, HTMLMotionProps } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { ReactNode } from 'react';
-import { papercut } from '@/assets';
 
 type HexColor = 'deep-sage' | 'olive-resin' | 'claystone' | 'forest-earth' | 'dew-gold' | 'tudor-red';
 
@@ -28,14 +27,14 @@ const colorClasses: Record<HexColor, string> = {
   'tudor-red': '',
 };
 
-// Map colors to paper textures (ensure contrast with section backgrounds)
+// Map colors to solid CSS background colors (replaces paper texture images)
 const colorTextures: Record<HexColor, string> = {
-  'deep-sage': papercut.textures.paperForest,  // Darker to contrast with sage section bg
-  'olive-resin': papercut.textures.paperForest,
-  'claystone': papercut.textures.paperUI,
-  'forest-earth': papercut.textures.paperForest,  // Darker to contrast with sage section bg
-  'dew-gold': papercut.textures.paperGold,
-  'tudor-red': papercut.textures.paperCrimson,
+  'deep-sage': '#4A6741',
+  'olive-resin': '#6E7B60',
+  'claystone': '#D7C3A8',
+  'forest-earth': '#4A6741',
+  'dew-gold': '#D4AF37',
+  'tudor-red': '#A23C40',
 };
 
 // Text colors for contrast - using CSS variables from design system
@@ -66,9 +65,7 @@ export function PaperCutHexCard({
       )}
       style={{
         clipPath: 'polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%)',
-        backgroundImage: `url(${colorTextures[color]})`,
-        backgroundSize: '200px 200px',
-        backgroundRepeat: 'repeat',
+        backgroundColor: colorTextures[color],
         color: textColors[color],
       }}
       whileHover={

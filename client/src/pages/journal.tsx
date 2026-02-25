@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
-import { papercut } from "@/assets";
+
 import {
   BookOpen,
   Sparkles,
@@ -239,12 +239,7 @@ export default function Journal() {
             <div className="flex flex-col md:flex-row min-h-[520px]">
               {/* ── Left Page: Menu ─────────────────────────────────── */}
               <div
-                className="md:w-[38%] p-8 md:p-10 flex flex-col"
-                style={{
-                  backgroundImage: `url(${papercut.textures.flatCream})`,
-                  backgroundSize: "256px 256px",
-                  backgroundRepeat: "repeat",
-                }}
+                className="md:w-[38%] p-8 md:p-10 flex flex-col bg-cream"
               >
                 {/* Subtle page relief */}
                 <div
@@ -276,18 +271,9 @@ export default function Journal() {
                           onClick={() => setActiveSection(section.id)}
                           className={`w-full flex items-center gap-3 px-5 py-3.5 rounded-full text-left transition-all ${
                             isActive
-                              ? "shadow-md"
+                              ? "shadow-md bg-sage/20"
                               : "hover:bg-white/40"
                           }`}
-                          style={
-                            isActive
-                              ? {
-                                  backgroundImage: `url(${papercut.textures.flatSage})`,
-                                  backgroundSize: "200px 200px",
-                                  backgroundRepeat: "repeat",
-                                }
-                              : undefined
-                          }
                         >
                           <SectionIcon
                             className={`w-4.5 h-4.5 ${
@@ -322,12 +308,7 @@ export default function Journal() {
 
               {/* ── Right Page: Content Area ────────────────────────── */}
               <div
-                className="md:w-[62%] p-8 md:p-10 flex flex-col min-h-[400px] md:min-h-0"
-                style={{
-                  backgroundImage: `url(${papercut.textures.flatCream})`,
-                  backgroundSize: "256px 256px",
-                  backgroundRepeat: "repeat",
-                }}
+                className="md:w-[62%] p-8 md:p-10 flex flex-col min-h-[400px] md:min-h-0 bg-cream"
               >
                 {/* Subtle page relief (opposite direction) */}
                 <div

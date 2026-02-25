@@ -35,7 +35,7 @@ import {
 } from "@shared/schema";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { papercut, archetypeIcons } from "@/assets";
+import { archetypeIcons } from "@/assets";
 
 // Experience season derived from total sessions
 function getExperienceSeason(totalSessions: number) {
@@ -264,40 +264,20 @@ export default function Hive() {
   };
 
   return (
-    <div
-      className="min-h-screen text-papercut-neutral-dark"
-      style={{
-        backgroundImage: `url(${papercut.textures.paperUI})`,
-        backgroundSize: "256px 256px",
-        backgroundRepeat: "repeat",
-        backgroundColor: "#faf8f5",
-      }}
-    >
+    <div className="min-h-screen text-papercut-neutral-dark bg-earth-50">
       <Header />
 
       {/* Hero Panel */}
       <section className="relative overflow-hidden py-20 lg:py-24">
-        {/* Layered paper curves (dunes) */}
+        {/* Layered hill shapes with solid colors */}
         <div className="absolute inset-0 pointer-events-none">
           <div
-            className="absolute bottom-0 left-0 right-0 h-[55%]"
-            style={{
-              backgroundImage: `url(${papercut.textures.paperClay})`,
-              backgroundSize: "200px 200px",
-              backgroundRepeat: "repeat",
-              clipPath: "ellipse(85% 100% at 50% 100%)",
-              opacity: 0.2,
-            }}
+            className="absolute bottom-0 left-0 right-0 h-[55%] bg-papercut-earth-300/20"
+            style={{ clipPath: "ellipse(85% 100% at 50% 100%)" }}
           />
           <div
-            className="absolute bottom-0 left-0 right-0 h-[40%]"
-            style={{
-              backgroundImage: `url(${papercut.textures.cream})`,
-              backgroundSize: "200px 200px",
-              backgroundRepeat: "repeat",
-              clipPath: "ellipse(70% 100% at 45% 100%)",
-              opacity: 0.15,
-            }}
+            className="absolute bottom-0 left-0 right-0 h-[40%] bg-papercut-earth-50/15"
+            style={{ clipPath: "ellipse(70% 100% at 45% 100%)" }}
           />
         </div>
 
@@ -414,12 +394,7 @@ export default function Hive() {
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="rounded-2xl overflow-hidden shadow-md animate-pulse"
-                  style={{
-                    backgroundImage: `url(${papercut.textures.cream})`,
-                    backgroundSize: "200px 200px",
-                    backgroundRepeat: "repeat",
-                  }}
+                  className="rounded-2xl overflow-hidden shadow-md animate-pulse bg-white border border-sage/15"
                 >
                   <div className="h-32 bg-forest/5" />
                   <div className="p-6 space-y-3">
@@ -458,21 +433,8 @@ export default function Hive() {
                 return (
                   <motion.div key={p.id} variants={fadeUp}>
                     <div
-                      className="rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow relative group"
-                      style={{
-                        backgroundImage: `url(${papercut.textures.cream})`,
-                        backgroundSize: "200px 200px",
-                        backgroundRepeat: "repeat",
-                      }}
+                      className="rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow relative group bg-white border border-sage/15"
                     >
-                      {/* Relief overlay */}
-                      <div
-                        className="absolute inset-0 rounded-2xl pointer-events-none"
-                        style={{
-                          background:
-                            "linear-gradient(145deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(0,0,0,0.03) 100%)",
-                        }}
-                      />
 
                       {/* Archetype badge row */}
                       <div className="p-4 pb-0 flex items-center justify-between relative z-10">
@@ -502,13 +464,10 @@ export default function Hive() {
                       {/* Hexagon portrait + archetype */}
                       <div className="flex flex-col items-center py-4 relative z-10">
                         <div
-                          className="w-20 h-20 flex items-center justify-center shadow-md mb-3"
+                          className="w-20 h-20 flex items-center justify-center shadow-md mb-3 bg-earth-100"
                           style={{
                             clipPath:
                               "polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%)",
-                            backgroundImage: `url(${papercut.textures.paperClay})`,
-                            backgroundSize: "100px 100px",
-                            backgroundRepeat: "repeat",
                           }}
                         >
                           {getArchetypeIcon(p.archetype)}
@@ -587,27 +546,17 @@ export default function Hive() {
                             <Button
                               variant="outline"
                               size="sm"
-                              className="rounded-full text-xs border-forest/20"
+                              className="rounded-full text-xs border-forest/20 bg-white hover:bg-earth-50"
                               onClick={() =>
                                 setLocation(`/practitioners/${p.id}`)
                               }
-                              style={{
-                                backgroundImage: `url(${papercut.textures.cream})`,
-                                backgroundSize: "150px 150px",
-                                backgroundRepeat: "repeat",
-                              }}
                             >
                               View Profile
                             </Button>
                             <Button
                               size="sm"
-                              className="rounded-full text-xs text-white"
+                              className="rounded-full text-xs text-white bg-forest hover:bg-forest/90"
                               onClick={() => setLocation(`/book/${p.id}`)}
-                              style={{
-                                backgroundImage: `url(${papercut.textures.paperSage})`,
-                                backgroundSize: "150px 150px",
-                                backgroundRepeat: "repeat",
-                              }}
                             >
                               <Calendar className="w-3 h-3 mr-1" />
                               Book
@@ -624,22 +573,8 @@ export default function Hive() {
         </div>
       </section>
 
-      {/* Bottom engraved band */}
-      <section
-        className="py-8 relative overflow-hidden"
-        style={{
-          backgroundImage: `url(${papercut.textures.paperEarth})`,
-          backgroundSize: "256px 256px",
-          backgroundRepeat: "repeat",
-        }}
-      >
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "linear-gradient(145deg, rgba(255,255,255,0.08) 0%, transparent 50%, rgba(0,0,0,0.05) 100%)",
-          }}
-        />
+      {/* Bottom band */}
+      <section className="py-8 relative overflow-hidden bg-earth-700">
         {/* Hexagon fragments in band */}
         <HexFragment x="5%" y="20%" size={20} color="#3C3C3C" delay={0} />
         <HexFragment x="25%" y="50%" size={16} color="#C4A882" delay={0.1} />

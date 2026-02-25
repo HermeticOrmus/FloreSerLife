@@ -9,7 +9,7 @@ import { HexagonGrid } from "@/components/landing/HexagonGrid";
 import ForFacilitatorsCTA from "@/components/landing/ForFacilitatorsCTA";
 import FeaturedPractitioners from "@/components/featured-practitioners";
 import { Button } from "@/components/ui/button";
-import { papercut, characters } from "@/assets";
+import { characters } from "@/assets";
 import {
   Sprout,
   Users,
@@ -91,15 +91,7 @@ export default function Landing() {
   };
 
   return (
-    <div
-      className="min-h-screen text-papercut-neutral-dark overflow-hidden"
-      style={{
-        backgroundImage: `url(${papercut.textures.paperUI})`,
-        backgroundSize: '256px 256px',
-        backgroundRepeat: 'repeat',
-        backgroundColor: '#faf8f5',
-      }}
-    >
+    <div className="min-h-screen text-papercut-neutral-dark overflow-hidden bg-earth-50">
       <Header />
 
       {/* Paper-cut Hero Section */}
@@ -170,12 +162,7 @@ export default function Landing() {
               <Button
                 size="lg"
                 onClick={handleBeginWithMaia}
-                className="text-white hover:opacity-90 rounded-full px-8 py-6 shadow-lg transform hover:scale-105 transition-all text-lg font-medium"
-                style={{
-                  backgroundImage: `url(${papercut.textures.paperSage})`,
-                  backgroundSize: '200px 200px',
-                  backgroundRepeat: 'repeat',
-                }}
+                className="text-white bg-forest hover:bg-forest/90 rounded-full px-8 py-6 shadow-lg transition-colors text-lg font-medium"
               >
                 <Sparkles className="w-5 h-5 mr-2" />
                 Begin your conversation with mAIa
@@ -186,14 +173,7 @@ export default function Landing() {
       </section>
 
       {/* What Makes FloreSer Different - Hexagon Grid */}
-      <section
-        className="py-20 relative"
-        style={{
-          backgroundImage: `url(${papercut.textures.paperSage})`,
-          backgroundSize: '512px 512px',
-          backgroundRepeat: 'repeat',
-        }}
-      >
+      <section className="py-20 relative bg-sage/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-12">
             <h2 className="font-heading text-section-heading text-papercut-neutral-dark mb-4">

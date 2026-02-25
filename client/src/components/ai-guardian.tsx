@@ -22,7 +22,7 @@ import {
   Zap
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { papercut } from "@/assets";
+
 import { MaiaSprite } from "./maia-sprite";
 
 interface Message {
@@ -273,13 +273,8 @@ export function AIGuardian() {
       <div className="fixed bottom-6 right-6 z-50">
         <Button
           size="lg"
-          className="rounded-full text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all px-6 py-4"
+          className="rounded-full text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all px-6 py-4 bg-sage/20"
           onClick={() => setIsOpen(true)}
-          style={{
-            backgroundImage: `url(${papercut.textures.paperSage})`,
-            backgroundSize: '200px 200px',
-            backgroundRepeat: 'repeat',
-          }}
         >
           <MaiaSprite state="idle" size={24} className="mr-2" />
           <span className="font-medium">Chat with mAIa</span>
@@ -294,20 +289,10 @@ export function AIGuardian() {
       <Card
         className={`w-96 shadow-2xl border-forest/20 transition-all duration-300 flex flex-col ${
           isMinimized ? 'h-16' : 'max-h-[500px] h-[80vh]'
-        }`}
-        style={{
-          backgroundImage: `url(${papercut.textures.paperUI})`,
-          backgroundSize: '256px 256px',
-          backgroundRepeat: 'repeat',
-        }}
+        } bg-earth-50`}
       >
         <CardHeader
-          className="flex flex-row items-center justify-between p-4 text-white rounded-t-lg flex-shrink-0"
-          style={{
-            backgroundImage: `url(${papercut.textures.paperForest})`,
-            backgroundSize: '256px 256px',
-            backgroundRepeat: 'repeat',
-          }}
+          className="flex flex-row items-center justify-between p-4 text-white rounded-t-lg flex-shrink-0 bg-forest"
         >
           <div className="flex items-center space-x-2">
             <div className="relative">
@@ -362,11 +347,6 @@ export function AIGuardian() {
                         ? 'border-sage/30 bg-cream'
                         : ''
                     }`}
-                    style={message.sender === 'maia' ? {
-                      backgroundImage: `url(${papercut.textures.paperUI})`,
-                      backgroundSize: '128px 128px',
-                      backgroundRepeat: 'repeat',
-                    } : undefined}
                   >
                     {/* Overlay for maia messages */}
                     {message.sender === 'maia' && (
@@ -405,12 +385,7 @@ export function AIGuardian() {
               {isTyping && (
                 <div className="flex justify-start">
                   <div
-                    className="bg-cream rounded-lg p-3 max-w-[80%] shadow-sm border border-sage/30 relative overflow-hidden"
-                    style={{
-                      backgroundImage: `url(${papercut.textures.paperUI})`,
-                      backgroundSize: '128px 128px',
-                      backgroundRepeat: 'repeat',
-                    }}
+                    className="bg-earth-50 rounded-lg p-3 max-w-[80%] shadow-sm border border-sage/30 relative overflow-hidden"
                   >
                     <div className="absolute inset-0 bg-cream/70" />
                     <div className="relative z-10 flex items-center space-x-2">

@@ -1,21 +1,11 @@
 import { Link } from "wouter";
 import { Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
-import { logos, papercut } from "@/assets";
+import { logos } from "@/assets";
 
 export default function Footer() {
   return (
-    <footer
-      className="text-white py-16 relative"
-      style={{
-        backgroundImage: `url(${papercut.textures.paperForest})`,
-        backgroundSize: "256px 256px",
-        backgroundRepeat: "repeat",
-      }}
-    >
-      {/* Dark overlay for readability */}
-      <div className="absolute inset-0 bg-forest/80 pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <footer className="text-white py-16 bg-forest">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
             <div className="flex items-center space-x-2 mb-4">

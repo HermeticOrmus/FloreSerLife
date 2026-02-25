@@ -15,7 +15,6 @@ import {
   Settings,
   Menu,
 } from "lucide-react";
-import { papercut } from "@/assets";
 import { getTierName } from "./types";
 
 interface GardenSidebarProps {
@@ -112,15 +111,7 @@ export default function GardenSidebar({
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-64 p-0">
-              <div
-                className="h-full flex flex-col relative"
-                style={{
-                  backgroundImage: `url(${papercut.textures.paperSage})`,
-                  backgroundSize: "256px 256px",
-                  backgroundRepeat: "repeat",
-                }}
-              >
-                <div className="absolute inset-0 bg-cream/60" />
+              <div className="h-full flex flex-col bg-cream">
                 <SidebarContent
                   seedsData={seedsData}
                   onNavigate={(href) => {
@@ -140,14 +131,8 @@ export default function GardenSidebar({
     <motion.aside
       initial={{ x: -20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
-      className="hidden md:flex w-64 border-r border-garden-accent/20 flex-col relative"
-      style={{
-        backgroundImage: `url(${papercut.textures.paperSage})`,
-        backgroundSize: "256px 256px",
-        backgroundRepeat: "repeat",
-      }}
+      className="hidden md:flex w-64 border-r border-garden-accent/20 flex-col bg-cream"
     >
-      <div className="absolute inset-0 bg-cream/60" />
       <SidebarContent seedsData={seedsData} onNavigate={onNavigate} />
     </motion.aside>
   );

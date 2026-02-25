@@ -7,7 +7,7 @@ import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { papercut } from "@/assets";
+
 import {
   Calendar,
   Clock,
@@ -181,12 +181,7 @@ export default function Sessions() {
           <div className="flex flex-col md:flex-row gap-6 max-w-5xl mx-auto">
             {/* ── LEFT: Session Info Panel ─────────────────────────── */}
             <div
-              className="md:w-[340px] flex-shrink-0 rounded-xl shadow-lg overflow-hidden"
-              style={{
-                backgroundImage: `url(${papercut.textures.flatCream})`,
-                backgroundSize: "256px 256px",
-                backgroundRepeat: "repeat",
-              }}
+              className="md:w-[340px] flex-shrink-0 rounded-xl shadow-lg overflow-hidden bg-cream"
             >
               {/* Subtle relief overlay */}
               <div
@@ -209,12 +204,9 @@ export default function Sessions() {
 
                       {/* Hexagonal portrait */}
                       <div
-                        className="w-20 h-20 flex items-center justify-center shadow-md mb-3"
+                        className="w-20 h-20 flex items-center justify-center shadow-md mb-3 bg-earth-200"
                         style={{
                           clipPath: HEX_CLIP,
-                          backgroundImage: `url(${papercut.textures.paperClay})`,
-                          backgroundSize: "100px 100px",
-                          backgroundRepeat: "repeat",
                         }}
                       >
                         <span className="text-2xl font-heading font-bold text-white drop-shadow-sm">
@@ -267,12 +259,7 @@ export default function Sessions() {
                     <div className="mt-6 space-y-3">
                       {nextSession.isVirtual && (
                         <Button
-                          className="w-full text-white rounded-full"
-                          style={{
-                            backgroundImage: `url(${papercut.textures.paperSage})`,
-                            backgroundSize: "200px 200px",
-                            backgroundRepeat: "repeat",
-                          }}
+                          className="w-full text-white bg-forest hover:bg-forest/90 rounded-full"
                         >
                           <Video className="w-4 h-4 mr-2" />
                           Join Session
@@ -332,13 +319,8 @@ export default function Sessions() {
                       appointment details will appear here.
                     </p>
                     <Button
-                      className="rounded-full text-white"
+                      className="rounded-full text-white bg-gold hover:bg-gold/90"
                       onClick={() => setLocation("/hive")}
-                      style={{
-                        backgroundImage: `url(${papercut.textures.paperGold})`,
-                        backgroundSize: "200px 200px",
-                        backgroundRepeat: "repeat",
-                      }}
                     >
                       Browse The Hive
                     </Button>
@@ -349,12 +331,7 @@ export default function Sessions() {
 
             {/* ── RIGHT: Sacred Call Space ─────────────────────────── */}
             <div
-              className="flex-1 rounded-xl shadow-lg overflow-hidden min-h-[480px]"
-              style={{
-                backgroundImage: `url(${papercut.textures.flatCream})`,
-                backgroundSize: "256px 256px",
-                backgroundRepeat: "repeat",
-              }}
+              className="flex-1 rounded-xl shadow-lg overflow-hidden min-h-[480px] bg-cream"
             >
               {/* Subtle parchment relief */}
               <div

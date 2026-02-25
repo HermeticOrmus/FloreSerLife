@@ -4,7 +4,6 @@ import Footer from "@/components/layout/footer";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { PaperCutBanner } from "@/components/landing/PaperCutBanner";
 import { PaperCutHexCard } from "@/components/nature/PaperCutHexCard";
-import { papercut } from "@/assets";
 import {
   Heart,
   Shield,
@@ -56,28 +55,28 @@ const values = [
     title: "Nature-Inspired",
     description:
       "Every element of FloreSer grows from the rhythms and wisdom of the natural world. From our pollinator archetypes to our garden metaphors, nature is our guiding teacher.",
-    texture: "paperClay" as const,
+    bg: "bg-earth-100",
     hasPattern: false,
   },
   {
     title: "Ethical by Design",
     description:
       "No dark patterns. No addiction mechanics. No data extraction. We build technology that empowers you, respects your time, and honours your autonomy.",
-    texture: "cream" as const,
+    bg: "bg-cream/50",
     hasPattern: true,
   },
   {
     title: "Community of Care",
     description:
       "FloreSer is a living ecosystem, not a listing. Every facilitator is part of the Hive, contributing their wisdom to a shared field of growth and presence.",
-    texture: "paperClay" as const,
+    bg: "bg-earth-100",
     hasPattern: false,
   },
   {
     title: "Sacred Growth",
     description:
       "Your journey is honoured at every stage. Whether you are a seed just beginning or a garden in full bloom, you are welcomed, supported, and seen.",
-    texture: "cream" as const,
+    bg: "bg-cream/50",
     hasPattern: true,
   },
 ];
@@ -149,53 +148,24 @@ export default function About() {
   );
 
   return (
-    <div
-      className="min-h-screen text-papercut-neutral-dark"
-      style={{
-        backgroundImage: `url(${papercut.textures.paperUI})`,
-        backgroundSize: "256px 256px",
-        backgroundRepeat: "repeat",
-        backgroundColor: "#faf8f5",
-      }}
-    >
+    <div className="min-h-screen text-papercut-neutral-dark bg-earth-50">
       <Header />
 
       {/* Hero Panel - Layered paper hills with Tudor rose */}
       <section className="relative overflow-hidden py-20 lg:py-28">
-        {/* Layered paper hill shapes */}
+        {/* Layered hill shapes with solid colors */}
         <div className="absolute inset-0 pointer-events-none">
-          {/* Back hill - clay */}
           <div
-            className="absolute bottom-0 left-0 right-0 h-[60%]"
-            style={{
-              backgroundImage: `url(${papercut.textures.paperClay})`,
-              backgroundSize: "200px 200px",
-              backgroundRepeat: "repeat",
-              clipPath: "ellipse(80% 100% at 50% 100%)",
-              opacity: 0.3,
-            }}
+            className="absolute bottom-0 left-0 right-0 h-[60%] bg-papercut-earth-300/30"
+            style={{ clipPath: "ellipse(80% 100% at 50% 100%)" }}
           />
-          {/* Mid hill - cream/blush */}
           <div
-            className="absolute bottom-0 left-0 right-0 h-[45%]"
-            style={{
-              backgroundImage: `url(${papercut.textures.cream})`,
-              backgroundSize: "200px 200px",
-              backgroundRepeat: "repeat",
-              clipPath: "ellipse(70% 100% at 40% 100%)",
-              opacity: 0.25,
-            }}
+            className="absolute bottom-0 left-0 right-0 h-[45%] bg-papercut-earth-50/25"
+            style={{ clipPath: "ellipse(70% 100% at 40% 100%)" }}
           />
-          {/* Front hill - soft gold */}
           <div
-            className="absolute bottom-0 left-0 right-0 h-[30%]"
-            style={{
-              backgroundImage: `url(${papercut.textures.paperGold})`,
-              backgroundSize: "200px 200px",
-              backgroundRepeat: "repeat",
-              clipPath: "ellipse(60% 100% at 60% 100%)",
-              opacity: 0.15,
-            }}
+            className="absolute bottom-0 left-0 right-0 h-[30%] bg-gold/15"
+            style={{ clipPath: "ellipse(60% 100% at 60% 100%)" }}
           />
         </div>
 
@@ -301,30 +271,12 @@ export default function About() {
             whileInView="visible"
             viewport={{ once: true, margin: "-50px" }}
           >
-            {values.map((value, index) => {
-              const texture =
-                papercut.textures[value.texture as keyof typeof papercut.textures];
-
-              return (
+            {values.map((value, index) => (
                 <motion.div
                   key={value.title}
                   variants={fadeUp}
-                  className="relative rounded-2xl overflow-hidden p-8 shadow-md"
-                  style={{
-                    backgroundImage: `url(${texture})`,
-                    backgroundSize: "200px 200px",
-                    backgroundRepeat: "repeat",
-                  }}
+                  className={`relative rounded-2xl overflow-hidden p-8 shadow-md border border-sage/15 ${value.bg}`}
                 >
-                  {/* Subtle relief overlay */}
-                  <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{
-                      background:
-                        "linear-gradient(145deg, rgba(255,255,255,0.12) 0%, transparent 50%, rgba(0,0,0,0.04) 100%)",
-                    }}
-                  />
-
                   {/* Decorative motif on patterned cards */}
                   {value.hasPattern && (
                     <div
@@ -347,7 +299,7 @@ export default function About() {
                     </div>
                   )}
 
-                  <div className="relative z-10 bg-white/50 backdrop-blur-[1px] rounded-xl p-5">
+                  <div className="relative z-10">
                     <h3 className="font-heading text-xl font-bold text-forest mb-3">
                       {value.title}
                     </h3>
@@ -356,8 +308,7 @@ export default function About() {
                     </p>
                   </div>
                 </motion.div>
-              );
-            })}
+            ))}
           </motion.div>
         </div>
       </section>

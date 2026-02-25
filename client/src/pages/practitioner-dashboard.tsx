@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { Badge } from "@/components/ui/badge";
-import { papercut } from "@/assets";
+
 import {
   Calendar,
   MessageSquare,
@@ -75,9 +75,7 @@ function HexCard({
         className="relative w-full h-full flex flex-col items-center justify-center shadow-lg hover:shadow-xl transition-shadow"
         style={{
           clipPath: HEX_CLIP,
-          backgroundImage: `url(${texture})`,
-          backgroundSize: "200px 200px",
-          backgroundRepeat: "repeat",
+          backgroundColor: texture,
         }}
       >
         {/* Paper-cut relief overlay */}
@@ -134,9 +132,7 @@ function SoulProfileHex({
         className="relative w-full h-full flex flex-col items-center justify-center shadow-lg"
         style={{
           clipPath: HEX_CLIP,
-          backgroundImage: `url(${papercut.textures.cream})`,
-          backgroundSize: "200px 200px",
-          backgroundRepeat: "repeat",
+          backgroundColor: "#F5F5DC",
         }}
       >
         {/* Subtle relief */}
@@ -244,7 +240,7 @@ const hiveHexes: HiveHex[] = [
     id: "sessions",
     label: "Sessions",
     icon: Calendar,
-    texture: "paperSage",
+    texture: "#9CAF88",
     slot: "tl",
     route: "/sessions",
   },
@@ -252,14 +248,14 @@ const hiveHexes: HiveHex[] = [
     id: "earnings",
     label: "Earnings",
     icon: DollarSign,
-    texture: "paperGold",
+    texture: "#D4AF37",
     slot: "tr",
   },
   {
     id: "messages",
     label: "Messages",
     icon: MessageSquare,
-    texture: "paperClay",
+    texture: "#D7C3A8",
     slot: "bl",
     route: "/messages",
   },
@@ -267,7 +263,7 @@ const hiveHexes: HiveHex[] = [
     id: "metrics",
     label: "Practice",
     icon: BarChart3,
-    texture: "paperForest",
+    texture: "#4A6741",
     slot: "br",
   },
 ];
@@ -438,9 +434,7 @@ export default function PractitionerDashboard() {
                 className="relative w-full h-full flex flex-col items-center justify-center shadow-xl hover:shadow-2xl transition-shadow"
                 style={{
                   clipPath: HEX_CLIP,
-                  backgroundImage: `url(${papercut.textures.paperCrimson})`,
-                  backgroundSize: "200px 200px",
-                  backgroundRepeat: "repeat",
+                  backgroundColor: "#A23C40",
                 }}
               >
                 {/* Relief overlay */}
@@ -483,10 +477,6 @@ export default function PractitionerDashboard() {
             {/* Surrounding hex cards */}
             {hiveHexes.map((hex, index) => {
               const pos = getHexPosition(hex.slot);
-              const texture =
-                papercut.textures[
-                  hex.texture as keyof typeof papercut.textures
-                ];
 
               return (
                 <div
@@ -499,7 +489,7 @@ export default function PractitionerDashboard() {
                 >
                   <HexCard
                     size={MEDIUM_HEX}
-                    texture={texture}
+                    texture={hex.texture}
                     label={hex.label}
                     icon={hex.icon}
                     value={getHexValue(hex.id)}
@@ -521,7 +511,7 @@ export default function PractitionerDashboard() {
             >
               <HexCard
                 size={ECO_HEX}
-                texture={papercut.textures.paperEarth}
+                texture="#7D6F5E"
                 label="Ecosystem"
                 icon={TreePine}
                 value=""
@@ -581,9 +571,7 @@ export default function PractitionerDashboard() {
               className="relative w-full h-full flex flex-col items-center justify-center shadow-lg"
               style={{
                 clipPath: HEX_CLIP,
-                backgroundImage: `url(${papercut.textures.paperCrimson})`,
-                backgroundSize: "200px 200px",
-                backgroundRepeat: "repeat",
+                backgroundColor: "#A23C40",
               }}
             >
               <div
@@ -615,11 +603,6 @@ export default function PractitionerDashboard() {
           {/* 2x2 grid of surrounding hex cards */}
           <div className="grid grid-cols-2 gap-4 max-w-xs mx-auto">
             {hiveHexes.map((hex, index) => {
-              const texture =
-                papercut.textures[
-                  hex.texture as keyof typeof papercut.textures
-                ];
-
               return (
                 <motion.div
                   key={hex.id}
@@ -641,9 +624,7 @@ export default function PractitionerDashboard() {
                       className="relative w-full h-full flex flex-col items-center justify-center shadow-lg active:shadow-md transition-shadow"
                       style={{
                         clipPath: HEX_CLIP,
-                        backgroundImage: `url(${texture})`,
-                        backgroundSize: "200px 200px",
-                        backgroundRepeat: "repeat",
+                        backgroundColor: hex.texture,
                       }}
                     >
                       <div
@@ -686,9 +667,7 @@ export default function PractitionerDashboard() {
                 className="relative w-full h-full flex flex-col items-center justify-center shadow-lg active:shadow-md transition-shadow"
                 style={{
                   clipPath: HEX_CLIP,
-                  backgroundImage: `url(${papercut.textures.paperEarth})`,
-                  backgroundSize: "200px 200px",
-                  backgroundRepeat: "repeat",
+                  backgroundColor: "#7D6F5E",
                 }}
               >
                 <div

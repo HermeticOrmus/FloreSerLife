@@ -6,7 +6,6 @@ import Footer from "@/components/layout/footer";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { papercut } from "@/assets";
 import {
   User,
   Shield,
@@ -342,12 +341,7 @@ export default function ProfileSettings() {
           <div className="flex flex-col md:flex-row gap-6 max-w-5xl mx-auto">
             {/* ── LEFT: Profile Card ──────────────────────────────── */}
             <div
-              className="md:w-[280px] flex-shrink-0 rounded-xl shadow-lg overflow-hidden"
-              style={{
-                backgroundImage: `url(${papercut.textures.flatCream})`,
-                backgroundSize: "256px 256px",
-                backgroundRepeat: "repeat",
-              }}
+              className="md:w-[280px] flex-shrink-0 rounded-xl shadow-lg overflow-hidden bg-cream"
             >
               <div className="relative p-6">
                 {/* Subtle relief */}
@@ -365,12 +359,9 @@ export default function ProfileSettings() {
                     {growthStages.map((stage) => (
                       <div
                         key={stage.label}
-                        className="w-8 h-8 flex items-center justify-center shadow-sm"
+                        className="w-8 h-8 flex items-center justify-center shadow-sm bg-sage/20"
                         style={{
                           clipPath: HEX_CLIP,
-                          backgroundImage: `url(${papercut.textures.paperSage})`,
-                          backgroundSize: "60px 60px",
-                          backgroundRepeat: "repeat",
                         }}
                         title={stage.label}
                       >
@@ -382,12 +373,9 @@ export default function ProfileSettings() {
                   {/* Hexagonal portrait */}
                   <div className="flex justify-center mb-4">
                     <div
-                      className="w-24 h-24 flex items-center justify-center shadow-md"
+                      className="w-24 h-24 flex items-center justify-center shadow-md bg-earth-200"
                       style={{
                         clipPath: HEX_CLIP,
-                        backgroundImage: `url(${papercut.textures.paperClay})`,
-                        backgroundSize: "120px 120px",
-                        backgroundRepeat: "repeat",
                       }}
                     >
                       <span className="text-3xl font-heading font-bold text-white drop-shadow-sm">
@@ -414,17 +402,8 @@ export default function ProfileSettings() {
                           whileTap={{ scale: 0.98 }}
                           onClick={() => setActiveSection(section.id)}
                           className={`w-full flex items-center gap-3 px-4 py-3 rounded-full text-left transition-all text-sm ${
-                            isActive ? "shadow-md" : "hover:bg-white/40"
+                            isActive ? "shadow-md bg-sage/20" : "hover:bg-white/40"
                           }`}
-                          style={
-                            isActive
-                              ? {
-                                  backgroundImage: `url(${papercut.textures.flatSage})`,
-                                  backgroundSize: "200px 200px",
-                                  backgroundRepeat: "repeat",
-                                }
-                              : undefined
-                          }
                         >
                           <SectionIcon
                             className={`w-4 h-4 ${
@@ -452,12 +431,7 @@ export default function ProfileSettings() {
 
             {/* ── RIGHT: Content Panel ────────────────────────────── */}
             <div
-              className="flex-1 rounded-xl shadow-lg overflow-hidden min-h-[520px]"
-              style={{
-                backgroundImage: `url(${papercut.textures.flatCream})`,
-                backgroundSize: "256px 256px",
-                backgroundRepeat: "repeat",
-              }}
+              className="flex-1 rounded-xl shadow-lg overflow-hidden min-h-[520px] bg-cream"
             >
               <div className="relative p-8 md:p-10">
                 {/* Subtle relief */}

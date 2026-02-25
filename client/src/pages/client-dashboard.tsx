@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { Badge } from "@/components/ui/badge";
-import { papercut } from "@/assets";
+
 import {
   Calendar,
   MessageSquare,
@@ -24,7 +24,7 @@ interface GardenCircle {
   title: string;
   icon: LucideIcon;
   route: string;
-  bgTexture: string;
+  bgColor: string;
   textColor: string;
 }
 
@@ -34,7 +34,7 @@ const gardenCircles: GardenCircle[] = [
     title: "My Next Session",
     icon: Calendar,
     route: "/sessions",
-    bgTexture: "paperSage",
+    bgColor: "#9CAF88",
     textColor: "text-white",
   },
   {
@@ -42,7 +42,7 @@ const gardenCircles: GardenCircle[] = [
     title: "Book a Session",
     icon: Search,
     route: "/hive",
-    bgTexture: "paperGold",
+    bgColor: "#D4AF37",
     textColor: "text-white",
   },
   {
@@ -50,7 +50,7 @@ const gardenCircles: GardenCircle[] = [
     title: "Favorite Pollinators",
     icon: Heart,
     route: "/favorites",
-    bgTexture: "paperClay",
+    bgColor: "#D7C3A8",
     textColor: "text-white",
   },
   {
@@ -58,7 +58,7 @@ const gardenCircles: GardenCircle[] = [
     title: "My Sessions",
     icon: Star,
     route: "/sessions",
-    bgTexture: "paperForest",
+    bgColor: "#4A6741",
     textColor: "text-white",
   },
   {
@@ -66,7 +66,7 @@ const gardenCircles: GardenCircle[] = [
     title: "My Hidden Garden",
     icon: Lock,
     route: "/journal",
-    bgTexture: "paperEarth",
+    bgColor: "#7D6F5E",
     textColor: "text-white",
   },
   {
@@ -74,7 +74,7 @@ const gardenCircles: GardenCircle[] = [
     title: "Messages",
     icon: MessageSquare,
     route: "/garden",
-    bgTexture: "paperCrimson",
+    bgColor: "#A23C40",
     textColor: "text-white",
   },
 ];
@@ -172,10 +172,6 @@ export default function ClientDashboard() {
             {gardenCircles.map((circle, index) => {
               const pos = getCirclePosition(index);
               const Icon = circle.icon;
-              const texture =
-                papercut.textures[
-                  circle.bgTexture as keyof typeof papercut.textures
-                ];
 
               return (
                 <motion.button
@@ -197,9 +193,7 @@ export default function ClientDashboard() {
                     height: CIRCLE_SIZE,
                     top: CONTAINER_SIZE / 2 - CIRCLE_SIZE / 2 + pos.y,
                     left: CONTAINER_SIZE / 2 - CIRCLE_SIZE / 2 + pos.x,
-                    backgroundImage: `url(${texture})`,
-                    backgroundSize: "200px 200px",
-                    backgroundRepeat: "repeat",
+                    backgroundColor: circle.bgColor,
                   }}
                 >
                   {/* Paper-cut relief overlay */}
@@ -249,10 +243,6 @@ export default function ClientDashboard() {
           <div className="grid grid-cols-2 gap-5 max-w-sm mx-auto">
             {gardenCircles.map((circle, index) => {
               const Icon = circle.icon;
-              const texture =
-                papercut.textures[
-                  circle.bgTexture as keyof typeof papercut.textures
-                ];
 
               return (
                 <motion.button
@@ -268,9 +258,7 @@ export default function ClientDashboard() {
                   onClick={() => handleCircleClick(circle.route)}
                   className="relative aspect-square rounded-full flex flex-col items-center justify-center shadow-lg active:shadow-md transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
                   style={{
-                    backgroundImage: `url(${texture})`,
-                    backgroundSize: "200px 200px",
-                    backgroundRepeat: "repeat",
+                    backgroundColor: circle.bgColor,
                   }}
                 >
                   <div

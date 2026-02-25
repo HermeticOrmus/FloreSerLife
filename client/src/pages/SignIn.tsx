@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, Sparkles } from "lucide-react";
-import { logos, papercut } from "@/assets";
+import { logos } from "@/assets";
 import { queryClient } from "@/lib/queryClient";
 
 export default function SignIn() {
@@ -64,14 +64,7 @@ export default function SignIn() {
   };
 
   return (
-    <div
-      className="min-h-screen relative overflow-hidden flex items-center justify-center p-4"
-      style={{
-        backgroundImage: `url(${papercut.textures.paperUI})`,
-        backgroundSize: '256px 256px',
-        backgroundRepeat: 'repeat',
-      }}
-    >
+    <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-4 bg-earth-50">
       {/* Subtle color overlay on paper texture */}
       <div className="absolute inset-0 bg-gradient-to-br from-cream/30 via-light-green/10 to-hive-accent/5" />
 

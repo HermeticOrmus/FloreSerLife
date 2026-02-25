@@ -3,7 +3,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Coins, TrendingUp } from "lucide-react";
 import { getTierName } from "./types";
-import { papercut } from "@/assets";
 
 interface SeedsBalanceProps {
   seedsData: { seedsBalance: number };
@@ -17,14 +16,7 @@ export default function SeedsBalance({ seedsData }: SeedsBalanceProps) {
       transition={{ delay: 0.4 }}
       className="mb-8"
     >
-      <Card
-        className="border-0 rounded-card shadow-card-sm relative overflow-hidden"
-        style={{
-          backgroundImage: `url(${papercut.textures.paperGold})`,
-          backgroundSize: "256px 256px",
-          backgroundRepeat: "repeat",
-        }}
-      >
+      <Card className="border-0 rounded-card shadow-card-sm relative overflow-hidden bg-gold/20">
         <div className="absolute inset-0 bg-gradient-to-r from-garden-accent-light/80 to-garden-accent/30" />
         <CardContent className="p-6 relative z-10">
           <div className="flex items-center justify-between flex-wrap gap-4">

@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, User, ArrowRight, Sparkles } from "lucide-react";
-import { archetypeIcons, papercut } from "@/assets";
+import { archetypeIcons } from "@/assets";
 import { archetypeDefinitions, type Practitioner } from "@shared/schema";
 import { cn } from "@/lib/utils";
 
@@ -17,10 +17,10 @@ type PractitionerWithUser = Practitioner & {
 
 // Map archetypes to their card, badge variants, and paper textures
 const archetypeStyles = {
-  bee: { card: "bee" as const, badge: "bee" as const, accent: "hive-accent", texture: papercut.textures.paperGold },
-  butterfly: { card: "butterfly" as const, badge: "butterfly" as const, accent: "garden-accent", texture: papercut.textures.paperSage },
-  beetle: { card: "beetle" as const, badge: "beetle" as const, accent: "earth-600", texture: papercut.textures.paperEarth },
-  hummingbird: { card: "hummingbird" as const, badge: "hummingbird" as const, accent: "gold", texture: papercut.textures.paperGold },
+  bee: { card: "bee" as const, badge: "bee" as const, accent: "hive-accent", solidBg: "bg-gold hover:bg-gold/90" },
+  butterfly: { card: "butterfly" as const, badge: "butterfly" as const, accent: "garden-accent", solidBg: "bg-sage hover:bg-sage/90" },
+  beetle: { card: "beetle" as const, badge: "beetle" as const, accent: "earth-600", solidBg: "bg-earth-600 hover:bg-earth-700" },
+  hummingbird: { card: "hummingbird" as const, badge: "hummingbird" as const, accent: "gold", solidBg: "bg-gold hover:bg-gold/90" },
 };
 
 export default function FeaturedPractitioners() {
@@ -87,12 +87,7 @@ export default function FeaturedPractitioners() {
             <Button
               variant="outline"
               size="lg"
-              className="hidden md:flex group hover:opacity-90"
-              style={{
-                backgroundImage: `url(${papercut.textures.paperUI})`,
-                backgroundSize: '200px 200px',
-                backgroundRepeat: 'repeat',
-              }}
+              className="hidden md:flex group bg-white hover:bg-earth-50 border-sage/20"
             >
               Explore All Practitioners
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -136,12 +131,7 @@ export default function FeaturedPractitioners() {
               </p>
               <Button
                 variant="hummingbird"
-                className="mt-6 hover:opacity-90"
-                style={{
-                  backgroundImage: `url(${papercut.textures.paperGold})`,
-                  backgroundSize: '200px 200px',
-                  backgroundRepeat: 'repeat',
-                }}
+                className="mt-6 bg-gold hover:bg-gold/90 text-white"
               >
                 <Sparkles className="w-4 h-4 mr-2" />
                 Get Notified
@@ -239,13 +229,8 @@ export default function FeaturedPractitioners() {
                         <Button
                           variant={style.card === "bee" ? "bee" : style.card === "butterfly" ? "butterfly" : style.card === "beetle" ? "beetle" : "hummingbird"}
                           size="sm"
-                          className="rounded-full text-white hover:opacity-90"
+                          className={`rounded-full text-white ${style.solidBg}`}
                           data-testid="button-view-profile"
-                          style={{
-                            backgroundImage: `url(${style.texture})`,
-                            backgroundSize: '150px 150px',
-                            backgroundRepeat: 'repeat',
-                          }}
                         >
                           View Profile
                         </Button>
@@ -264,12 +249,7 @@ export default function FeaturedPractitioners() {
             <Button
               variant="hummingbird"
               size="lg"
-              className="group text-white hover:opacity-90"
-              style={{
-                backgroundImage: `url(${papercut.textures.paperGold})`,
-                backgroundSize: '200px 200px',
-                backgroundRepeat: 'repeat',
-              }}
+              className="group text-white bg-gold hover:bg-gold/90"
             >
               Explore All Practitioners
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />

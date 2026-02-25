@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { logos, papercut } from "@/assets";
+import { logos } from "@/assets";
 import { cn } from "@/lib/utils";
 
 export default function Header() {
@@ -102,14 +102,9 @@ export default function Header() {
             </Button>
             <Button
               variant="hummingbird"
-              className="w-full text-white hover:opacity-90"
+              className="w-full text-white bg-gold hover:bg-gold/90"
               onClick={handleJoinFloreSer}
               data-testid="button-mobile-join-floreser"
-              style={{
-                backgroundImage: `url(${papercut.textures.paperGold})`,
-                backgroundSize: '200px 200px',
-                backgroundRepeat: 'repeat',
-              }}
             >
               <Sparkles className="w-4 h-4 mr-2" />
               Start Your Journey
@@ -139,15 +134,7 @@ export default function Header() {
           : "bg-white shadow-card-sm border-b border-sage/20"
       )}
     >
-      {/* Paper texture background - all screen sizes */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-60"
-        style={{
-          backgroundImage: `url(${papercut.textures.paperUI})`,
-          backgroundSize: '256px 256px',
-          backgroundRepeat: 'repeat',
-        }}
-      />
+      {/* Clean background */}
       <nav className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -209,12 +196,7 @@ export default function Header() {
                   variant="hummingbird"
                   onClick={handleJoinFloreSer}
                   data-testid="button-join-floreser-desktop"
-                  className="text-white hover:opacity-90"
-                  style={{
-                    backgroundImage: `url(${papercut.textures.paperGold})`,
-                    backgroundSize: '200px 200px',
-                    backgroundRepeat: 'repeat',
-                  }}
+                  className="text-white bg-gold hover:bg-gold/90"
                 >
                   <Sparkles className="w-4 h-4 mr-1" />
                   Start Your Journey

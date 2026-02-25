@@ -273,12 +273,7 @@ export default function Garden() {
 
   return (
     <div
-      className="flex min-h-screen"
-      style={{
-        backgroundImage: `url(${papercut.textures.paperUI})`,
-        backgroundSize: "256px 256px",
-        backgroundRepeat: "repeat",
-      }}
+      className="flex min-h-screen bg-earth-50"
     >
       {/* Sidebar */}
       <GardenSidebar
