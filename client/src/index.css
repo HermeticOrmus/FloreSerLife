@@ -290,10 +290,10 @@
     content: '';
     position: absolute;
     inset: 0;
-    background-image: url('/src/assets/images/papercut/generated/depth/origami-washi-light.png');
+    background-image: url('/src/assets/images/papercut/generated/depth/origami-washi-warm.png');
     background-size: 512px 512px;
     background-repeat: repeat;
-    opacity: 0.35;
+    opacity: 0.6;
     pointer-events: none;
     z-index: 0;
     border-radius: inherit;
@@ -306,7 +306,7 @@
 
   /* Stronger paper feel for hero/feature sections */
   .origami-paper-strong::before {
-    opacity: 0.2;
+    opacity: 0.8;
   }
 
   /* Dark variant — inverted paper grain for dark backgrounds */
@@ -321,7 +321,7 @@
     background-image: url('/src/assets/images/papercut/generated/depth/origami-washi-forest.png');
     background-size: 512px 512px;
     background-repeat: repeat;
-    opacity: 0.15;
+    opacity: 0.25;
     pointer-events: none;
     z-index: 0;
     border-radius: inherit;
@@ -336,8 +336,8 @@
      A thin line with subtle shadow suggesting paper folded along it. */
   .origami-crease {
     position: relative;
-    height: 2px;
-    background: linear-gradient(to right, transparent 5%, rgba(47, 79, 79, 0.08) 30%, rgba(47, 79, 79, 0.12) 50%, rgba(47, 79, 79, 0.08) 70%, transparent 95%);
+    height: 3px;
+    background: linear-gradient(to right, transparent 5%, rgba(47, 79, 79, 0.06) 20%, rgba(47, 79, 79, 0.15) 50%, rgba(47, 79, 79, 0.06) 80%, transparent 95%);
   }
 
   .origami-crease::after {
@@ -346,8 +346,8 @@
     bottom: -1px;
     left: 0;
     right: 0;
-    height: 1px;
-    background: linear-gradient(to right, transparent 5%, rgba(255, 255, 255, 0.5) 30%, rgba(255, 255, 255, 0.7) 50%, rgba(255, 255, 255, 0.5) 70%, transparent 95%);
+    height: 2px;
+    background: linear-gradient(to right, transparent 5%, rgba(255, 255, 255, 0.6) 20%, rgba(255, 255, 255, 0.9) 50%, rgba(255, 255, 255, 0.6) 80%, transparent 95%);
   }
 
   /* Corner fold — the classic origami dog-ear.
@@ -362,16 +362,17 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: 24px;
-    height: 24px;
-    background: linear-gradient(225deg, rgba(47, 79, 79, 0.06) 50%, transparent 50%);
-    border-bottom-left-radius: 2px;
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(225deg, rgba(47, 79, 79, 0.08) 48%, rgba(47, 79, 79, 0.15) 49%, rgba(47, 79, 79, 0.15) 51%, transparent 52%);
+    border-bottom-left-radius: 3px;
+    z-index: 2;
   }
 
   /* Larger corner fold for feature cards */
   .origami-corner-lg::after {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
   }
 
   /* Fold shadow — subtle linear shadow suggesting a gentle fold */
