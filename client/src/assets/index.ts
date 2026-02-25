@@ -51,6 +51,13 @@ import depthTexturePaperForest from './images/papercut/generated/depth/depth-tex
 import depthTexturePaperCrimson from './images/papercut/generated/depth/depth-texture-paper-crimson.png';
 import depthTexturePaperEarth from './images/papercut/generated/depth/depth-texture-paper-earth.png';
 
+// Origami washi textures (authentic Japanese paper feel)
+import origamiWashiLight from './images/papercut/generated/depth/origami-washi-light.png';
+import origamiWashiWarm from './images/papercut/generated/depth/origami-washi-warm.png';
+import origamiWashiForest from './images/papercut/generated/depth/origami-washi-forest.png';
+import origamiCornerFold from './images/papercut/generated/depth/origami-corner-fold.png';
+import origamiCreaseHorizontal from './images/papercut/generated/depth/origami-crease-horizontal.png';
+
 // Flat textures (for interactive surfaces - cards, forms, journals)
 import depthTextureFlatCream from './images/papercut/generated/depth/depth-texture-flat-cream.png';
 import depthTextureFlatSage from './images/papercut/generated/depth/depth-texture-flat-sage.png';
@@ -91,6 +98,16 @@ import depthWavyHorizon from './images/papercut/generated/depth/depth-wavy-horiz
 
 // Full hero background (sky + land combined) - Midjourney with proper depth style (1632x2912)
 import depthHeroBackground from './images/papercut/generated/depth/flore-ser-landing-hero-page.png';
+
+// =============================================================================
+// HERO PIXEL ART (PixelLab API - papercraft style, transparent backgrounds)
+// =============================================================================
+import heroPixelSprout from './images/hero-pixelart/sprout-512px.png';
+import heroPixelSun from './images/hero-pixelart/sun-512px.png';
+import heroPixelBee from './images/hero-pixelart/bee-256px.png';
+import heroPixelHummingbird from './images/hero-pixelart/hummingbird-256px.png';
+import heroPixelButterfly from './images/hero-pixelart/butterfly-256px.png';
+import heroPixelBeetle from './images/hero-pixelart/beetle-256px.png';
 
 // =============================================================================
 // TRANSPARENT VERSIONS (Background removed)
@@ -188,6 +205,16 @@ export const papercut = {
     flatCrimson: depthTextureFlatCrimson,
     flatClay: depthTextureFlatClay,
     flatEarth: depthTextureFlatEarth,
+    // Origami washi paper textures
+    washiLight: origamiWashiLight,
+    washiWarm: origamiWashiWarm,
+    washiForest: origamiWashiForest,
+  },
+
+  // Origami elements
+  origami: {
+    cornerFold: origamiCornerFold,
+    creaseHorizontal: origamiCreaseHorizontal,
   },
 
   // Pattern overlays
@@ -243,6 +270,18 @@ export const papercut = {
     sunGlow: depthHeroSunGlowTransparent,
     treeWithPollinators: depthHeroTreePollinatorsTransparent,
   },
+} as const;
+
+// =============================================================================
+// EXPORTS - HERO PIXEL ART
+// =============================================================================
+export const heroPixelart = {
+  sprout: heroPixelSprout,
+  sun: heroPixelSun,
+  bee: heroPixelBee,
+  hummingbird: heroPixelHummingbird,
+  butterfly: heroPixelButterfly,
+  beetle: heroPixelBeetle,
 } as const;
 
 // =============================================================================

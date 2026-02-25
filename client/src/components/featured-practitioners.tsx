@@ -79,7 +79,7 @@ export default function FeaturedPractitioners() {
             ))}
           </div>
         ) : practitioners.length === 0 ? (
-          <div className="text-center py-20 border border-forest/10 rounded-lg">
+          <div className="text-center py-20 border border-forest/10 rounded-lg origami-paper origami-corner">
             <User className="w-10 h-10 text-forest/20 mx-auto mb-6" strokeWidth={1.5} />
             <h3 className="font-heading text-lg text-forest mb-3">
               Practitioners Coming Soon
@@ -100,7 +100,7 @@ export default function FeaturedPractitioners() {
               return (
                 <div
                   key={practitioner.id}
-                  className="border border-forest/10 rounded-lg overflow-hidden group hover:border-forest/20 transition-colors"
+                  className="border border-forest/10 rounded-lg overflow-hidden group hover:border-forest/20 transition-colors origami-paper origami-corner origami-fold-shadow"
                 >
                   <div className="aspect-[4/3] bg-forest/[0.03] flex items-center justify-center">
                     <div className="flex flex-col items-center">

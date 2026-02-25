@@ -110,9 +110,9 @@ export default function Header() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 transition-all duration-300 bg-white",
+        "sticky top-0 z-50 transition-all duration-300 bg-white origami-paper",
         isScrolled
-          ? "shadow-sm border-b border-forest/5"
+          ? "origami-fold-shadow border-b border-forest/5"
           : "border-b border-forest/10"
       )}
     >

@@ -4,14 +4,14 @@ import { Sparkles } from "lucide-react";
 import { useLocation } from "wouter";
 
 /**
- * Hero section — Japanese minimalism.
- * The illustration speaks. Everything else steps back.
+ * Hero section — Origami.
+ * Paper texture canvas. The illustration speaks. Clean folds divide.
  */
 export function HeroSection() {
   const [, setLocation] = useLocation();
 
   return (
-    <section className="relative w-full bg-white">
+    <section className="relative w-full origami-paper origami-paper-strong">
       <div className="relative z-10 flex flex-col items-center min-h-[75vh] md:min-h-[80vh] px-4 pt-24 md:pt-32 pb-16">
         {/* Central sprout — the only visual */}
         <div className="flex-1 flex items-center justify-center">
@@ -42,8 +42,8 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Single fold line — the only ornament */}
-      <div className="h-px bg-gradient-to-r from-transparent via-sage/30 to-transparent" />
+      {/* Origami crease — fold between sections */}
+      <div className="origami-crease" />
     </section>
   );
 }

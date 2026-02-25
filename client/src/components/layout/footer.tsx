@@ -3,7 +3,7 @@ import { logos } from "@/assets";
 
 export default function Footer() {
   return (
-    <footer className="bg-forest text-white/80 py-16">
+    <footer className="bg-forest text-white/80 py-16 origami-paper-dark">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="grid md:grid-cols-4 gap-10 mb-12">
           <div>

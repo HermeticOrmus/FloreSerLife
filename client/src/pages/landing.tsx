@@ -70,7 +70,7 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white text-forest">
+    <div className="min-h-screen bg-white text-forest origami-paper">
       <Header />
 
       <HeroSection />
@@ -101,7 +101,7 @@ export default function Landing() {
       </section>
 
       {/* Fold line */}
-      <div className="h-px bg-gradient-to-r from-transparent via-forest/10 to-transparent" />
+      <div className="origami-crease" />
 
       {/* Meet mAIa — clean layout */}
       <section className="py-24 md:py-32">
@@ -149,7 +149,7 @@ export default function Landing() {
       </section>
 
       {/* Fold line */}
-      <div className="h-px bg-gradient-to-r from-transparent via-forest/10 to-transparent" />
+      <div className="origami-crease" />
 
       {/* What Makes FloreSer Different — clean grid, no hexagons */}
       <section className="py-24 md:py-32">
@@ -163,9 +163,9 @@ export default function Landing() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {values.map((item) => (
-              <div key={item.title} className="text-center">
+              <div key={item.title} className="text-center p-8 border border-forest/8 rounded-lg origami-paper origami-corner origami-fold-shadow">
                 <item.icon className="w-8 h-8 text-forest/30 mx-auto mb-5" strokeWidth={1.5} />
                 <h3 className="font-heading text-lg text-forest mb-2">
                   {item.title}
@@ -180,13 +180,13 @@ export default function Landing() {
       </section>
 
       {/* Fold line */}
-      <div className="h-px bg-gradient-to-r from-transparent via-forest/10 to-transparent" />
+      <div className="origami-crease" />
 
       {/* Featured Practitioners */}
       <FeaturedPractitioners />
 
       {/* Fold line */}
-      <div className="h-px bg-gradient-to-r from-transparent via-forest/10 to-transparent" />
+      <div className="origami-crease" />
 
       {/* For Facilitators CTA */}
       <ForFacilitatorsCTA />
