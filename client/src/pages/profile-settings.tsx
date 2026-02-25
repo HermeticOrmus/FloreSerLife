@@ -6,6 +6,7 @@ import Footer from "@/components/layout/footer";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { papercut } from "@/assets";
 import {
   User,
   Shield,
@@ -314,7 +315,14 @@ export default function ProfileSettings() {
   const userName = [user?.firstName, user?.lastName].filter(Boolean).join(" ") || "User";
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div
+      className="min-h-screen bg-cream"
+      style={{
+        backgroundImage: `url(${papercut.textures.flatCream})`,
+        backgroundSize: '512px 512px',
+        backgroundRepeat: 'repeat',
+      }}
+    >
       <Header />
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
@@ -342,6 +350,11 @@ export default function ProfileSettings() {
             {/* ── LEFT: Profile Card ──────────────────────────────── */}
             <div
               className="md:w-[280px] flex-shrink-0 rounded-xl shadow-lg overflow-hidden bg-cream"
+              style={{
+                backgroundImage: `url(${papercut.textures.flatSage})`,
+                backgroundSize: '512px 512px',
+                backgroundRepeat: 'repeat',
+              }}
             >
               <div className="relative p-6">
                 {/* Subtle relief */}
@@ -432,6 +445,11 @@ export default function ProfileSettings() {
             {/* ── RIGHT: Content Panel ────────────────────────────── */}
             <div
               className="flex-1 rounded-xl shadow-lg overflow-hidden min-h-[520px] bg-cream"
+              style={{
+                backgroundImage: `url(${papercut.textures.flatCream})`,
+                backgroundSize: '512px 512px',
+                backgroundRepeat: 'repeat',
+              }}
             >
               <div className="relative p-8 md:p-10">
                 {/* Subtle relief */}

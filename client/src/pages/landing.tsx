@@ -9,7 +9,7 @@ import { HexagonGrid } from "@/components/landing/HexagonGrid";
 import ForFacilitatorsCTA from "@/components/landing/ForFacilitatorsCTA";
 import FeaturedPractitioners from "@/components/featured-practitioners";
 import { Button } from "@/components/ui/button";
-import { characters } from "@/assets";
+import { characters, papercut } from "@/assets";
 import {
   Sprout,
   Users,
@@ -173,7 +173,14 @@ export default function Landing() {
       </section>
 
       {/* What Makes FloreSer Different - Hexagon Grid */}
-      <section className="py-20 relative bg-sage/10 paper-grain">
+      <section
+        className="py-20 relative bg-sage/10"
+        style={{
+          backgroundImage: `url(${papercut.textures.flatCream})`,
+          backgroundSize: '512px 512px',
+          backgroundRepeat: 'repeat',
+        }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-12">
             <h2 className="font-heading text-section-heading text-papercut-neutral-dark mb-4">

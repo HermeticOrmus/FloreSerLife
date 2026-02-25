@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { papercut } from "@/assets";
 import {
   MessageCircle,
   Send,
@@ -290,9 +291,19 @@ export function AIGuardian() {
         className={`w-96 shadow-2xl border-forest/20 transition-all duration-300 flex flex-col ${
           isMinimized ? 'h-16' : 'max-h-[500px] h-[80vh]'
         } bg-earth-50`}
+        style={{
+          backgroundImage: `url(${papercut.textures.flatCream})`,
+          backgroundSize: '512px 512px',
+          backgroundRepeat: 'repeat',
+        }}
       >
         <CardHeader
           className="flex flex-row items-center justify-between p-4 text-white rounded-t-lg flex-shrink-0 bg-forest"
+          style={{
+            backgroundImage: `url(${papercut.textures.flatForest})`,
+            backgroundSize: '512px 512px',
+            backgroundRepeat: 'repeat',
+          }}
         >
           <div className="flex items-center space-x-2">
             <div className="relative">

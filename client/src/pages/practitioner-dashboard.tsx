@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { Badge } from "@/components/ui/badge";
+import { papercut } from "@/assets";
 
 import {
   Calendar,
@@ -133,6 +134,9 @@ function SoulProfileHex({
         style={{
           clipPath: HEX_CLIP,
           backgroundColor: "#F5F5DC",
+          backgroundImage: `url(${papercut.textures.flatCream})`,
+          backgroundSize: '512px 512px',
+          backgroundRepeat: 'repeat',
         }}
       >
         {/* Subtle relief */}
@@ -372,7 +376,14 @@ export default function PractitionerDashboard() {
   const avatarInitial = user?.firstName?.charAt(0) || "F";
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div
+      className="min-h-screen bg-cream"
+      style={{
+        backgroundImage: `url(${papercut.textures.flatCream})`,
+        backgroundSize: '512px 512px',
+        backgroundRepeat: 'repeat',
+      }}
+    >
       <Header />
 
       <main className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 overflow-hidden">

@@ -35,7 +35,7 @@ import {
 } from "@shared/schema";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { archetypeIcons } from "@/assets";
+import { archetypeIcons, papercut } from "@/assets";
 
 // Experience season derived from total sessions
 function getExperienceSeason(totalSessions: number) {
@@ -574,7 +574,14 @@ export default function Hive() {
       </section>
 
       {/* Bottom band */}
-      <section className="py-8 relative overflow-hidden bg-earth-700 paper-grain-dark">
+      <section
+        className="py-8 relative overflow-hidden bg-earth-700"
+        style={{
+          backgroundImage: `url(${papercut.textures.flatEarth})`,
+          backgroundSize: '512px 512px',
+          backgroundRepeat: 'repeat',
+        }}
+      >
         {/* Hexagon fragments in band */}
         <HexFragment x="5%" y="20%" size={20} color="#3C3C3C" delay={0} />
         <HexFragment x="25%" y="50%" size={16} color="#C4A882" delay={0.1} />

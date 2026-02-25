@@ -55,6 +55,10 @@ import depthTexturePaperEarth from './images/papercut/generated/depth/depth-text
 import depthTextureFlatCream from './images/papercut/generated/depth/depth-texture-flat-cream.png';
 import depthTextureFlatSage from './images/papercut/generated/depth/depth-texture-flat-sage.png';
 import depthTextureFlatGold from './images/papercut/generated/depth/depth-texture-flat-gold.png';
+import depthTextureFlatForest from './images/papercut/generated/depth/depth-texture-flat-forest.png';
+import depthTextureFlatCrimson from './images/papercut/generated/depth/depth-texture-flat-crimson.png';
+import depthTextureFlatClay from './images/papercut/generated/depth/depth-texture-flat-clay.png';
+import depthTextureFlatEarth from './images/papercut/generated/depth/depth-texture-flat-earth.png';
 
 // Hero elements
 import depthHeroSproutSeed from './images/papercut/generated/depth/depth-hero-sprout-seed-512_223633.png';
@@ -180,6 +184,10 @@ export const papercut = {
     flatCream: depthTextureFlatCream,
     flatSage: depthTextureFlatSage,
     flatGold: depthTextureFlatGold,
+    flatForest: depthTextureFlatForest,
+    flatCrimson: depthTextureFlatCrimson,
+    flatClay: depthTextureFlatClay,
+    flatEarth: depthTextureFlatEarth,
   },
 
   // Pattern overlays

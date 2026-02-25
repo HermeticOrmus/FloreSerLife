@@ -7,6 +7,7 @@ import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { papercut } from "@/assets";
 
 import {
   Calendar,
@@ -150,7 +151,14 @@ export default function Sessions() {
   const duration = nextSession?.duration || 60;
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div
+      className="min-h-screen bg-cream"
+      style={{
+        backgroundImage: `url(${papercut.textures.flatCream})`,
+        backgroundSize: '512px 512px',
+        backgroundRepeat: 'repeat',
+      }}
+    >
       <Header />
 
       <main className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 overflow-hidden">
@@ -182,6 +190,11 @@ export default function Sessions() {
             {/* ── LEFT: Session Info Panel ─────────────────────────── */}
             <div
               className="md:w-[340px] flex-shrink-0 rounded-xl shadow-lg overflow-hidden bg-cream"
+              style={{
+                backgroundImage: `url(${papercut.textures.flatSage})`,
+                backgroundSize: '512px 512px',
+                backgroundRepeat: 'repeat',
+              }}
             >
               {/* Subtle relief overlay */}
               <div
@@ -332,6 +345,11 @@ export default function Sessions() {
             {/* ── RIGHT: Sacred Call Space ─────────────────────────── */}
             <div
               className="flex-1 rounded-xl shadow-lg overflow-hidden min-h-[480px] bg-cream"
+              style={{
+                backgroundImage: `url(${papercut.textures.flatCream})`,
+                backgroundSize: '512px 512px',
+                backgroundRepeat: 'repeat',
+              }}
             >
               {/* Subtle parchment relief */}
               <div

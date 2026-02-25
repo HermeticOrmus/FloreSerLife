@@ -4,6 +4,7 @@ import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
+import { papercut } from "@/assets";
 
 import {
   BookOpen,
@@ -196,7 +197,14 @@ export default function Journal() {
   const ActiveContent = sectionComponents[activeSection];
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div
+      className="min-h-screen bg-cream"
+      style={{
+        backgroundImage: `url(${papercut.textures.flatCream})`,
+        backgroundSize: '512px 512px',
+        backgroundRepeat: 'repeat',
+      }}
+    >
       <Header />
 
       <main className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 overflow-hidden">
@@ -240,6 +248,11 @@ export default function Journal() {
               {/* ── Left Page: Menu ─────────────────────────────────── */}
               <div
                 className="md:w-[38%] p-8 md:p-10 flex flex-col bg-cream"
+                style={{
+                  backgroundImage: `url(${papercut.textures.flatEarth})`,
+                  backgroundSize: '512px 512px',
+                  backgroundRepeat: 'repeat',
+                }}
               >
                 {/* Subtle page relief */}
                 <div
@@ -309,6 +322,11 @@ export default function Journal() {
               {/* ── Right Page: Content Area ────────────────────────── */}
               <div
                 className="md:w-[62%] p-8 md:p-10 flex flex-col min-h-[400px] md:min-h-0 bg-cream"
+                style={{
+                  backgroundImage: `url(${papercut.textures.flatCream})`,
+                  backgroundSize: '512px 512px',
+                  backgroundRepeat: 'repeat',
+                }}
               >
                 {/* Subtle page relief (opposite direction) */}
                 <div
