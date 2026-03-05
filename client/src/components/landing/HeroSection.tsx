@@ -11,7 +11,7 @@ export function HeroSection() {
   const [, setLocation] = useLocation();
 
   return (
-    <section className="relative w-full origami-paper origami-paper-strong">
+    <section className="relative w-full origami-paper origami-overlay-graphite">
       <div className="relative z-10 flex flex-col items-center min-h-[75vh] md:min-h-[80vh] px-4 pt-24 md:pt-32 pb-16">
         {/* Central sprout — the only visual */}
         <div className="flex-1 flex items-center justify-center">

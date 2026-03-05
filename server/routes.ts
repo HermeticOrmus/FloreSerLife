@@ -429,12 +429,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get user's bookings
+  // Get user's bookings (enriched with practitioner/client names and review status)
   app.get('/api/bookings', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.id;
       const bookings = await storage.getUserBookings(userId);
-      res.json(bookings);
+
+      // Determine user's role context
+      const clientProfile = await storage.getClientByUserId(userId);
+      const practitionerProfile = await storage.getPractitionerByUserId(userId);
+
+      // Enrich each booking with names and review status
+      const enriched = await Promise.all(
+        bookings.map(async (booking: any) => {
+          // Get practitioner info
+          const practitioner = await storage.getPractitioner(booking.practitionerId);
+          let practitionerName = "Facilitator";
+          let practitionerArchetype = "";
+          if (practitioner) {
+            const pUser = await storage.getUserById(practitioner.userId);
+            if (pUser?.firstName && pUser?.lastName) {
+              practitionerName = `${pUser.firstName} ${pUser.lastName}`;
+            }
+            practitionerArchetype = practitioner.archetype || "";
+          }
+
+          // Get client info
+          const client = await storage.getClient(booking.clientId);
+          let clientName = "Client";
+          if (client) {
+            const cUser = await storage.getUserById(client.userId);
+            if (cUser?.firstName && cUser?.lastName) {
+              clientName = `${cUser.firstName} ${cUser.lastName}`;
+            }
+          }
+
+          // Check if review exists for this session
+          let hasReview = false;
+          try {
+            const review = await storage.getReviewBySessionId(booking.id);
+            hasReview = !!review;
+          } catch {}
+
+          // Determine the user's role for this specific booking
+          const isUserClient = clientProfile && booking.clientId === clientProfile.id;
+          const isUserPractitioner = practitionerProfile && booking.practitionerId === practitionerProfile.id;
+
+          return {
+            ...booking,
+            practitionerName,
+            practitionerArchetype,
+            clientName,
+            hasReview,
+            userRole: isUserClient ? "client" : isUserPractitioner ? "practitioner" : "unknown",
+          };
+        })
+      );
+
+      res.json(enriched);
     } catch (error) {
       console.error("Error fetching bookings:", error);
       res.status(500).json({ message: "Failed to fetch bookings" });
@@ -465,7 +517,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       await storage.updateBookingStatus(id, status);
 
-      // Award Seeds when a session is completed
+      // Award Seeds and send emails when a session is completed
       if (status === 'completed') {
         try {
           // Award to client
@@ -481,6 +533,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
             await storage.awardSeedsForAction(
               practitioner.userId, "session_attendance", id, "booking"
             );
+          }
+
+          // Send session completion emails
+          try {
+            const { emailService } = await import('./email');
+            const practitionerUser = practitioner ? await storage.getUserById(practitioner.userId) : null;
+            const clientUser = clientProfile ? await storage.getUserById(clientProfile.userId) : null;
+
+            const practitionerName = practitionerUser?.firstName && practitionerUser?.lastName
+              ? `${practitionerUser.firstName} ${practitionerUser.lastName}`
+              : 'Your practitioner';
+            const clientName = clientUser?.firstName && clientUser?.lastName
+              ? `${clientUser.firstName} ${clientUser.lastName}`
+              : 'Your client';
+
+            const sessionDetails = {
+              date: format(new Date(booking.scheduledDatetime), 'MMMM d, yyyy'),
+              time: format(new Date(booking.scheduledDatetime), 'h:mm a'),
+              practitionerName,
+              clientName,
+              seedsAwarded: 20,
+            };
+
+            if (clientUser) {
+              await emailService.sendSessionCompletion(clientUser.email, sessionDetails);
+            }
+            if (practitionerUser) {
+              await emailService.sendSessionCompletion(practitionerUser.email, sessionDetails);
+            }
+          } catch (emailError) {
+            console.error("Failed to send completion emails:", emailError);
           }
         } catch (seedsError) {
           console.error("Failed to award session attendance Seeds:", seedsError);
@@ -932,7 +1015,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const { title, content, contentType, tags, isPremium = false } = req.body;
+      const { title, description, content, contentType, tags, fileUrl, isPremium = false } = req.body;
 
       if (!title || !content || !contentType) {
         return res.status(400).json({ message: "Title, content, and contentType are required" });
@@ -940,10 +1023,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const newContent = await storage.createGardenContent({
         title,
+        description,
         content,
         contentType,
         authorId: userId,
-        tags: tags || []
+        tags: tags || [],
+        fileUrl,
       });
 
       // Award seeds for content creation (with facilitator bonus)

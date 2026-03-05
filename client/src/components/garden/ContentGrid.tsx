@@ -45,20 +45,20 @@ export default function ContentGrid({
           ))}
         </div>
       ) : content.length === 0 ? (
-        <div className="text-center py-16">
-          <div className="w-20 h-20 bg-garden-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Leaf className="w-10 h-10 text-garden-accent" />
+        <div className="text-center py-16 border border-forest/8 rounded-lg origami-paper origami-corner-both origami-fold-shadow">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Leaf className="w-10 h-10 text-forest/20" strokeWidth={1.5} />
           </div>
-          <h3 className="text-card-heading font-heading text-garden-text-primary mb-2">
+          <h3 className="text-xl font-heading text-forest mb-2">
             The Garden Awaits Your Gifts
           </h3>
-          <p className="text-body text-garden-text-secondary max-w-md mx-auto mb-6">
+          <p className="text-sm text-forest/50 max-w-md mx-auto mb-6 leading-relaxed">
             Be the first to plant a seed. Share your wisdom, practices, or
             resources freely with the community.
           </p>
           {uploadAccess.allowed && (
             <Button
-              className="bg-garden-accent text-white hover:bg-garden-accent/90 rounded-button"
+              className="bg-forest text-white hover:bg-forest/90 rounded-lg"
               onClick={onUpload}
             >
               <Plus className="w-4 h-4 mr-2" />

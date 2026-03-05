@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +22,7 @@ const archetypeStyles = {
 };
 
 export default function FeaturedPractitioners() {
+  const [, setLocation] = useLocation();
   const { data: practitioners = [], isLoading } = useQuery<PractitionerWithUser[]>({
     queryKey: ["/api/practitioners"],
   });
@@ -88,7 +89,7 @@ export default function FeaturedPractitioners() {
               Our verified wellness practitioners are joining the platform.
               Check back soon to discover amazing healers ready to guide your journey.
             </p>
-            <Button className="bg-forest text-white hover:bg-forest/90">
+            <Button className="bg-forest text-white hover:bg-forest/90" onClick={() => setLocation("/alpha")}>
               <Sparkles className="w-4 h-4 mr-2" />
               Get Notified
             </Button>

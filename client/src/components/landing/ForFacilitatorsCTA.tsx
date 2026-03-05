@@ -16,7 +16,7 @@ export default function ForFacilitatorsCTA() {
   };
 
   return (
-    <section className="py-24 md:py-32 origami-paper">
+    <section className="py-24 md:py-32 origami-paper origami-overlay-graphite">
       <div className="max-w-2xl mx-auto px-6 text-center">
         <p className="text-xs tracking-[0.2em] uppercase text-forest/40 mb-6">
           For Healers & Guides

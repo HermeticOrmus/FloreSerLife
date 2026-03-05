@@ -4,6 +4,8 @@ import { useAuth } from "@/hooks/useAuth";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { HeroSection } from "@/components/landing/HeroSection";
+import ArchetypeCardsSection from "@/components/landing/ArchetypeCardsSection";
+import WhatAwaitsInside from "@/components/landing/WhatAwaitsInside";
 import ForFacilitatorsCTA from "@/components/landing/ForFacilitatorsCTA";
 import FeaturedPractitioners from "@/components/featured-practitioners";
 import { Button } from "@/components/ui/button";
@@ -75,57 +77,54 @@ export default function Landing() {
 
       <HeroSection />
 
-      {/* Welcome — generous space, clean type */}
-      <section className="py-24 md:py-32">
-        <div className="max-w-2xl mx-auto px-6 text-center">
-          <h2 className="font-heading text-2xl md:text-3xl text-forest mb-8 tracking-tight">
-            Welcome, Dear One
-          </h2>
-          <div className="text-base md:text-lg text-forest/60 space-y-6 leading-relaxed">
-            <p>This is the garden of your becoming.</p>
-            <p>
-              At <span className="text-forest">FloreSer.Life</span>, we see you as a seed,
-              carrying your own rhythm of becoming.
-            </p>
-            <p>
-              We are a living ecosystem — not a directory —
-              where soulful guides offer presence, wisdom, and practice
-              to help you tend your inner garden.
-            </p>
-            <p>
-              Whether you're just beginning or already deepening,
-              you're welcome here.
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* Welcome + Meet mAIa — two columns */}
+      <section className="py-20 md:py-28">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-start">
 
-      {/* Fold line */}
-      <div className="origami-crease" />
-
-      {/* Meet mAIa — clean layout */}
-      <section className="py-24 md:py-32">
-        <div className="max-w-3xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-center gap-12 md:gap-16">
-            <div className="flex-shrink-0">
-              <img
-                src={characters.maia}
-                alt="mAIa, your gentle guide"
-                className="w-28 h-28 md:w-36 md:h-36 object-contain"
-                loading="lazy"
-                width={144}
-                height={144}
-              />
+            {/* Welcome, Dear One */}
+            <div>
+              <h2 className="font-heading text-2xl md:text-3xl text-forest mb-8 tracking-tight">
+                Welcome, Dear One
+              </h2>
+              <div className="text-base text-forest/60 space-y-5 leading-relaxed">
+                <p>This is the garden of your becoming.</p>
+                <p>
+                  At <span className="text-forest">FloreSer.Life</span>, we see you as a seed,
+                  carrying your own rhythm of becoming.
+                </p>
+                <p>
+                  We are a living ecosystem — not a directory —
+                  where soulful guides offer presence, wisdom, and practice
+                  to help you tend your inner garden.
+                </p>
+                <p>
+                  Whether you're just beginning or already deepening,
+                  you're welcome here.
+                </p>
+              </div>
             </div>
 
-            <div className="flex-1 text-center md:text-left">
-              <p className="text-xs tracking-[0.2em] uppercase text-forest/40 mb-4">
-                Your Living Guide
-              </p>
-
-              <h2 className="font-heading text-2xl md:text-3xl text-forest mb-4 tracking-tight">
-                Meet mAIa
-              </h2>
+            {/* Meet mAIa */}
+            <div>
+              <div className="flex items-center gap-5 mb-6">
+                <img
+                  src={characters.angelica}
+                  alt="mAIa, your gentle guide"
+                  className="w-20 h-20 md:w-28 md:h-28 object-contain"
+                  loading="lazy"
+                  width={112}
+                  height={112}
+                />
+                <div>
+                  <p className="text-xs tracking-[0.2em] uppercase text-forest/40 mb-1">
+                    Your Living Guide
+                  </p>
+                  <h2 className="font-heading text-2xl md:text-3xl text-forest tracking-tight">
+                    Meet mAIa
+                  </h2>
+                </div>
+              </div>
 
               <p className="text-base text-forest/60 mb-3 leading-relaxed">
                 Every soul blooms in its own rhythm.
@@ -144,6 +143,7 @@ export default function Landing() {
                 Begin your conversation with mAIa
               </Button>
             </div>
+
           </div>
         </div>
       </section>
@@ -151,8 +151,20 @@ export default function Landing() {
       {/* Fold line */}
       <div className="origami-crease" />
 
+      {/* Archetype Cards */}
+      <ArchetypeCardsSection />
+
+      {/* Fold line */}
+      <div className="origami-crease" />
+
+      {/* What Awaits Inside */}
+      <WhatAwaitsInside />
+
+      {/* Fold line */}
+      <div className="origami-crease" />
+
       {/* What Makes FloreSer Different — clean grid, no hexagons */}
-      <section className="py-24 md:py-32">
+      <section className="py-24 md:py-32 origami-paper origami-overlay-graphite">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-16 md:mb-20">
             <h2 className="font-heading text-2xl md:text-3xl text-forest mb-4 tracking-tight">

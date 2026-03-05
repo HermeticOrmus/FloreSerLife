@@ -191,43 +191,6 @@
     z-index: 1;
   }
 
-  /* Paper texture backgrounds */
-  .bg-paper-cream {
-    background-image: url('/src/assets/images/papercut/paper-cream.png');
-    background-size: cover;
-    background-position: center;
-  }
-
-  .bg-paper-sage {
-    background-image: url('/src/assets/images/papercut/paper-sage.png');
-    background-size: cover;
-    background-position: center;
-  }
-
-  .bg-paper-clay {
-    background-image: url('/src/assets/images/papercut/paper-clay.png');
-    background-size: cover;
-    background-position: center;
-  }
-
-  .bg-paper-earth-dark {
-    background-image: url('/src/assets/images/papercut/paper-earth-dark.png');
-    background-size: cover;
-    background-position: center;
-  }
-
-  /* Pattern overlays */
-  .bg-pattern-leaves {
-    background-image: url('/src/assets/images/papercut/pattern-leaves.png');
-    background-size: 400px 400px;
-    background-repeat: repeat;
-  }
-
-  .bg-pattern-roots {
-    background-image: url('/src/assets/images/papercut/pattern-roots.png');
-    background-size: 400px 400px;
-    background-repeat: repeat;
-  }
 
   /* Subtle paper grain overlays — CSS-based, no heavy image textures.
      Use .paper-grain-light on page backgrounds, .paper-grain on sections,
@@ -280,84 +243,300 @@
      Paper texture + geometric fold language.
      ================================================================ */
 
-  /* Base paper texture — visible fiber, like real origami paper.
-     Apply to sections that should feel like paper. */
-  .origami-paper {
-    position: relative;
-  }
+  /* ═══════════════════════════════════════════════════════════════
+     ORIGAMI DESIGN SYSTEM
+     Paper textures, folds, creases, and shadows that give FloreSer
+     its handcrafted, nature-paper feel.
 
-  .origami-paper::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url('/src/assets/images/papercut/generated/depth/depth-texture-paper-ui.png');
-    background-size: 400px 400px;
-    background-repeat: repeat;
-    opacity: 0.4;
-    pointer-events: none;
-    z-index: 0;
-    border-radius: inherit;
-  }
+     USAGE GUIDE:
+     ┌──────────────────────┬──────────────────────────────────────┐
+     │ Class                │ Use for                              │
+     ├──────────────────────┼──────────────────────────────────────┤
+     │ origami-paper        │ Landing, default pages (neutral)     │
+     │ origami-paper-garden │ Garden pages (sage green)            │
+     │ origami-paper-hive   │ Hive pages (warm gold)               │
+     │ origami-paper-forest │ Deep immersive sections (dark green) │
+     │ origami-paper-cream  │ Auth, profiles, soft pages (warm)    │
+     │ origami-paper-earth  │ Admin, settings, grounded (brown)    │
+     │ origami-paper-crimson│ Alerts, important, energy (red)      │
+     │ origami-paper-dark   │ Dark backgrounds (inverted grain)    │
+     ├──────────────────────┼──────────────────────────────────────┤
+     │ origami-subtle       │ Modifier: reduce texture to whisper  │
+     │ origami-strong       │ Modifier: intensify texture          │
+     ├──────────────────────┼──────────────────────────────────────┤
+     │ origami-crease       │ Default fold divider (forest)        │
+     │ origami-crease-garden│ Green-tinted divider                 │
+     │ origami-crease-hive  │ Gold-tinted divider                  │
+     │ origami-crease-warm  │ Cream/earth-tinted divider           │
+     │ origami-crease-light │ Very subtle divider                  │
+     ├──────────────────────┼──────────────────────────────────────┤
+     │ origami-corner       │ Dog-ear top-right (28px)             │
+     │ origami-corner-lg    │ Larger dog-ear (40px)                │
+     │ origami-corner-left  │ Dog-ear top-left                     │
+     │ origami-corner-both  │ Dog-ears on both top corners         │
+     ├──────────────────────┼──────────────────────────────────────┤
+     │ origami-fold-shadow  │ Resting card shadow                  │
+     │ origami-fold-shadow-md│ Elevated card shadow                │
+     │ origami-fold-shadow-lg│ Modal / hero shadow                 │
+     │ origami-emboss       │ Inner glow, paper pressed from behind│
+     │ origami-lifted       │ Hover-ready lift with transition     │
+     └──────────────────────┴──────────────────────────────────────┘
+     ═══════════════════════════════════════════════════════════════ */
 
-  .origami-paper > * {
-    position: relative;
-    z-index: 1;
-  }
+  /* ── Paper Texture Mixin ──────────────────────────────────────
+     All paper variants share the same structure. Each uses a
+     different color texture PNG from the depth assets. */
 
-  /* Stronger paper feel for hero/feature sections */
-  .origami-paper-strong::before {
-    opacity: 0.55;
-  }
-
-  /* Dark variant — inverted paper grain for dark backgrounds */
+  .origami-paper,
+  .origami-paper-garden,
+  .origami-paper-hive,
+  .origami-paper-forest,
+  .origami-paper-cream,
+  .origami-paper-earth,
+  .origami-paper-crimson,
   .origami-paper-dark {
     position: relative;
   }
 
-  .origami-paper-dark::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url('/src/assets/images/papercut/generated/depth/depth-texture-paper-ui.png');
-    background-size: 400px 400px;
-    background-repeat: repeat;
-    opacity: 0.12;
-    filter: invert(1);
-    pointer-events: none;
-    z-index: 0;
-    border-radius: inherit;
-  }
-
+  .origami-paper > *,
+  .origami-paper-garden > *,
+  .origami-paper-hive > *,
+  .origami-paper-forest > *,
+  .origami-paper-cream > *,
+  .origami-paper-earth > *,
+  .origami-paper-crimson > *,
   .origami-paper-dark > * {
     position: relative;
     z-index: 1;
   }
 
-  /* Origami fold divider — a crease between sections.
-     A thin line with subtle shadow suggesting paper folded along it. */
-  .origami-crease {
-    position: relative;
-    height: 3px;
-    background: linear-gradient(to right, transparent 5%, rgba(47, 79, 79, 0.06) 20%, rgba(47, 79, 79, 0.15) 50%, rgba(47, 79, 79, 0.06) 80%, transparent 95%);
-  }
-
-  .origami-crease::after {
+  .origami-paper::before,
+  .origami-paper-garden::before,
+  .origami-paper-hive::before,
+  .origami-paper-forest::before,
+  .origami-paper-cream::before,
+  .origami-paper-earth::before,
+  .origami-paper-crimson::before,
+  .origami-paper-dark::before {
     content: '';
     position: absolute;
-    bottom: -1px;
-    left: 0;
-    right: 0;
-    height: 2px;
+    inset: 0;
+    background-size: 400px 400px;
+    background-repeat: repeat;
+    pointer-events: none;
+    z-index: 0;
+    border-radius: inherit;
+  }
+
+  /* Neutral — the default origami paper */
+  .origami-paper::before {
+    background-image: url('/src/assets/images/papercut/generated/depth/depth-texture-paper-ui.png');
+  }
+
+  /* Garden — sage green, for Garden pages */
+  .origami-paper-garden::before {
+    background-image: url('/src/assets/images/papercut/generated/depth/depth-texture-flat-sage.png');
+  }
+
+  /* Hive — warm gold/amber, for Hive pages */
+  .origami-paper-hive::before {
+    background-image: url('/src/assets/images/papercut/generated/depth/depth-texture-flat-gold.png');
+  }
+
+  /* Forest — deep green, for immersive/featured sections */
+  .origami-paper-forest::before {
+    background-image: url('/src/assets/images/papercut/generated/depth/depth-texture-flat-forest.png');
+  }
+
+  /* Cream — soft warmth, for auth/profile/journal pages */
+  .origami-paper-cream::before {
+    background-image: url('/src/assets/images/papercut/generated/depth/depth-texture-flat-cream.png');
+  }
+
+  /* Earth — grounded brown, for admin/settings/dashboard */
+  .origami-paper-earth::before {
+    background-image: url('/src/assets/images/papercut/generated/depth/depth-texture-flat-earth.png');
+  }
+
+  /* Crimson — red accent, for alerts/CTAs/energy sections */
+  .origami-paper-crimson::before {
+    background-image: url('/src/assets/images/papercut/generated/depth/depth-texture-flat-crimson.png');
+  }
+
+  /* Dark — inverted grain for dark backgrounds */
+  .origami-paper-dark::before {
+    background-image: url('/src/assets/images/papercut/generated/depth/depth-texture-paper-ui.png');
+    filter: invert(1);
+  }
+
+  /* ── Intensity Modifiers ──────────────────────────────────────
+     Control weight through saturation and brightness, not opacity.
+     Compose with any paper variant: class="origami-paper-garden origami-subtle" */
+
+  .origami-subtle::before {
+    filter: saturate(0.4) brightness(1.15) !important;
+  }
+
+  .origami-strong::before {
+    filter: saturate(1.4) brightness(0.92) !important;
+  }
+
+  /* ── Color Overlays ───────────────────────────────────────────
+     Semi-transparent color wash OVER the full-strength texture.
+     Uses ::after so texture (::before) stays untouched.
+     Content (> *) is z-index:1, overlay is z-index:0, texture is z-index:-1.
+     Compose: class="origami-paper origami-overlay-ash" */
+
+  .origami-overlay-ash::after,
+  .origami-overlay-smoke::after,
+  .origami-overlay-fog::after,
+  .origami-overlay-graphite::after,
+  .origami-overlay-pearl::after,
+  .origami-overlay-slate::after,
+  .origami-overlay-silver::after,
+  .origami-overlay-sage::after,
+  .origami-overlay-cream::after,
+  .origami-overlay-forest::after,
+  .origami-overlay-earth::after,
+  .origami-overlay-mist::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ── Greyscale overlays (landing page / neutral contexts) ── */
+
+  .origami-overlay-ash::after {
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+
+  .origami-overlay-smoke::after {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .origami-overlay-fog::after {
+    background-color: rgba(0, 0, 0, 0.07);
+  }
+
+  .origami-overlay-graphite::after {
+    background-color: rgba(0, 0, 0, 0.10);
+  }
+
+  .origami-overlay-pearl::after {
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+
+  .origami-overlay-slate::after {
+    background-color: rgba(60, 60, 65, 0.06);
+  }
+
+  .origami-overlay-silver::after {
+    background-color: rgba(180, 180, 185, 0.12);
+  }
+
+  /* ── Tinted overlays (themed pages) ── */
+
+  .origami-overlay-sage::after {
+    background-color: rgba(106, 128, 100, 0.06);
+  }
+
+  .origami-overlay-cream::after {
+    background-color: rgba(210, 190, 160, 0.07);
+  }
+
+  .origami-overlay-forest::after {
+    background-color: rgba(45, 80, 50, 0.08);
+  }
+
+  .origami-overlay-earth::after {
+    background-color: rgba(160, 130, 95, 0.07);
+  }
+
+  .origami-overlay-mist::after {
+    background-color: rgba(220, 225, 220, 0.10);
+  }
+
+  /* ── Crease Dividers ──────────────────────────────────────────
+     Fold lines between sections. Default is forest-tinted.
+     Color variants tint the crease to match the page theme. */
+
+  .origami-crease,
+  .origami-crease-garden,
+  .origami-crease-hive,
+  .origami-crease-warm,
+  .origami-crease-light {
+    position: relative;
+    height: 3px;
+  }
+
+  .origami-crease,
+  .origami-crease-garden,
+  .origami-crease-hive,
+  .origami-crease-warm,
+  .origami-crease-light {
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+    }
+  }
+
+  /* Default crease — forest green */
+  .origami-crease {
+    background: linear-gradient(to right, transparent 5%, rgba(47, 79, 79, 0.06) 20%, rgba(47, 79, 79, 0.15) 50%, rgba(47, 79, 79, 0.06) 80%, transparent 95%);
+  }
+  .origami-crease::after {
     background: linear-gradient(to right, transparent 5%, rgba(255, 255, 255, 0.6) 20%, rgba(255, 255, 255, 0.9) 50%, rgba(255, 255, 255, 0.6) 80%, transparent 95%);
   }
 
-  /* Corner fold — the classic origami dog-ear.
-     Apply to cards/containers. Creates a folded triangle in top-right. */
-  .origami-corner {
+  /* Garden crease — sage green */
+  .origami-crease-garden {
+    background: linear-gradient(to right, transparent 5%, rgba(107, 142, 95, 0.06) 20%, rgba(107, 142, 95, 0.18) 50%, rgba(107, 142, 95, 0.06) 80%, transparent 95%);
+  }
+  .origami-crease-garden::after {
+    background: linear-gradient(to right, transparent 5%, rgba(245, 250, 242, 0.5) 20%, rgba(245, 250, 242, 0.85) 50%, rgba(245, 250, 242, 0.5) 80%, transparent 95%);
+  }
+
+  /* Hive crease — warm gold */
+  .origami-crease-hive {
+    background: linear-gradient(to right, transparent 5%, rgba(212, 168, 67, 0.06) 20%, rgba(212, 168, 67, 0.18) 50%, rgba(212, 168, 67, 0.06) 80%, transparent 95%);
+  }
+  .origami-crease-hive::after {
+    background: linear-gradient(to right, transparent 5%, rgba(255, 250, 235, 0.5) 20%, rgba(255, 250, 235, 0.85) 50%, rgba(255, 250, 235, 0.5) 80%, transparent 95%);
+  }
+
+  /* Warm crease — cream/earth */
+  .origami-crease-warm {
+    background: linear-gradient(to right, transparent 5%, rgba(160, 130, 90, 0.05) 20%, rgba(160, 130, 90, 0.12) 50%, rgba(160, 130, 90, 0.05) 80%, transparent 95%);
+  }
+  .origami-crease-warm::after {
+    background: linear-gradient(to right, transparent 5%, rgba(255, 252, 245, 0.5) 20%, rgba(255, 252, 245, 0.85) 50%, rgba(255, 252, 245, 0.5) 80%, transparent 95%);
+  }
+
+  /* Light crease — barely visible, for subtle separation */
+  .origami-crease-light {
+    background: linear-gradient(to right, transparent 10%, rgba(47, 79, 79, 0.03) 30%, rgba(47, 79, 79, 0.06) 50%, rgba(47, 79, 79, 0.03) 70%, transparent 90%);
+  }
+  .origami-crease-light::after {
+    background: linear-gradient(to right, transparent 10%, rgba(255, 255, 255, 0.4) 30%, rgba(255, 255, 255, 0.7) 50%, rgba(255, 255, 255, 0.4) 70%, transparent 90%);
+  }
+
+  /* ── Corner Folds ─────────────────────────────────────────────
+     Dog-ear effects for cards. Default is top-right. */
+
+  .origami-corner,
+  .origami-corner-left,
+  .origami-corner-both {
     position: relative;
     overflow: hidden;
   }
 
+  /* Top-right corner (default) */
   .origami-corner::after {
     content: '';
     position: absolute;
@@ -370,17 +549,98 @@
     z-index: 2;
   }
 
+  /* Top-left corner */
+  .origami-corner-left::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(315deg, rgba(47, 79, 79, 0.08) 48%, rgba(47, 79, 79, 0.15) 49%, rgba(47, 79, 79, 0.15) 51%, transparent 52%);
+    border-bottom-right-radius: 3px;
+    z-index: 2;
+  }
+
+  /* Both corners */
+  .origami-corner-both::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(315deg, rgba(47, 79, 79, 0.08) 48%, rgba(47, 79, 79, 0.15) 49%, rgba(47, 79, 79, 0.15) 51%, transparent 52%);
+    border-bottom-right-radius: 3px;
+    z-index: 2;
+  }
+  .origami-corner-both::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(225deg, rgba(47, 79, 79, 0.08) 48%, rgba(47, 79, 79, 0.15) 49%, rgba(47, 79, 79, 0.15) 51%, transparent 52%);
+    border-bottom-left-radius: 3px;
+    z-index: 2;
+  }
+
   /* Larger corner fold for feature cards */
   .origami-corner-lg::after {
     width: 40px;
     height: 40px;
   }
 
-  /* Fold shadow — subtle linear shadow suggesting a gentle fold */
+  /* ── Fold Shadows ─────────────────────────────────────────────
+     Layered shadows suggesting paper resting on a surface. */
+
+  /* Resting — card at rest on a table */
   .origami-fold-shadow {
     box-shadow:
       0 1px 2px rgba(47, 79, 79, 0.04),
       0 4px 8px rgba(47, 79, 79, 0.02);
+  }
+
+  /* Medium — card slightly elevated, hovered or active */
+  .origami-fold-shadow-md {
+    box-shadow:
+      0 2px 4px rgba(47, 79, 79, 0.06),
+      0 8px 16px rgba(47, 79, 79, 0.04);
+  }
+
+  /* Large — modals, hero cards, floating elements */
+  .origami-fold-shadow-lg {
+    box-shadow:
+      0 4px 8px rgba(47, 79, 79, 0.06),
+      0 12px 32px rgba(47, 79, 79, 0.06),
+      0 24px 48px rgba(47, 79, 79, 0.03);
+  }
+
+  /* ── Emboss & Lift ────────────────────────────────────────────
+     Subtle depth effects beyond shadows. */
+
+  /* Emboss — inner glow, like paper pressed from behind */
+  .origami-emboss {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.7),
+      inset 0 -1px 0 rgba(47, 79, 79, 0.04),
+      0 1px 2px rgba(47, 79, 79, 0.04);
+  }
+
+  /* Lifted — hover-ready interactive card with smooth transition */
+  .origami-lifted {
+    box-shadow:
+      0 1px 2px rgba(47, 79, 79, 0.04),
+      0 4px 8px rgba(47, 79, 79, 0.02);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+
+  .origami-lifted:hover {
+    box-shadow:
+      0 4px 8px rgba(47, 79, 79, 0.06),
+      0 12px 32px rgba(47, 79, 79, 0.06);
+    transform: translateY(-2px);
   }
 
   /* Reduced motion support */

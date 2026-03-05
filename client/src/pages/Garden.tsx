@@ -1,8 +1,7 @@
-import { useEffect, useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { usePageMeta } from "@/hooks/usePageMeta";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -12,17 +11,12 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Lock, Plus } from "lucide-react";
 import { AccessLevelBadge, UpgradeModal, useAccessControl } from "@/components/access-control";
 import { useAuth } from "@/hooks/useAuth";
-import { papercut } from "@/assets";
 
 import { GardenContent, GardenContentType, contentTypeOptions, SortOption } from "@/components/garden/types";
 import GardenSidebar from "@/components/garden/GardenSidebar";
-import GardenDashboard from "@/components/garden/GardenDashboard";
-import SeedsBalance from "@/components/garden/SeedsBalance";
 import ContentGrid from "@/components/garden/ContentGrid";
 import UploadModal from "@/components/garden/UploadModal";
 import ContentDetailModal from "@/components/garden/ContentDetailModal";
-import BloomPathTimeline from "@/components/garden/BloomPathTimeline";
-import MaiaMessage from "@/components/garden/MaiaMessage";
 
 export default function Garden() {
   const [, setLocation] = useLocation();
@@ -76,18 +70,6 @@ export default function Garden() {
         credentials: "include",
       });
       if (!res.ok) throw new Error(await res.text());
-      return res.json();
-    },
-  });
-
-  const { data: sessionsData } = useQuery({
-    queryKey: ["/api/sessions", user?.id],
-    enabled: !!user?.id,
-    queryFn: async () => {
-      const res = await fetch(`/api/sessions/${user?.id}/client`, {
-        credentials: "include",
-      });
-      if (!res.ok) return [];
       return res.json();
     },
   });
@@ -251,30 +233,8 @@ export default function Garden() {
     }
   };
 
-  // Derived state
-  const nextSession =
-    sessionsData && sessionsData.length > 0 ? sessionsData[0] : null;
-
-  // Contextual Maia message type
-  const maiaType = useMemo(() => {
-    const sessionCount = sessionsData?.length || 0;
-    const visitCount = parseInt(localStorage.getItem("garden-visit-count") || "0", 10);
-    if (sessionCount === 0 && visitCount <= 1) return "welcome" as const;
-    if (sessionCount >= 7) return "milestone" as const;
-    if (sessionCount >= 3) return "reflection" as const;
-    return "encouragement" as const;
-  }, [sessionsData]);
-
-  // Track visits
-  useEffect(() => {
-    const count = parseInt(localStorage.getItem("garden-visit-count") || "0", 10);
-    localStorage.setItem("garden-visit-count", String(count + 1));
-  }, []);
-
   return (
-    <div
-      className="flex min-h-screen bg-earth-50 paper-grain-light"
-    >
+    <div className="flex min-h-screen bg-white">
       {/* Sidebar */}
       <GardenSidebar
         seedsData={seedsData}
@@ -285,92 +245,25 @@ export default function Garden() {
       />
 
       {/* Main Content */}
-      <main className="flex-1 bg-garden-container p-4 md:p-8 lg:p-12 overflow-y-auto">
+      <main className="flex-1 origami-paper-garden p-4 md:p-8 lg:p-12 overflow-y-auto">
         <div className="max-w-6xl mx-auto">
-          {/* Dashboard: session, mandala, actions */}
-          <GardenDashboard
-            nextSession={nextSession}
-            seedsData={seedsData}
-            sessionsData={sessionsData}
-            gardenContentCount={gardenContent.length}
-            onNavigate={setLocation}
-          />
-
-          {/* Seeds Balance */}
-          {isAuthenticated && seedsData && (
-            <SeedsBalance seedsData={seedsData} />
-          )}
-
-          {/* Divider */}
+          {/* Origami header */}
           <div className="mb-8">
-            <img
-              src={papercut.dividers.wavyHorizonTransparent}
-              alt=""
-              className="w-full h-auto opacity-40"
-            />
+            <h1 className="font-heading text-2xl md:text-3xl text-forest tracking-tight">
+              Community Garden
+            </h1>
+            <p className="text-base text-forest/50 mt-2 max-w-xl">
+              Share your gifts freely. Offer articles, meditations, exercises, and wisdom to help others flourish.
+            </p>
           </div>
 
-          {/* Maia Welcome Message */}
-          {isAuthenticated && (
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="mb-8"
-            >
-              <MaiaMessage
-                type={maiaType}
-                context={{
-                  sessionsCompleted: sessionsData?.length || 0,
-                  currentMilestone:
-                    sessionsData?.length >= 7
-                      ? "Flourishing Path"
-                      : sessionsData?.length >= 3
-                        ? "Rising Flower"
-                        : undefined,
-                }}
-              />
-            </motion.div>
-          )}
-
-          {/* Bloom Path Timeline */}
-          {isAuthenticated && sessionsData && sessionsData.length > 0 && (
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="mb-8 md:mb-12"
-            >
-              <BloomPathTimeline
-                sessions={sessionsData.map((session: any) => ({
-                  id: session.id,
-                  date: session.sessionDate || session.createdAt,
-                  facilitatorName: session.practitionerName,
-                  practitionerName: session.practitionerName,
-                  theme: session.sessionType || "Wellness Session",
-                  notes: session.notes,
-                  reflection: session.clientReflection,
-                }))}
-                pollinationPoints={sessionsData.length * 10}
-              />
-            </motion.div>
-          )}
+          <div className="origami-crease-garden mb-8" />
 
           {/* Content Section */}
           <div className="space-y-6 md:space-y-8">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-              <div className="space-y-2">
-                <h2 className="text-section-heading font-heading text-garden-text-primary">
-                  Community Garden
-                </h2>
-                <p className="text-body text-garden-text-secondary max-w-xl">
-                  A place to share your gifts freely with the community. Offer
-                  articles, meditations, exercises, and wisdom to help others
-                  flourish on their journey.
-                </p>
-              </div>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <Button
-                className="bg-garden-accent text-white hover:bg-garden-accent/90 rounded-button text-label whitespace-nowrap"
+                className="bg-forest text-white hover:bg-forest/90 rounded-button text-label whitespace-nowrap"
                 onClick={() =>
                   gardenAccess.allowed
                     ? setShowUploadModal(true)
@@ -388,10 +281,10 @@ export default function Garden() {
                 placeholder="Search content..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-1 bg-garden-card border-garden-accent/20 rounded-input"
+                className="flex-1 bg-white border-forest/10 rounded-input"
               />
               <Select value={selectedContentType} onValueChange={setSelectedContentType}>
-                <SelectTrigger className="w-full sm:w-48 bg-garden-card border-garden-accent/20 rounded-input">
+                <SelectTrigger className="w-full sm:w-48 bg-white border-forest/10 rounded-input">
                   <SelectValue placeholder="All Types" />
                 </SelectTrigger>
                 <SelectContent>
@@ -404,7 +297,7 @@ export default function Garden() {
                 </SelectContent>
               </Select>
               <Select value={sortOption} onValueChange={(v) => setSortOption(v as SortOption)}>
-                <SelectTrigger className="w-full sm:w-44 bg-garden-card border-garden-accent/20 rounded-input">
+                <SelectTrigger className="w-full sm:w-44 bg-white border-forest/10 rounded-input">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
@@ -417,30 +310,32 @@ export default function Garden() {
 
             {/* Access Control Alert */}
             {!gardenAccess.allowed && (
-              <Alert className="border-garden-accent/30 bg-garden-accent/5">
-                <Lock className="h-4 w-4 text-garden-accent" />
-                <AlertDescription className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <div className="flex items-center space-x-2 mb-1">
-                      <span className="font-medium text-garden-text-primary">
-                        Community Garden Access Required
-                      </span>
-                      <AccessLevelBadge accessLevel={accessInfo.accessLevel} />
+              <div className="border border-forest/8 rounded-lg origami-paper origami-emboss p-5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex items-start gap-3">
+                    <Lock className="h-4 w-4 text-forest/30 mt-0.5 shrink-0" strokeWidth={1.5} />
+                    <div>
+                      <div className="flex items-center space-x-2 mb-1">
+                        <span className="font-medium text-forest">
+                          Community Garden Access Required
+                        </span>
+                        <AccessLevelBadge accessLevel={accessInfo.accessLevel} />
+                      </div>
+                      <p className="text-sm text-forest/50">
+                        Unlock full Garden access to share content, earn Seeds,
+                        and connect with our wellness community.
+                      </p>
                     </div>
-                    <p className="text-sm text-garden-text-secondary">
-                      Unlock full Garden access to share content, earn Seeds,
-                      and connect with our wellness community.
-                    </p>
                   </div>
                   <Button
                     size="sm"
-                    className="bg-garden-accent text-white hover:bg-garden-accent/90 rounded-button whitespace-nowrap"
+                    className="bg-forest text-white hover:bg-forest/90 rounded-lg whitespace-nowrap"
                     onClick={() => setShowUpgradeModal(true)}
                   >
                     Upgrade Access
                   </Button>
-                </AlertDescription>
-              </Alert>
+                </div>
+              </div>
             )}
 
             {/* Content Grid */}

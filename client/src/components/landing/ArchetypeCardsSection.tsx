@@ -41,7 +41,7 @@ export default function ArchetypeCardsSection() {
   ];
 
   return (
-    <section id="find" aria-labelledby="match-title" className="py-16 bg-sage/5">
+    <section id="find" aria-labelledby="match-title" className="py-16 origami-paper origami-overlay-graphite">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center mb-8">
