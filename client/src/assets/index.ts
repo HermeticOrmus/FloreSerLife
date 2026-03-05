@@ -1,18 +1,13 @@
 // Brand Assets - Centralized import system for FloreSer brand assets
-// Updated: 2024-12-16 - Now using DEPTH style papercut assets
+// Updated: 2025-03-04 - Cleaned dormant exports, keeping only actively used assets
 
 // =============================================================================
 // LOGOS
 // =============================================================================
-import mainColoredText from './images/logos/main-colored-text.png';
 import mainColoredIcon from './images/logos/main-colored-icon.png';
-import goldText from './images/logos/gold-text.png';
-import goldIcon from './images/logos/gold-icon.png';
-import greenText from './images/logos/green-text.png';
-import greenIcon from './images/logos/green-icon.png';
 
 // =============================================================================
-// ARCHETYPE ICONS (Original style - for backward compatibility)
+// ARCHETYPE ICONS
 // =============================================================================
 import beeIcon from './images/icons/bee.png';
 import butterflyIcon from './images/icons/butterfly.png';
@@ -23,40 +18,12 @@ import hummingbirdIcon from './images/icons/hummingbird.png';
 // CHARACTER ILLUSTRATIONS
 // =============================================================================
 import maiaTheBee from './images/characters/maia.png';
-import maiaTheMascot from './images/characters/maia-mascot-transparent.png';
 import angelicaTheColibri from './images/characters/angelica.png';
+import maiaGreetingFrame from './animations/maia/greeting/frame_000.png';
 
 // =============================================================================
-// MAIA ANIMATION GIFs (Fallbacks - sprite component uses individual frames)
+// PAPERCUT ASSETS - DEPTH STYLE
 // =============================================================================
-import maiaIdleGif from './animations/maia/idle.gif';
-import maiaThinkingGif from './animations/maia/thinking.gif';
-import maiaGreetingGif from './animations/maia/greeting.gif';
-
-// =============================================================================
-// PAPERCUT ASSETS - DEPTH STYLE (Primary)
-// =============================================================================
-
-// Textures (tileable backgrounds)
-import depthTextureCream from './images/papercut/generated/depth/depth-texture-cream-1024_222320.png';
-import depthTextureSage from './images/papercut/generated/depth/depth-texture-sage-1024_222637.png';
-import depthTextureClay from './images/papercut/generated/depth/depth-texture-clay-1024_222955.png';
-import depthTextureEarthDark from './images/papercut/generated/depth/depth-texture-earth-dark-1024_223313.png';
-import depthTextureSky from './images/papercut/generated/depth/depth-texture-sky-1024.png';
-import depthTexturePaperUI from './images/papercut/generated/depth/depth-texture-paper-ui.png';
-import depthTexturePaperSage from './images/papercut/generated/depth/depth-texture-paper-sage.png';
-import depthTexturePaperGold from './images/papercut/generated/depth/depth-texture-paper-gold.png';
-import depthTexturePaperClay from './images/papercut/generated/depth/depth-texture-paper-clay.png';
-import depthTexturePaperForest from './images/papercut/generated/depth/depth-texture-paper-forest.png';
-import depthTexturePaperCrimson from './images/papercut/generated/depth/depth-texture-paper-crimson.png';
-import depthTexturePaperEarth from './images/papercut/generated/depth/depth-texture-paper-earth.png';
-
-// Origami washi textures (authentic Japanese paper feel)
-import origamiWashiLight from './images/papercut/generated/depth/origami-washi-light.png';
-import origamiWashiWarm from './images/papercut/generated/depth/origami-washi-warm.png';
-import origamiWashiForest from './images/papercut/generated/depth/origami-washi-forest.png';
-import origamiCornerFold from './images/papercut/generated/depth/origami-corner-fold.png';
-import origamiCreaseHorizontal from './images/papercut/generated/depth/origami-crease-horizontal.png';
 
 // Flat textures (for interactive surfaces - cards, forms, journals)
 import depthTextureFlatCream from './images/papercut/generated/depth/depth-texture-flat-cream.png';
@@ -64,50 +31,7 @@ import depthTextureFlatSage from './images/papercut/generated/depth/depth-textur
 import depthTextureFlatGold from './images/papercut/generated/depth/depth-texture-flat-gold.png';
 import depthTextureFlatForest from './images/papercut/generated/depth/depth-texture-flat-forest.png';
 import depthTextureFlatCrimson from './images/papercut/generated/depth/depth-texture-flat-crimson.png';
-import depthTextureFlatClay from './images/papercut/generated/depth/depth-texture-flat-clay.png';
 import depthTextureFlatEarth from './images/papercut/generated/depth/depth-texture-flat-earth.png';
-
-// Hero elements
-import depthHeroSproutSeed from './images/papercut/generated/depth/depth-hero-sprout-seed-512_223633.png';
-import depthHeroSproutStem from './images/papercut/generated/depth/depth-hero-sprout-stem-512_223952.png';
-import depthHeroSproutLeaves from './images/papercut/generated/depth/depth-hero-sprout-leaves-512_224311.png';
-import depthHeroSunGlow from './images/papercut/generated/depth/depth-hero-sun-glow-512_224630.png';
-
-// Pollinators (256px archetype icons)
-import depthPollinatorBee from './images/papercut/generated/depth/depth-pollinator-bee-256_224941.png';
-import depthPollinatorButterfly from './images/papercut/generated/depth/depth-pollinator-butterfly-256_225253.png';
-import depthPollinatorHummingbird from './images/papercut/generated/depth/depth-pollinator-hummingbird-256_225610.png';
-import depthPollinatorBeetle from './images/papercut/generated/depth/depth-pollinator-beetle-256_225927.png';
-
-// Patterns (overlay textures)
-import depthPatternLeaves from './images/papercut/generated/depth/depth-pattern-leaves-1024_230248.png';
-import depthPatternRoots from './images/papercut/generated/depth/depth-pattern-roots-1024_230606.png';
-
-// Hexagon card backgrounds
-import depthHexSage from './images/papercut/generated/depth/depth-hex-sage-512_231805.png';
-import depthHexEarth from './images/papercut/generated/depth/depth-hex-earth-512_232122.png';
-import depthHexGold from './images/papercut/generated/depth/depth-hex-gold-512_232438.png';
-import depthHexCrimson from './images/papercut/generated/depth/depth-hex-crimson-512_232755.png';
-
-// Accents (decorative elements)
-import depthAccentLeaf from './images/papercut/generated/depth/depth-accent-leaf-128_231206.png';
-import depthAccentFlowerbud from './images/papercut/generated/depth/depth-accent-flowerbud-128_231449.png';
-
-// Dividers
-import depthWavyHorizon from './images/papercut/generated/depth/depth-wavy-horizon-1920_230923.png';
-
-// Full hero background (sky + land combined) - Midjourney with proper depth style (1632x2912)
-import depthHeroBackground from './images/papercut/generated/depth/flore-ser-landing-hero-page.png';
-
-// =============================================================================
-// HERO PIXEL ART (PixelLab API - papercraft style, transparent backgrounds)
-// =============================================================================
-import heroPixelSprout from './images/hero-pixelart/sprout-512px.png';
-import heroPixelSun from './images/hero-pixelart/sun-512px.png';
-import heroPixelBee from './images/hero-pixelart/bee-256px.png';
-import heroPixelHummingbird from './images/hero-pixelart/hummingbird-256px.png';
-import heroPixelButterfly from './images/hero-pixelart/butterfly-256px.png';
-import heroPixelBeetle from './images/hero-pixelart/beetle-256px.png';
 
 // =============================================================================
 // TRANSPARENT VERSIONS (Background removed)
@@ -117,32 +41,19 @@ import depthPollinatorButterflyTransparent from './images/papercut/generated/dep
 import depthPollinatorHummingbirdTransparent from './images/papercut/generated/depth/transparent/depth-pollinator-hummingbird-256_225610.png';
 import depthPollinatorBeetleTransparent from './images/papercut/generated/depth/transparent/depth-pollinator-beetle-256_225927.png';
 import depthHeroSproutLeavesTransparent from './images/papercut/generated/depth/transparent/depth-hero-sprout-leaves-512_224311.png';
-import depthHeroSproutStemTransparent from './images/papercut/generated/depth/transparent/depth-hero-sprout-stem-512_223952.png';
-import depthHeroSproutSeedTransparent from './images/papercut/generated/depth/transparent/depth-hero-sprout-seed-512_223633.png';
-import depthHeroSunGlowTransparent from './images/papercut/generated/depth/transparent/depth-hero-sun-glow-512_224630.png';
 import depthWavyHorizonTransparent from './images/papercut/generated/depth/transparent/depth-wavy-horizon-1920_230923.png';
-import depthHeroTreePollinatorsTransparent from './images/papercut/generated/depth/transparent/depth-hero-tree-tall_20251218_225916.png';
 
 // =============================================================================
 // EXPORTS - LOGOS
 // =============================================================================
 export const logos = {
   main: {
-    coloredWithText: mainColoredText,
     coloredIcon: mainColoredIcon,
-  },
-  gold: {
-    withText: goldText,
-    icon: goldIcon,
-  },
-  green: {
-    withText: greenText,
-    icon: greenIcon,
   },
 } as const;
 
 // =============================================================================
-// EXPORTS - ARCHETYPE ICONS (Original)
+// EXPORTS - ARCHETYPE ICONS
 // =============================================================================
 export const archetypeIcons = {
   bee: beeIcon,
@@ -156,87 +67,21 @@ export const archetypeIcons = {
 // =============================================================================
 export const characters = {
   maia: maiaTheBee,
-  maiaMascot: maiaTheMascot,
+  maiaIcon: maiaGreetingFrame,
   angelica: angelicaTheColibri,
-} as const;
-
-// =============================================================================
-// EXPORTS - MAIA ANIMATIONS (GIF fallbacks)
-// =============================================================================
-export const maiaAnimations = {
-  idle: maiaIdleGif,
-  thinking: maiaThinkingGif,
-  greeting: maiaGreetingGif,
 } as const;
 
 // =============================================================================
 // EXPORTS - PAPERCUT (Depth Style)
 // =============================================================================
 export const papercut = {
-  // Hero elements (for compositing)
-  sproutSeed: depthHeroSproutSeed,
-  sproutStem: depthHeroSproutStem,
-  sproutLeaves: depthHeroSproutLeaves,
-  sunGlow: depthHeroSunGlow,
-
-  // Composite hero (use sproutLeaves as main visual)
-  sproutHero: depthHeroSproutLeaves,
-
-  // Textures for backgrounds
   textures: {
-    cream: depthTextureCream,
-    sage: depthTextureSage,
-    clay: depthTextureClay,
-    earthDark: depthTextureEarthDark,
-    sky: depthTextureSky,
-    // New smooth paper textures (Midjourney depth-style)
-    paperUI: depthTexturePaperUI,
-    paperSage: depthTexturePaperSage,
-    paperGold: depthTexturePaperGold,
-    paperClay: depthTexturePaperClay,
-    paperForest: depthTexturePaperForest,
-    paperCrimson: depthTexturePaperCrimson,
-    paperEarth: depthTexturePaperEarth,
-    // Flat variants (for interactive surfaces - text legibility priority)
     flatCream: depthTextureFlatCream,
     flatSage: depthTextureFlatSage,
     flatGold: depthTextureFlatGold,
     flatForest: depthTextureFlatForest,
     flatCrimson: depthTextureFlatCrimson,
-    flatClay: depthTextureFlatClay,
     flatEarth: depthTextureFlatEarth,
-    // Origami washi paper textures
-    washiLight: origamiWashiLight,
-    washiWarm: origamiWashiWarm,
-    washiForest: origamiWashiForest,
-  },
-
-  // Origami elements
-  origami: {
-    cornerFold: origamiCornerFold,
-    creaseHorizontal: origamiCreaseHorizontal,
-  },
-
-  // Pattern overlays
-  patterns: {
-    leaves: depthPatternLeaves,
-    roots: depthPatternRoots,
-  },
-
-  // Hexagon card backgrounds
-  hex: {
-    sage: depthHexSage,
-    earth: depthHexEarth,
-    gold: depthHexGold,
-    crimson: depthHexCrimson,
-  },
-
-  // Pollinators (depth style)
-  pollinators: {
-    bee: depthPollinatorBee,
-    butterfly: depthPollinatorButterfly,
-    hummingbird: depthPollinatorHummingbird,
-    beetle: depthPollinatorBeetle,
   },
 
   // Transparent pollinators (for overlays)
@@ -247,54 +92,29 @@ export const papercut = {
     beetle: depthPollinatorBeetleTransparent,
   },
 
-  // Accents
-  accents: {
-    leaf: depthAccentLeaf,
-    flowerbud: depthAccentFlowerbud,
-  },
-
   // Dividers
   dividers: {
-    wavyHorizon: depthWavyHorizon,
     wavyHorizonTransparent: depthWavyHorizonTransparent,
   },
 
-  // Full hero background (sky + land in one image)
-  heroBackground: depthHeroBackground,
-
   // Transparent hero elements
   heroTransparent: {
-    sproutSeed: depthHeroSproutSeedTransparent,
-    sproutStem: depthHeroSproutStemTransparent,
     sproutLeaves: depthHeroSproutLeavesTransparent,
-    sunGlow: depthHeroSunGlowTransparent,
-    treeWithPollinators: depthHeroTreePollinatorsTransparent,
   },
 } as const;
 
 // =============================================================================
-// EXPORTS - HERO PIXEL ART
+// HERO VIDEO
 // =============================================================================
-export const heroPixelart = {
-  sprout: heroPixelSprout,
-  sun: heroPixelSun,
-  bee: heroPixelBee,
-  hummingbird: heroPixelHummingbird,
-  butterfly: heroPixelButterfly,
-  beetle: heroPixelBeetle,
-} as const;
+import tudorRoseHeroVideo from './videos/tudor-rose-hero.mp4';
+import tudorRoseHeroPoster from './videos/drafts/tudor-04-bloom.png';
 
-// =============================================================================
-// CONVENIENT RE-EXPORTS
-// =============================================================================
-export const primaryLogo = logos.main.coloredWithText;
-export const primaryIcon = logos.main.coloredIcon;
+export const heroVideo = {
+  src: tudorRoseHeroVideo,
+  poster: tudorRoseHeroPoster,
+} as const;
 
 // =============================================================================
 // TYPE DEFINITIONS
 // =============================================================================
 export type ArchetypeType = keyof typeof archetypeIcons;
-export type LogoVariant = 'main' | 'gold' | 'green';
-export type PapercutTexture = keyof typeof papercut.textures;
-export type PapercutHex = keyof typeof papercut.hex;
-export type PapercutPollinator = keyof typeof papercut.pollinators;

@@ -1,44 +1,127 @@
-import { papercut } from "@/assets";
+import { useEffect, useRef, useState } from "react";
+import { heroVideo } from "@/assets";
 import { Button } from "@/components/ui/button";
-import { Sparkles } from "lucide-react";
 import { useLocation } from "wouter";
 
 /**
- * Hero section — Origami.
- * Paper texture canvas. The illustration speaks. Clean folds divide.
+ * Hero section — Tudor Rose blooming from seed.
+ * Lazy-loaded video backdrop (BioGenesis pattern), radial gradient from text outward.
  */
 export function HeroSection() {
   const [, setLocation] = useLocation();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
+
+  // Lazy load video when section enters viewport
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setShouldLoadVideo(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "100px" }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  // Play video once loaded
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !shouldLoadVideo) return;
+
+    const handleCanPlay = () => {
+      setIsVideoLoaded(true);
+      video.play().catch(() => {});
+    };
+
+    video.addEventListener("canplaythrough", handleCanPlay);
+    return () => video.removeEventListener("canplaythrough", handleCanPlay);
+  }, [shouldLoadVideo]);
 
   return (
-    <section className="relative w-full origami-paper origami-overlay-graphite">
-      <div className="relative z-10 flex flex-col items-center min-h-[75vh] md:min-h-[80vh] px-4 pt-24 md:pt-32 pb-16">
-        {/* Central sprout — the only visual */}
-        <div className="flex-1 flex items-center justify-center">
-          <img
-            src={papercut.heroTransparent.sproutLeaves}
-            alt="A seed sprouting toward the light"
-            className="w-40 h-40 md:w-56 md:h-56 lg:w-72 lg:h-72"
-            fetchPriority="high"
-          />
-        </div>
+    <section
+      ref={sectionRef}
+      className="relative w-full min-h-[70vh] md:min-h-[80vh] flex items-center overflow-hidden origami-paper -mt-px"
+    >
+      {/* Video backdrop — lazy loaded, fades in */}
+      <div className="!absolute inset-0 !z-[2]" aria-hidden="true">
+        {/* Poster fallback */}
+        <img
+          src={heroVideo.poster}
+          alt=""
+          className={`w-full h-full object-cover transition-opacity duration-1000 ${
+            isVideoLoaded ? "opacity-0" : "opacity-100"
+          }`}
+        />
+        {shouldLoadVideo && (
+          <video
+            ref={videoRef}
+            autoPlay
+            loop
+            muted
+            playsInline
+            disablePictureInPicture
+            preload="none"
+            poster={heroVideo.poster}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+              isVideoLoaded ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <source src={heroVideo.src} type="video/mp4" />
+          </video>
+        )}
+      </div>
 
-        {/* Text — minimal, precise */}
-        <div className="text-center max-w-xl">
-          <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl text-forest mb-4 leading-tight tracking-tight">
+      {/* Radial gradient anchored at left text, fading outward */}
+      <div
+        className="!absolute inset-0 !z-[3]"
+        style={{
+          background:
+            "radial-gradient(ellipse at 15% 50%, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.35) 30%, transparent 65%)",
+        }}
+      />
+
+      {/* Content — left-aligned, vertically centered, flush top */}
+      <div className="relative !z-[4] w-full px-6 md:px-16 lg:px-24 py-8 md:py-0">
+        <div className="max-w-lg">
+          <h1
+            className="font-heading text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight tracking-tight"
+            style={{
+              fontWeight: 900,
+              color: "#D4AF37",
+              textShadow: "0 1px 0 #b8860b, 0 2px 2px rgba(0,0,0,0.5), 0 0 15px rgba(212,175,55,0.3)",
+            }}
+          >
             Tend Your Inner Garden
           </h1>
-          <p className="text-base md:text-lg text-forest/60 mb-10 leading-relaxed">
+          <p className="text-base md:text-lg text-white/90 mb-10 leading-relaxed" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>
             A living ecosystem connecting seekers with trusted holistic guides.
           </p>
-          <Button
-            size="lg"
-            onClick={() => setLocation("/quiz")}
-            className="text-white bg-forest hover:bg-forest/90 px-10 py-6 text-base font-medium tracking-wide transition-colors"
-          >
-            <Sparkles className="w-4 h-4 mr-2" />
-            Begin with mAIa
-          </Button>
+          <div className="flex flex-row gap-2">
+            <Button
+              size="sm"
+              onClick={() => setLocation("/auth/signup?role=practitioner")}
+              className="text-white bg-red-700 hover:bg-red-800 px-4 py-1.5 text-xs font-medium tracking-wide transition-colors"
+            >
+              I'm a Facilitator
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => setLocation("/auth/signup?role=client")}
+              className="text-white bg-gold hover:bg-gold/90 border-0 px-4 py-1.5 text-xs font-medium tracking-wide transition-colors"
+            >
+              I'm a Client
+            </Button>
+          </div>
         </div>
       </div>
 
