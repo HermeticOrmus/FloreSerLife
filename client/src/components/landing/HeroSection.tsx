@@ -50,15 +50,18 @@ export function HeroSection() {
   return (
     <section
       ref={sectionRef}
+      aria-labelledby="hero-heading"
       className="relative w-full min-h-[70vh] md:min-h-[80vh] flex items-center overflow-hidden origami-paper -mt-px"
     >
-      {/* Video backdrop — lazy loaded, fades in */}
+      {/* Video backdrop — lazy loaded, fades in over poster */}
       <div className="!absolute inset-0 !z-[2]" aria-hidden="true">
-        {/* Poster fallback */}
+        {/* Poster — LCP candidate, loads immediately */}
         <img
           src={heroVideo.poster}
           alt=""
-          className={`w-full h-full object-cover transition-opacity duration-1000 ${
+          fetchPriority="high"
+          decoding="async"
+          className={`w-full h-full object-cover will-change-[opacity] transition-opacity duration-1000 ${
             isVideoLoaded ? "opacity-0" : "opacity-100"
           }`}
         />
@@ -70,9 +73,9 @@ export function HeroSection() {
             muted
             playsInline
             disablePictureInPicture
+            controlsList="nodownload nofullscreen noremoteplayback"
             preload="none"
-            poster={heroVideo.poster}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+            className={`absolute inset-0 w-full h-full object-cover will-change-[opacity] transition-opacity duration-1000 ${
               isVideoLoaded ? "opacity-100" : "opacity-0"
             }`}
           >
@@ -94,6 +97,7 @@ export function HeroSection() {
       <div className="relative !z-[4] w-full px-6 md:px-16 lg:px-24 py-8 md:py-0">
         <div className="max-w-lg">
           <h1
+            id="hero-heading"
             className="font-heading text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight tracking-tight"
             style={{
               fontWeight: 900,
