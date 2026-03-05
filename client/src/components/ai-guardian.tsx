@@ -274,7 +274,7 @@ export function AIGuardian() {
       <div className="fixed bottom-6 right-6 z-50">
         <Button
           size="lg"
-          className="rounded-full text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all px-6 py-4 bg-sage/20"
+          className="rounded-full text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all px-6 py-4 bg-gold"
           onClick={() => setIsOpen(true)}
         >
           <MaiaSprite state="idle" size={24} className="mr-2" />
@@ -298,7 +298,7 @@ export function AIGuardian() {
         }}
       >
         <CardHeader
-          className="flex flex-row items-center justify-between p-4 text-white rounded-t-lg flex-shrink-0 bg-forest"
+          className="flex flex-row items-center justify-between p-4 text-white rounded-t-lg flex-shrink-0 bg-gold"
           style={{
             backgroundImage: `url(${papercut.textures.flatForest})`,
             backgroundSize: '512px 512px',
@@ -350,12 +350,8 @@ export function AIGuardian() {
                         ? 'bg-forest text-white shadow-sm'
                         : 'shadow-sm border'
                     } ${
-                      message.sender === 'maia' && message.type === 'archetype_insight'
+                      message.sender === 'maia'
                         ? 'border-gold/30 bg-cream'
-                        : message.sender === 'maia' && message.type === 'guidance'
-                        ? 'border-garden-accent/30 bg-cream'
-                        : message.sender === 'maia'
-                        ? 'border-sage/30 bg-cream'
                         : ''
                     }`}
                   >
@@ -396,7 +392,7 @@ export function AIGuardian() {
               {isTyping && (
                 <div className="flex justify-start">
                   <div
-                    className="bg-earth-50 rounded-lg p-3 max-w-[80%] shadow-sm border border-sage/30 relative overflow-hidden"
+                    className="bg-earth-50 rounded-lg p-3 max-w-[80%] shadow-sm border border-gold/30 relative overflow-hidden"
                   >
                     <div className="absolute inset-0 bg-cream/70" />
                     <div className="relative z-10 flex items-center space-x-2">
@@ -420,7 +416,7 @@ export function AIGuardian() {
                       variant="outline"
                       size="sm"
                       onClick={suggestion.action}
-                      className="text-xs h-8 border-forest/20 hover:bg-forest/5"
+                      className="text-xs h-8 border-gold/20 hover:bg-gold/5"
                     >
                       {suggestion.icon}
                       <span className="ml-1">{suggestion.text}</span>
@@ -443,7 +439,7 @@ export function AIGuardian() {
                 <Button
                   onClick={() => handleSendMessage()}
                   disabled={!inputValue.trim() || isTyping}
-                  className="bg-forest text-white hover:bg-forest/90"
+                  className="bg-gold text-white hover:bg-gold/90"
                 >
                   <Send className="w-4 h-4" />
                 </Button>

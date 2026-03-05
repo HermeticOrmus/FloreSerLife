@@ -19,7 +19,6 @@ import {
   Video,
   MapPin,
   User,
-  CreditCard,
   Check,
   ArrowLeft,
   Info
@@ -103,9 +102,9 @@ export default function BookSession() {
       queryClient.invalidateQueries({ queryKey: ['/api/bookings'] });
       toast({
         title: "Session booked!",
-        description: "Check your email for confirmation details"
+        description: "Your session has been confirmed. View it in your sessions."
       });
-      setLocation('/dashboard/client');
+      setLocation('/sessions');
     },
     onError: (error: Error) => {
       toast({
@@ -141,7 +140,7 @@ export default function BookSession() {
       scheduledDatetime,
       duration: parseInt(duration),
       isVirtual: sessionType === "virtual",
-      totalAmount: calculatePrice(),
+      totalAmount: "0",
       notes: notes.trim() || null
     });
   };
@@ -440,7 +439,7 @@ export default function BookSession() {
                     </div>
                     <div className="flex items-center justify-between py-3 border-b">
                       <span className="text-forest/70">Session Fee</span>
-                      <span className="font-medium text-forest text-lg">${calculatePrice()}</span>
+                      <Badge className="bg-gold/15 text-gold border-gold/30">Alpha Preview — Free Session</Badge>
                     </div>
                     {notes && (
                       <div className="py-3">
@@ -453,7 +452,7 @@ export default function BookSession() {
                   <Alert>
                     <Info className="w-4 h-4" />
                     <AlertDescription>
-                      You'll receive a confirmation email with session details and payment instructions.
+                      Your session will be confirmed immediately. You'll receive a confirmation email with session details.
                     </AlertDescription>
                   </Alert>
                 </CardContent>
@@ -484,7 +483,7 @@ export default function BookSession() {
                   disabled={createBookingMutation.isPending}
                   className="bg-gold text-white hover:bg-gold/90"
                 >
-                  <CreditCard className="w-4 h-4 mr-2" />
+                  <Check className="w-4 h-4 mr-2" />
                   {createBookingMutation.isPending ? 'Booking...' : 'Confirm & Book'}
                 </Button>
               )}
@@ -531,7 +530,7 @@ export default function BookSession() {
 
                 <div className="flex items-center justify-between text-lg font-semibold">
                   <span className="text-forest">Total</span>
-                  <span className="text-gold">${calculatePrice()}</span>
+                  <Badge className="bg-gold/15 text-gold border-gold/30 text-sm">Free (Alpha)</Badge>
                 </div>
               </CardContent>
             </Card>

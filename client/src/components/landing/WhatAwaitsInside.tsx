@@ -1,27 +1,45 @@
 import { Flower2, Sprout, TreeDeciduous } from "lucide-react";
+import { Link } from "wouter";
+import { papercut } from "@/assets";
+
+const sections = [
+  {
+    icon: Flower2,
+    title: "The Hive",
+    description:
+      "A curated directory of guides, mentors, and visionaries across body, soul, and creative expression.",
+    href: "/hive",
+    texture: papercut.textures.flatGold,
+    borderClass: "border-hive-accent/30 hover:border-hive-accent/60",
+    iconColor: "text-white",
+    iconBg: "bg-hive-accent/40",
+  },
+  {
+    icon: Sprout,
+    title: "My Garden",
+    description:
+      "Your personal sanctuary where sessions, reflections, and growth are lovingly tended.",
+    href: "/garden",
+    texture: papercut.textures.flatSage,
+    borderClass: "border-sage/40 hover:border-sage/70",
+    iconColor: "text-white",
+    iconBg: "bg-garden-accent/40",
+  },
+  {
+    icon: TreeDeciduous,
+    title: "The Community Garden",
+    description:
+      "Seasonal rituals, shared insights, and global gatherings for collective flourishing.",
+    href: "/garden",
+    texture: papercut.textures.flatForest,
+    borderClass: "border-forest/30 hover:border-forest/60",
+    iconColor: "text-white/90",
+    iconBg: "bg-white/15",
+    dark: true,
+  },
+];
 
 export default function WhatAwaitsInside() {
-  const sections = [
-    {
-      icon: Flower2,
-      title: "The Hive",
-      description:
-        "A curated directory of guides, mentors, and visionaries across body, soul, and creative expression.",
-    },
-    {
-      icon: Sprout,
-      title: "My Garden",
-      description:
-        "Your personal sanctuary where sessions, reflections, and growth are lovingly tended.",
-    },
-    {
-      icon: TreeDeciduous,
-      title: "The Community Garden",
-      description:
-        "Seasonal rituals, shared insights, and global gatherings for collective flourishing.",
-    },
-  ];
-
   return (
     <section className="py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -35,22 +53,28 @@ export default function WhatAwaitsInside() {
           {sections.map((section) => {
             const Icon = section.icon;
             return (
-              <div
-                key={section.title}
-                className="border border-forest/8 rounded-lg origami-paper origami-overlay-graphite origami-corner origami-fold-shadow h-full"
-              >
-                <div className="p-8 text-center">
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Icon className="w-8 h-8 text-forest/30" strokeWidth={1.5} />
+              <Link key={section.title} href={section.href}>
+                <div
+                  className={`border-2 rounded-lg cursor-pointer transition-all duration-200 hover:shadow-lg overflow-hidden ${section.borderClass} h-full`}
+                  style={{
+                    backgroundImage: `url(${section.texture})`,
+                    backgroundSize: "512px 512px",
+                    backgroundRepeat: "repeat",
+                  }}
+                >
+                  <div className="p-8 text-center">
+                    <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 ${section.iconBg}`}>
+                      <Icon className={`w-8 h-8 ${section.iconColor}`} strokeWidth={1.5} />
+                    </div>
+                    <h3 className={`font-heading text-xl mb-4 ${section.dark ? "text-white" : "text-forest"}`}>
+                      {section.title}
+                    </h3>
+                    <p className={`leading-relaxed italic ${section.dark ? "text-white/70" : "text-forest/60"}`}>
+                      {section.description}
+                    </p>
                   </div>
-                  <h3 className="font-heading text-xl text-forest mb-4">
-                    {section.title}
-                  </h3>
-                  <p className="text-forest/60 leading-relaxed italic">
-                    {section.description}
-                  </p>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>

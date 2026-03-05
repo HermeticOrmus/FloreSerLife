@@ -233,10 +233,21 @@ export class AccessControlService {
       const user = await storage.getUserById(userId);
       if (!user) return null;
 
+      // Lazy trial expiration check — downgrade expired trials without a cron
+      if (
+        user.subscriptionStatus === "trial" &&
+        user.trialEndDate &&
+        new Date(user.trialEndDate) < new Date()
+      ) {
+        await storage.updateUserAccess(userId, "preview", "expired");
+      }
+
       await AccessControlService.updateUserAccessLevel(userId);
 
-      const accessLevel = user.accessLevel || "preview";
-      const subscriptionStatus = user.subscriptionStatus || "free";
+      // Re-read after potential access level change
+      const freshUser = await storage.getUserById(userId);
+      const accessLevel = freshUser?.accessLevel || "preview";
+      const subscriptionStatus = freshUser?.subscriptionStatus || "free";
       const currentAccess = ACCESS_PERMISSIONS[accessLevel as keyof typeof ACCESS_PERMISSIONS];
 
       if (!currentAccess) {

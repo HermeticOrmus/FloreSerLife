@@ -117,6 +117,26 @@ export class EmailService {
     });
   }
 
+  // Session completion notification
+  async sendSessionCompletion(
+    userEmail: string,
+    sessionDetails: {
+      date: string;
+      time: string;
+      practitionerName: string;
+      clientName: string;
+      seedsAwarded: number;
+    }
+  ): Promise<boolean> {
+    const template = this.getSessionCompletionTemplate(sessionDetails);
+    return this.sendEmail({
+      to: userEmail,
+      subject: template.subject,
+      html: template.html,
+      text: template.text,
+    });
+  }
+
   // Alpha program invitation email
   async sendAlphaInvitation(userEmail: string, inviteCode?: string): Promise<boolean> {
     const template = this.getAlphaInvitationTemplate(inviteCode);
@@ -512,6 +532,85 @@ ${inviteCode ? `Your Alpha Access Code: ${inviteCode}` : ''}
 Join the Alpha Program: https://floreser.life/alpha
 
 Your voice matters. Together, we're creating something meaningful for the wellness community.`;
+
+    return { subject, html, text };
+  }
+
+  private getSessionCompletionTemplate(sessionDetails: {
+    date: string;
+    time: string;
+    practitionerName: string;
+    clientName: string;
+    seedsAwarded: number;
+  }): EmailTemplate {
+    const subject = `Session Complete — ${sessionDetails.date} with ${sessionDetails.practitionerName}`;
+
+    const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <title>Session Completed - FloreSer</title>
+      <style>
+        body { font-family: 'Poppins', Arial, sans-serif; line-height: 1.6; color: #2F4F4F; background-color: #F5F5DC; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; }
+        .header { background: linear-gradient(135deg, #2F4F4F 0%, #D4AF37 100%); color: white; padding: 30px; text-align: center; }
+        .content { padding: 30px; }
+        .session-details { background: #F5F5DC; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .seeds-badge { background: #D4AF37; color: white; padding: 10px 20px; border-radius: 20px; display: inline-block; font-weight: 600; margin: 15px 0; }
+        .cta-button { display: inline-block; background: #D4AF37; color: white; padding: 15px 30px; text-decoration: none; border-radius: 25px; font-weight: 600; margin: 20px 0; }
+        .footer { background: #F5F5DC; padding: 20px; text-align: center; font-size: 14px; color: #666; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>Session Complete</h1>
+          <p>Thank you for your wellness journey</p>
+        </div>
+
+        <div class="content">
+          <p>Your session has been marked as complete. We hope it was a meaningful experience.</p>
+
+          <div class="session-details">
+            <h3>Session Details</h3>
+            <p><strong>Date:</strong> ${sessionDetails.date}</p>
+            <p><strong>Time:</strong> ${sessionDetails.time}</p>
+            <p><strong>Practitioner:</strong> ${sessionDetails.practitionerName}</p>
+          </div>
+
+          <div style="text-align: center;">
+            <div class="seeds-badge">${sessionDetails.seedsAwarded} Seeds Earned</div>
+          </div>
+
+          <p>Share your experience by leaving a review — it helps other seekers find the right practitioner and earns you 15 additional Seeds.</p>
+
+          <center>
+            <a href="https://floreser.life/sessions" class="cta-button">Leave a Review</a>
+          </center>
+        </div>
+
+        <div class="footer">
+          <p><small>FloreSer — Where Wellness Connections Flourish</small></p>
+        </div>
+      </div>
+    </body>
+    </html>`;
+
+    const text = `Session Complete
+
+Your session has been marked as complete.
+
+Session Details:
+- Date: ${sessionDetails.date}
+- Time: ${sessionDetails.time}
+- Practitioner: ${sessionDetails.practitionerName}
+
+Seeds Earned: ${sessionDetails.seedsAwarded}
+
+Share your experience by leaving a review at https://floreser.life/sessions
+
+— FloreSer`;
 
     return { subject, html, text };
   }

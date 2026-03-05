@@ -382,6 +382,48 @@ export const favoritePractitioners = pgTable("favorite_practitioners", {
 ]);
 
 // ============================================
+// MAIA QUIZ RESPONSES
+// ============================================
+
+export const quizResponses = pgTable("quiz_responses", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id),
+  // Layer 1 — Opening Petals
+  whatsAlive: text("whats_alive").array(), // up to 2
+  supportType: text("support_type").array(), // multi-select
+  connectionStyle: text("connection_style").array(), // multi-select
+  themes: text("themes").array(), // up to 3
+  growthSeason: varchar("growth_season"),
+  openReflection1: text("open_reflection_1"),
+  // Layer 2 — Deep Roots (nullable — only if user enters Layer 2)
+  layer2Completed: boolean("layer2_completed").default(false),
+  energySignature: varchar("energy_signature"),
+  relationshipToChange: varchar("relationship_to_change"),
+  innerCompass: varchar("inner_compass"),
+  edgeOfGrowth: text("edge_of_growth"),
+  integrationRhythm: text("integration_rhythm").array(),
+  seedOfVision: varchar("seed_of_vision"),
+  openReflection2: text("open_reflection_2"),
+  // Results
+  primaryArchetype: varchar("primary_archetype"),
+  secondaryArchetype: varchar("secondary_archetype"),
+  archetypeScores: jsonb("archetype_scores"), // full score breakdown
+  // Metadata
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => [
+  index("idx_quiz_responses_user_id").on(table.userId),
+]);
+
+export const insertQuizResponseSchema = createInsertSchema(quizResponses).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type QuizResponse = typeof quizResponses.$inferSelect;
+export type InsertQuizResponse = z.infer<typeof insertQuizResponseSchema>;
+
+// ============================================
 // MESSAGING SYSTEM
 // ============================================
 
@@ -619,6 +661,14 @@ export const gardenInteractionsRelations = relations(gardenInteractions, ({ one 
   content: one(gardenContent, {
     fields: [gardenInteractions.contentId],
     references: [gardenContent.id],
+  }),
+}));
+
+// Quiz Response Relations
+export const quizResponsesRelations = relations(quizResponses, ({ one }) => ({
+  user: one(users, {
+    fields: [quizResponses.userId],
+    references: [users.id],
   }),
 }));
 

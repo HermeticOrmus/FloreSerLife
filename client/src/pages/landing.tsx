@@ -6,10 +6,9 @@ import Footer from "@/components/layout/footer";
 import { HeroSection } from "@/components/landing/HeroSection";
 import ArchetypeCardsSection from "@/components/landing/ArchetypeCardsSection";
 import WhatAwaitsInside from "@/components/landing/WhatAwaitsInside";
-import ForFacilitatorsCTA from "@/components/landing/ForFacilitatorsCTA";
 import FeaturedPractitioners from "@/components/featured-practitioners";
 import { Button } from "@/components/ui/button";
-import { characters } from "@/assets";
+import { papercut, characters } from "@/assets";
 import {
   Sprout,
   Users,
@@ -17,9 +16,7 @@ import {
   Heart,
   Calendar,
   Shield,
-  Bot,
 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
 
 // Values for the minimal grid
 const values = [
@@ -77,55 +74,47 @@ export default function Landing() {
 
       <HeroSection />
 
-      {/* Welcome + Meet mAIa — two columns */}
+      {/* Welcome, Dear One — standalone */}
       <section className="py-20 md:py-28">
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <h2 className="font-heading text-2xl md:text-3xl text-forest mb-8 tracking-tight">
+            Welcome, Dear One
+          </h2>
+          <div className="text-base text-forest/60 space-y-5 leading-relaxed">
+            <p>This is the garden of your becoming.</p>
+            <p>
+              At <span className="text-forest">FloreSer.Life</span>, we see you as a seed,
+              carrying your own rhythm of becoming.
+            </p>
+            <p>
+              We are a living ecosystem — not a directory —
+              where soulful guides offer presence, wisdom, and practice
+              to help you tend your inner garden.
+            </p>
+            <p>
+              Whether you're just beginning or already deepening,
+              you're welcome here.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Fold line */}
+      <div className="origami-crease" />
+
+      {/* For Seekers / For Facilitators — split section */}
+      <section className="py-20 md:py-28 origami-paper origami-overlay-graphite">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-start">
 
-            {/* Welcome, Dear One */}
+            {/* Left — For Seekers */}
             <div>
-              <h2 className="font-heading text-2xl md:text-3xl text-forest mb-8 tracking-tight">
-                Welcome, Dear One
+              <p className="text-xs tracking-[0.2em] uppercase text-forest/40 mb-4">
+                FOR SEEKERS
+              </p>
+              <h2 className="font-heading text-2xl md:text-3xl text-forest mb-6 tracking-tight">
+                Meet mAIa
               </h2>
-              <div className="text-base text-forest/60 space-y-5 leading-relaxed">
-                <p>This is the garden of your becoming.</p>
-                <p>
-                  At <span className="text-forest">FloreSer.Life</span>, we see you as a seed,
-                  carrying your own rhythm of becoming.
-                </p>
-                <p>
-                  We are a living ecosystem — not a directory —
-                  where soulful guides offer presence, wisdom, and practice
-                  to help you tend your inner garden.
-                </p>
-                <p>
-                  Whether you're just beginning or already deepening,
-                  you're welcome here.
-                </p>
-              </div>
-            </div>
-
-            {/* Meet mAIa */}
-            <div>
-              <div className="flex items-center gap-5 mb-6">
-                <img
-                  src={characters.angelica}
-                  alt="mAIa, your gentle guide"
-                  className="w-20 h-20 md:w-28 md:h-28 object-contain"
-                  loading="lazy"
-                  width={112}
-                  height={112}
-                />
-                <div>
-                  <p className="text-xs tracking-[0.2em] uppercase text-forest/40 mb-1">
-                    Your Living Guide
-                  </p>
-                  <h2 className="font-heading text-2xl md:text-3xl text-forest tracking-tight">
-                    Meet mAIa
-                  </h2>
-                </div>
-              </div>
-
               <p className="text-base text-forest/60 mb-3 leading-relaxed">
                 Every soul blooms in its own rhythm.
                 <strong className="text-forest/80"> mAIa</strong> is here to sense yours — a gentle intelligence that listens and guides you toward what you most need now.
@@ -133,7 +122,14 @@ export default function Landing() {
               <p className="text-base text-forest/60 mb-8 leading-relaxed">
                 Through a few simple, soulful questions, she helps you find the practices and facilitators that can nurture your next unfolding.
               </p>
-
+              <div className="flex justify-center md:justify-start mb-8">
+                <img
+                  src={characters.maia}
+                  alt="mAIa, your gentle guide"
+                  className="w-36 h-36 md:w-48 md:h-48 object-contain"
+                  loading="lazy"
+                />
+              </div>
               <Button
                 size="lg"
                 onClick={() => setLocation("/quiz")}
@@ -141,6 +137,38 @@ export default function Landing() {
               >
                 <Sparkles className="w-4 h-4 mr-2" />
                 Begin your conversation with mAIa
+              </Button>
+            </div>
+
+            {/* Right — For Facilitators */}
+            <div>
+              <p className="text-xs tracking-[0.2em] uppercase text-forest/40 mb-4">
+                FOR FACILITATORS
+              </p>
+              <h2 className="font-heading text-2xl md:text-3xl text-forest mb-6 tracking-tight">
+                Become a Pollinator
+              </h2>
+              <p className="text-base text-forest/60 mb-3 leading-relaxed">
+                Each Pollinator embodies a nature-inspired archetype — Bee, Hummingbird, Butterfly, or Beetle — offering a distinct way of guiding shaped by presence and lived experience.
+              </p>
+              <p className="text-base text-forest/60 mb-8 leading-relaxed">
+                If you guide with integrity, offer your work with respect,
+                and wish to grow within a thoughtful, curated field,
+                we invite you to join the Hive.
+              </p>
+              <Button
+                size="lg"
+                onClick={() => {
+                  if (isAuthenticated) {
+                    setLocation(user?.roles?.includes('practitioner') ? "/dashboard/practitioner" : "/become-facilitator");
+                  } else {
+                    setLocation("/auth/signup");
+                  }
+                }}
+                className="text-white bg-forest hover:bg-forest/90 px-8 py-6 text-base font-medium tracking-wide transition-colors"
+              >
+                <Sparkles className="w-4 h-4 mr-2" />
+                Become a Pollinator
               </Button>
             </div>
 
@@ -197,24 +225,6 @@ export default function Landing() {
       {/* Featured Practitioners */}
       <FeaturedPractitioners />
 
-      {/* Fold line */}
-      <div className="origami-crease" />
-
-      {/* For Facilitators CTA */}
-      <ForFacilitatorsCTA />
-
-      {/* Alpha Program Link */}
-      <section className="py-16 text-center">
-        <p className="text-sm text-forest/40">
-          Interested in contributing to our development?{" "}
-          <button
-            onClick={() => setLocation("/alpha")}
-            className="text-forest/60 hover:text-forest underline underline-offset-4 transition-colors"
-          >
-            Join our Alpha Program
-          </button>
-        </p>
-      </section>
 
       <Footer />
     </div>

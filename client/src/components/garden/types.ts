@@ -1,4 +1,4 @@
-export type GardenContentType = "article" | "video" | "audio" | "exercise" | "meditation";
+export type GardenContentType = "article" | "video" | "audio" | "exercise" | "meditation" | "reflection";
 
 export interface GardenContent {
   id: string;
@@ -33,6 +33,7 @@ export const contentTypeOptions = [
   { value: "audio", label: "Audio", icon: "headphones", description: "Podcasts and audio guides" },
   { value: "exercise", label: "Exercise", icon: "activity", description: "Practical exercises and techniques" },
   { value: "meditation", label: "Meditation", icon: "circle", description: "Guided meditations and practices" },
+  { value: "reflection", label: "Reflection", icon: "heart", description: "Personal reflections from mAIa conversations" },
 ] as const;
 
 export const getArchetypeIcon = (archetype: string): string => {

@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { logos } from "@/assets";
+import { logos, characters } from "@/assets";
 import { cn } from "@/lib/utils";
 
 export default function Header() {
@@ -49,7 +49,7 @@ export default function Header() {
     <div className="flex flex-col space-y-1 p-6">
       <div className="pb-6 mb-6 border-b border-forest/10">
         <div className="flex items-center space-x-2">
-          <img src={logos.main.coloredIcon} alt="FloreSer" width={28} height={28} className="w-7 h-7" />
+          <img src={characters.maiaIcon} alt="FloreSer" width={28} height={28} className="w-7 h-7 object-contain" />
           <span className="font-heading text-lg text-forest">FloreSer</span>
         </div>
       </div>
@@ -60,7 +60,6 @@ export default function Header() {
         { href: "/hive", label: "The Hive", testId: "button-mobile-hive" },
         { href: "/garden", label: "Garden", testId: "button-mobile-garden" },
         { href: "/join-the-hive", label: "Join the Hive", testId: "button-mobile-join-hive" },
-        { href: "/survey", label: "Survey", testId: "button-mobile-survey" },
       ].map((item) => (
         <Link key={item.href} href={item.href}>
           <Button
@@ -122,11 +121,11 @@ export default function Header() {
           <Link href="/">
             <div className="flex items-center space-x-2 cursor-pointer">
               <img
-                src={logos.main.coloredIcon}
+                src={characters.maiaIcon}
                 alt="FloreSer Logo"
                 width={32}
                 height={32}
-                className="w-8 h-8"
+                className="w-8 h-8 object-contain"
               />
               <span className="font-heading text-xl text-forest tracking-wide">
                 FloreSer
@@ -139,7 +138,6 @@ export default function Header() {
             <NavLink href="/hive" testId="button-hive-desktop">The Hive</NavLink>
             <NavLink href="/garden" testId="button-garden-desktop">Garden</NavLink>
             <NavLink href="/join-the-hive" testId="button-join-hive-desktop">Join the Hive</NavLink>
-            <NavLink href="/survey" testId="button-survey-desktop">Survey</NavLink>
 
             {!isAuthenticated ? (
               <div className="flex items-center space-x-2 ml-4 pl-4 border-l border-forest/10">

@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { apiRequest } from "@/lib/queryClient";
+import { characters } from '@/assets';
 import {
   Send,
   Loader2,
@@ -342,7 +343,7 @@ export default function FacilitatorApplyPage() {
             {/* Header */}
             <div className="flex items-center gap-3 p-4 border-b border-sage/20 bg-gradient-to-r from-gold/10 to-cream">
               <Avatar className="h-10 w-10 border-2 border-gold/30">
-                <AvatarImage src="/maia-avatar.png" />
+                <AvatarImage src={characters.maia} />
                 <AvatarFallback className="bg-gold/20 text-gold font-semibold">
                   M
                 </AvatarFallback>

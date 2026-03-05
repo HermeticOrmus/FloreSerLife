@@ -14,7 +14,8 @@ import {
   archetypeDefinitions,
   experienceLevelDefinitions,
   pollinatorTierDefinitions,
-  insertSurveyResponseSchema
+  insertSurveyResponseSchema,
+  insertQuizResponseSchema,
 } from "@shared/schema";
 
 const adminLimiter = rateLimit({
@@ -2213,6 +2214,98 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching unread count:", error);
       res.status(500).json({ message: "Failed to fetch unread count" });
+    }
+  });
+
+  // ==========================================
+  // mAIa Quiz Response Endpoints
+  // ==========================================
+
+  // Save quiz response (auth optional for initial save)
+  app.post('/api/quiz/responses', async (req: any, res) => {
+    try {
+      const userId = req.user?.id || null;
+      const data = req.body;
+
+      const response = await storage.createQuizResponse({
+        ...data,
+        userId,
+        completedAt: new Date(),
+      });
+
+      res.status(201).json(response);
+    } catch (error) {
+      console.error("Error saving quiz response:", error);
+      res.status(500).json({ message: "Failed to save quiz response" });
+    }
+  });
+
+  // Get authenticated user's most recent quiz response
+  app.get('/api/quiz/responses/latest', requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const response = await storage.getLatestQuizResponse(userId);
+
+      if (!response) {
+        return res.status(404).json({ message: "No quiz response found" });
+      }
+
+      res.json(response);
+    } catch (error) {
+      console.error("Error fetching quiz response:", error);
+      res.status(500).json({ message: "Failed to fetch quiz response" });
+    }
+  });
+
+  // Save quiz reflections to Garden as private entry
+  app.post('/api/quiz/responses/:id/share', requireAuth, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+
+      const quizResponse = await storage.getQuizResponseById(id);
+      if (!quizResponse) {
+        return res.status(404).json({ message: "Quiz response not found" });
+      }
+
+      // Build formatted content from Q&A pairs
+      const sections: string[] = [];
+      if (quizResponse.whatsAlive?.length) sections.push(`**What's Alive:** ${quizResponse.whatsAlive.join(', ')}`);
+      if (quizResponse.supportType?.length) sections.push(`**Support Type:** ${quizResponse.supportType.join(', ')}`);
+      if (quizResponse.connectionStyle?.length) sections.push(`**Connection Style:** ${quizResponse.connectionStyle.join(', ')}`);
+      if (quizResponse.themes?.length) sections.push(`**Themes:** ${quizResponse.themes.join(', ')}`);
+      if (quizResponse.growthSeason) sections.push(`**Growth Season:** ${quizResponse.growthSeason}`);
+      if (quizResponse.openReflection1) sections.push(`**Open Reflection:** ${quizResponse.openReflection1}`);
+      if (quizResponse.layer2Completed) {
+        if (quizResponse.energySignature) sections.push(`**Energy Signature:** ${quizResponse.energySignature}`);
+        if (quizResponse.relationshipToChange) sections.push(`**Relationship to Change:** ${quizResponse.relationshipToChange}`);
+        if (quizResponse.innerCompass) sections.push(`**Inner Compass:** ${quizResponse.innerCompass}`);
+        if (quizResponse.edgeOfGrowth) sections.push(`**Edge of Growth:** ${quizResponse.edgeOfGrowth}`);
+        if (quizResponse.integrationRhythm?.length) sections.push(`**Integration Rhythm:** ${quizResponse.integrationRhythm.join(', ')}`);
+        if (quizResponse.seedOfVision) sections.push(`**Seed of Vision:** ${quizResponse.seedOfVision}`);
+        if (quizResponse.openReflection2) sections.push(`**Living Thread:** ${quizResponse.openReflection2}`);
+      }
+      if (quizResponse.primaryArchetype) sections.push(`\n**Primary Archetype:** ${quizResponse.primaryArchetype}`);
+      if (quizResponse.secondaryArchetype) sections.push(`**Secondary Archetype:** ${quizResponse.secondaryArchetype}`);
+
+      const content = sections.join('\n\n');
+      const tags = ['maia-reflection'];
+      if (quizResponse.primaryArchetype) tags.push(quizResponse.primaryArchetype);
+
+      const gardenEntry = await storage.createGardenContent({
+        title: 'My mAIa Reflection',
+        description: `Reflections from mAIa conversation — ${quizResponse.primaryArchetype || 'exploring'} archetype`,
+        content,
+        contentType: 'reflection',
+        authorId: userId,
+        tags,
+        isPublic: false,
+      });
+
+      res.status(201).json(gardenEntry);
+    } catch (error) {
+      console.error("Error sharing quiz reflections:", error);
+      res.status(500).json({ message: "Failed to save reflections" });
     }
   });
 

@@ -47,6 +47,9 @@ import {
   type InsertFacilitatorApplication,
   type InsertStripeConnectAccount,
   type InsertPayout,
+  quizResponses,
+  type QuizResponse,
+  type InsertQuizResponse,
   pollinatorTierDefinitions,
   seedsEarningRates,
 } from "@shared/schema";
@@ -1676,6 +1679,32 @@ export class DatabaseStorage implements IStorage {
       pendingPayout: Math.max(0, pendingPayout),
       completedPayouts
     };
+  }
+
+  // Quiz Response operations
+  async createQuizResponse(data: InsertQuizResponse): Promise<QuizResponse> {
+    const [response] = await db.insert(quizResponses).values(data).returning();
+    return response;
+  }
+
+  async getQuizResponsesByUserId(userId: string): Promise<QuizResponse[]> {
+    return await db.select().from(quizResponses)
+      .where(eq(quizResponses.userId, userId))
+      .orderBy(desc(quizResponses.createdAt));
+  }
+
+  async getLatestQuizResponse(userId: string): Promise<QuizResponse | undefined> {
+    const [response] = await db.select().from(quizResponses)
+      .where(eq(quizResponses.userId, userId))
+      .orderBy(desc(quizResponses.createdAt))
+      .limit(1);
+    return response;
+  }
+
+  async getQuizResponseById(id: string): Promise<QuizResponse | undefined> {
+    const [response] = await db.select().from(quizResponses)
+      .where(eq(quizResponses.id, id));
+    return response;
   }
 }
 
