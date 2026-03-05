@@ -1,4 +1,4 @@
-import { Flower2, Sprout, TreeDeciduous } from "lucide-react";
+import { Flower2, Sprout } from "lucide-react";
 import { Link } from "wouter";
 import { papercut } from "@/assets";
 
@@ -25,18 +25,6 @@ const sections = [
     iconColor: "text-white",
     iconBg: "bg-garden-accent/40",
   },
-  {
-    icon: TreeDeciduous,
-    title: "The Community Garden",
-    description:
-      "Seasonal rituals, shared insights, and global gatherings for collective flourishing.",
-    href: "/garden",
-    texture: papercut.textures.flatForest,
-    borderClass: "border-forest/30 hover:border-forest/60",
-    iconColor: "text-white/90",
-    iconBg: "bg-white/15",
-    dark: true,
-  },
 ];
 
 export default function WhatAwaitsInside() {
@@ -49,7 +37,7 @@ export default function WhatAwaitsInside() {
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {sections.map((section) => {
             const Icon = section.icon;
             return (

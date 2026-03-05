@@ -18,6 +18,7 @@ import hummingbirdIcon from './images/icons/hummingbird.png';
 // CHARACTER ILLUSTRATIONS
 // =============================================================================
 import maiaTheBee from './images/characters/maia.png';
+import maiaPapercraft from './images/characters/maia-papercraft.png';
 import angelicaTheColibri from './images/characters/angelica.png';
 import maiaGreetingFrame from './animations/maia/greeting/frame_000.png';
 
@@ -67,6 +68,7 @@ export const archetypeIcons = {
 // =============================================================================
 export const characters = {
   maia: maiaTheBee,
+  maiaPapercraft: maiaPapercraft,
   maiaIcon: maiaGreetingFrame,
   angelica: angelicaTheColibri,
 } as const;

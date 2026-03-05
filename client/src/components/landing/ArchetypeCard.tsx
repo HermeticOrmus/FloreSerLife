@@ -1,6 +1,14 @@
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight } from "lucide-react";
 import { useLocation } from "wouter";
+import { papercut } from "@/assets";
+
+const pollinatorIcons = {
+  bee: papercut.pollinatorsTransparent.bee,
+  hummingbird: papercut.pollinatorsTransparent.hummingbird,
+  butterfly: papercut.pollinatorsTransparent.butterfly,
+  beetle: papercut.pollinatorsTransparent.beetle,
+} as const;
 
 export interface ArchetypeCardProps {
   archetype: "bee" | "hummingbird" | "butterfly" | "beetle";
@@ -28,33 +36,45 @@ export default function ArchetypeCard({
 
   return (
     <div className="bg-white border border-forest/8 origami-paper origami-corner origami-fold-shadow rounded-lg h-full">
-      <div className="p-8">
-        {/* Badge at top */}
-        <Badge className="bg-forest/5 text-forest/50 hover:bg-forest/10 mb-4 text-sm font-medium border border-forest/10">
-          {badge}
-        </Badge>
+      <div className="p-8 flex gap-6">
+        {/* Papercraft pollinator icon */}
+        <div className="flex-shrink-0">
+          <img
+            src={pollinatorIcons[archetype]}
+            alt={`${name} pollinator`}
+            className="w-20 h-20 md:w-24 md:h-24 object-contain"
+            loading="lazy"
+          />
+        </div>
 
-        {/* Archetype Name with Latin */}
-        <h3 className="text-card-heading font-heading text-forest mb-3">
-          The {name}{" "}
-          <span className="text-forest/60 italic text-body-sm">
-            ({latinName})
-          </span>
-        </h3>
+        <div className="flex-1">
+          {/* Badge at top */}
+          <Badge className="bg-forest/5 text-forest/50 hover:bg-forest/10 mb-4 text-sm font-medium border border-forest/10">
+            {badge}
+          </Badge>
 
-        {/* Poetic Description */}
-        <p className="text-body-sm text-forest/60 leading-relaxed mb-6">
-          {description}
-        </p>
+          {/* Archetype Name with Latin */}
+          <h3 className="text-card-heading font-heading text-forest mb-3">
+            The {name}{" "}
+            <span className="text-forest/60 italic text-body-sm">
+              ({latinName})
+            </span>
+          </h3>
 
-        {/* Explore Link */}
-        <button
-          onClick={handleExplore}
-          className="inline-flex items-center text-forest/70 hover:text-forest font-medium text-sm transition-colors"
-        >
-          {link}
-          <ArrowRight className="ml-1 h-4 w-4" />
-        </button>
+          {/* Poetic Description */}
+          <p className="text-body-sm text-forest/60 leading-relaxed mb-6">
+            {description}
+          </p>
+
+          {/* Explore Link */}
+          <button
+            onClick={handleExplore}
+            className="inline-flex items-center text-forest/70 hover:text-forest font-medium text-sm transition-colors"
+          >
+            {link}
+            <ArrowRight className="ml-1 h-4 w-4" />
+          </button>
+        </div>
       </div>
     </div>
   );

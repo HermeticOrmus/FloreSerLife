@@ -124,7 +124,7 @@ export default function Landing() {
               </p>
               <div className="flex justify-center md:justify-start mb-8">
                 <img
-                  src={characters.maia}
+                  src={characters.maiaPapercraft}
                   alt="mAIa, your gentle guide"
                   className="w-36 h-36 md:w-48 md:h-48 object-contain"
                   loading="lazy"

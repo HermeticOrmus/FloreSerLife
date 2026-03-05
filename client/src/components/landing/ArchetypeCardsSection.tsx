@@ -51,8 +51,11 @@ export default function ArchetypeCardsSection() {
           <h2 id="match-title" className="text-section-heading font-heading text-forest mb-6">
             Discover Your Perfect Pollinator Match
           </h2>
-          <p className="text-body text-forest/70 max-w-3xl mx-auto leading-relaxed mb-6">
-            Every journey is unique—shaped by your season, your rhythm, your becoming. Our <strong>Pollinator Archetype System</strong> connects you with facilitators whose natural style aligns with your current phase of life. Experience meaningful, trustworthy connections that foster genuine transformation.
+          <p className="text-body text-forest/70 max-w-3xl mx-auto leading-relaxed mb-4">
+            Every journey is unique — shaped by your season, your rhythm, your becoming. Our <strong>Pollinator Archetype System</strong> connects you with facilitators whose natural style aligns with your current phase of life.
+          </p>
+          <p className="text-body-sm text-forest/50 max-w-2xl mx-auto leading-relaxed mb-6">
+            We call our facilitators <em>Pollinators</em> — practitioners, healers, guides, and teachers who carry wisdom from one soul to another, much like pollinators carry life between flowers. It's not a title we impose, but a language we invite you to grow into.
           </p>
           <div className="flex flex-wrap justify-center gap-6 text-sm text-forest/70">
             <div className="flex items-center gap-2">
