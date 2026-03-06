@@ -10,7 +10,7 @@ export default function ArchetypeCardsSection() {
       latinName: "Apis mellifera",
       description:
         "For when you crave steadiness, warmth, and gentle care. The Bee guides you back to your body, your rhythm, and belonging — gentle, grounding, restorative.",
-      link: "Explore the Bees →",
+      link: "Explore the Bees",
     },
     {
       archetype: "hummingbird" as const,
@@ -20,7 +20,7 @@ export default function ArchetypeCardsSection() {
       latinName: "Colibri coruscans",
       description:
         "When you're seeking clarity, alignment, and truth. The Hummingbird helps you listen deeply to what's whispering within — light, precise, luminous.",
-      link: "Explore the Hummingbirds →",
+      link: "Explore the Hummingbirds",
     },
     {
       archetype: "butterfly" as const,
@@ -30,7 +30,7 @@ export default function ArchetypeCardsSection() {
       latinName: "Papilio machaon",
       description:
         "When life is transforming. The Butterfly reminds you that endings are gateways to new life — graceful, tender, liberating.",
-      link: "Explore the Butterflies →",
+      link: "Explore the Butterflies",
     },
     {
       archetype: "beetle" as const,
@@ -40,7 +40,7 @@ export default function ArchetypeCardsSection() {
       latinName: "Scarabaeus sacer",
       description:
         "For moments that call for depth and introspection. The Beetle walks with you through the dark, turning old stories into fertile soil — steady, alchemical, profound.",
-      link: "Explore the Beetles →",
+      link: "Explore the Beetles",
     },
   ];
 

@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useLocation } from "wouter";
 import { papercut } from "@/assets";
 
@@ -74,10 +74,11 @@ export default function ArchetypeCard({
           {/* Explore Link */}
           <button
             onClick={handleExplore}
-            className="inline-flex items-center text-forest/70 hover:text-forest font-medium text-sm transition-colors"
+            className="inline-flex items-center font-medium text-sm transition-colors"
+            style={{ color: `${badgeColor}90` }}
           >
             {link}
-            <ArrowRight className="ml-1 h-4 w-4" />
+            <ChevronRight className="ml-1 h-5 w-5" style={{ color: `${badgeColor}70` }} />
           </button>
         </div>
       </div>
