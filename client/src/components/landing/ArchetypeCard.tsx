@@ -59,7 +59,7 @@ export default function ArchetypeCard({
           </Badge>
 
           {/* Archetype Name with Latin */}
-          <h3 className="text-card-heading font-heading text-forest mb-3">
+          <h3 className="text-card-heading font-heading mb-3" style={{ color: badgeColor }}>
             The {name}{" "}
             <span className="text-forest/60 italic text-body-sm">
               ({latinName})
@@ -75,7 +75,7 @@ export default function ArchetypeCard({
           <button
             onClick={handleExplore}
             className="inline-flex items-center font-medium text-sm transition-colors"
-            style={{ color: `${badgeColor}90` }}
+            style={{ color: badgeColor }}
           >
             {link}
             <ChevronRight className="ml-1 h-5 w-5" style={{ color: `${badgeColor}70` }} />
