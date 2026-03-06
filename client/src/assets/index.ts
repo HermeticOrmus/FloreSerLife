@@ -19,6 +19,7 @@ import hummingbirdIcon from './images/icons/hummingbird.png';
 // =============================================================================
 import maiaTheBee from './images/characters/maia.png';
 import maiaPapercraft from './images/characters/maia-papercraft.png';
+import maiaMascot from './images/characters/maia-mascot-transparent.png';
 import angelicaTheColibri from './images/characters/angelica.png';
 import maiaGreetingFrame from './animations/maia/greeting/frame_000.png';
 
@@ -45,6 +46,14 @@ import depthHeroSproutLeavesTransparent from './images/papercut/generated/depth/
 import depthWavyHorizonTransparent from './images/papercut/generated/depth/transparent/depth-wavy-horizon-1920_230923.png';
 
 // =============================================================================
+// FIRST-APPROVAL POLLINATOR ILLUSTRATIONS (Detailed papercraft)
+// =============================================================================
+import approvedBee from './images/papercut/generated/depth/First-Approval-Friends/03-Maia-Bee-Gold-Lines-v3-transparent.png';
+import approvedButterfly from './images/papercut/generated/depth/First-Approval-Friends/03-Luna-Butterfly-Extra-Gold-v3-transparent.png';
+import approvedHummingbird from './images/papercut/generated/depth/First-Approval-Friends/papercut-pollinator-hummingbird-256_200942.png';
+import approvedBeetle from './images/papercut/generated/depth/First-Approval-Friends/depth-pollinator-beetle-256_225927-transparent.png';
+
+// =============================================================================
 // EXPORTS - LOGOS
 // =============================================================================
 export const logos = {
@@ -69,6 +78,7 @@ export const archetypeIcons = {
 export const characters = {
   maia: maiaTheBee,
   maiaPapercraft: maiaPapercraft,
+  maiaMascot: maiaMascot,
   maiaIcon: maiaGreetingFrame,
   angelica: angelicaTheColibri,
 } as const;
@@ -102,6 +112,14 @@ export const papercut = {
   // Transparent hero elements
   heroTransparent: {
     sproutLeaves: depthHeroSproutLeavesTransparent,
+  },
+
+  // Approved pollinator illustrations (detailed papercraft)
+  pollinators: {
+    bee: approvedBee,
+    butterfly: approvedButterfly,
+    hummingbird: approvedHummingbird,
+    beetle: approvedBeetle,
   },
 } as const;
 

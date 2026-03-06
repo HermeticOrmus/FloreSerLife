@@ -4,15 +4,16 @@ import { useLocation } from "wouter";
 import { papercut } from "@/assets";
 
 const pollinatorIcons = {
-  bee: papercut.pollinatorsTransparent.bee,
-  hummingbird: papercut.pollinatorsTransparent.hummingbird,
-  butterfly: papercut.pollinatorsTransparent.butterfly,
-  beetle: papercut.pollinatorsTransparent.beetle,
+  bee: papercut.pollinators.bee,
+  hummingbird: papercut.pollinators.hummingbird,
+  butterfly: papercut.pollinators.butterfly,
+  beetle: papercut.pollinators.beetle,
 } as const;
 
 export interface ArchetypeCardProps {
   archetype: "bee" | "hummingbird" | "butterfly" | "beetle";
   badge: string;
+  badgeColor: string;
   name: string;
   latinName: string;
   description: string;
@@ -23,6 +24,7 @@ export interface ArchetypeCardProps {
 export default function ArchetypeCard({
   archetype,
   badge,
+  badgeColor,
   name,
   latinName,
   description,
@@ -49,7 +51,10 @@ export default function ArchetypeCard({
 
         <div className="flex-1">
           {/* Badge at top */}
-          <Badge className="bg-forest/5 text-forest/50 hover:bg-forest/10 mb-4 text-sm font-medium border border-forest/10">
+          <Badge
+            className="mb-4 text-sm font-medium border"
+            style={{ color: badgeColor, borderColor: `${badgeColor}30`, backgroundColor: `${badgeColor}10` }}
+          >
             {badge}
           </Badge>
 

@@ -54,10 +54,10 @@ export default function WhatAwaitsInside() {
                     <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 ${section.iconBg}`}>
                       <Icon className={`w-8 h-8 ${section.iconColor}`} strokeWidth={1.5} />
                     </div>
-                    <h3 className={`font-heading text-xl mb-4 ${section.dark ? "text-white" : "text-forest"}`}>
+                    <h3 className="font-heading text-xl mb-4 text-forest">
                       {section.title}
                     </h3>
-                    <p className={`leading-relaxed italic ${section.dark ? "text-white/70" : "text-forest/60"}`}>
+                    <p className="leading-relaxed italic text-forest/60">
                       {section.description}
                     </p>
                   </div>

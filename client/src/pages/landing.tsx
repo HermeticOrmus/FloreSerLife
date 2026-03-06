@@ -103,7 +103,7 @@ export default function Landing() {
       <div className="origami-crease" />
 
       {/* For Seekers / For Facilitators — split section */}
-      <section className="py-20 md:py-28 origami-paper origami-overlay-graphite">
+      <section className="py-20 md:py-28 origami-paper origami-overlay-ash">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-start">
 
@@ -124,7 +124,7 @@ export default function Landing() {
               </p>
               <div className="flex justify-center md:justify-start mb-8">
                 <img
-                  src={characters.maiaPapercraft}
+                  src={characters.maiaMascot}
                   alt="mAIa, your gentle guide"
                   className="w-36 h-36 md:w-48 md:h-48 object-contain"
                   loading="lazy"

@@ -5,6 +5,7 @@ export default function ArchetypeCardsSection() {
     {
       archetype: "bee" as const,
       badge: "You look to feel safe and supported",
+      badgeColor: "#D4A017",
       name: "Bee",
       latinName: "Apis mellifera",
       description:
@@ -14,6 +15,7 @@ export default function ArchetypeCardsSection() {
     {
       archetype: "hummingbird" as const,
       badge: "You look for clarity and insight",
+      badgeColor: "#2A7B7B",
       name: "Hummingbird",
       latinName: "Colibri coruscans",
       description:
@@ -23,6 +25,7 @@ export default function ArchetypeCardsSection() {
     {
       archetype: "butterfly" as const,
       badge: "You are in the middle of change",
+      badgeColor: "#B05574",
       name: "Butterfly",
       latinName: "Papilio machaon",
       description:
@@ -32,6 +35,7 @@ export default function ArchetypeCardsSection() {
     {
       archetype: "beetle" as const,
       badge: "You want to go deeper",
+      badgeColor: "#5B7340",
       name: "Beetle",
       latinName: "Scarabaeus sacer",
       description:
